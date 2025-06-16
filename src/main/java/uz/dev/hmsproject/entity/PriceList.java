@@ -1,10 +1,9 @@
-package uz.dev.hmsproject;
+package uz.dev.hmsproject.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
-import uz.dev.hmsproject.entity.Speciality;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
 
 import java.math.BigDecimal;
