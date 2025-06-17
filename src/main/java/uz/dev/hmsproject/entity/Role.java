@@ -26,7 +26,7 @@ public class Role extends AbsLongEntity {
 
     @ToString.Exclude
     @Enumerated(EnumType.STRING)
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
     @CollectionTable(
             name = "role_permissions",
             joinColumns = {@JoinColumn(name = "role_id")}
