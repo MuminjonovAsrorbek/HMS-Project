@@ -16,6 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    // User classi ustidagi to'liq crud va namunaviy crudlar shu yerda bo'lishi kerak
+
     @Override
     public List<UserDTO> getAll() {
         return List.of();
