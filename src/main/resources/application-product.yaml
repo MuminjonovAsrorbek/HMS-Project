@@ -2,8 +2,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/hms_project
-    username: postgres
-    password: postgres
+    username: postgres #Bu yerga postgres username yoziladi
+    password: postgres # Bu yerga postgres username pasroli yoziladi
   jpa:
     hibernate:
       ddl-auto: update
