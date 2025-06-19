@@ -5,7 +5,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.*;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
 
-import java.sql.Time;
+import java.time.LocalTime;
 
 /**
  * Created by: asrorbek
@@ -23,10 +23,10 @@ public class WorkScheduler extends AbsLongEntity {
     @ManyToOne
     private User user;
 
-    private Integer dayOfWeek;
+    private int dayOfWeek;
 
-    private Time startTime;
+    private LocalTime startTime;
 
-    private Time endTime;
+    private LocalTime endTime;
 
 }
