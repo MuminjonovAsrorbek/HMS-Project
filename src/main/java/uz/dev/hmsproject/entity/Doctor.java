@@ -1,12 +1,10 @@
 package uz.dev.hmsproject.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import lombok.*;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
-
-import java.util.List;
 
 /**
  * Created by: asrorbek
@@ -22,14 +20,15 @@ import java.util.List;
 public class Doctor extends AbsLongEntity {
 
     @OneToOne
+    @JoinColumn(unique = true)
     private User user;
 
-    @OneToMany
-    @ToString.Exclude
-    private List<Speciality> specialities;
+    @OneToOne
+    @JoinColumn(unique = true)
+    private Speciality speciality;
 
-    @OneToMany
-    @ToString.Exclude
-    private List<Room> rooms;
+    @OneToOne
+    @JoinColumn(unique = true)
+    private Room room;
 
 }

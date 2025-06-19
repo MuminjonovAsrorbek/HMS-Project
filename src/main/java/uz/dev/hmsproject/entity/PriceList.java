@@ -1,6 +1,7 @@
 package uz.dev.hmsproject.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -23,6 +24,7 @@ import java.sql.Timestamp;
 public class PriceList extends AbsLongEntity {
 
     @OneToOne
+    @JoinColumn(unique = true)
     private Speciality speciality;
 
     private BigDecimal price;
