@@ -1,5 +1,6 @@
 package uz.dev.hmsproject.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ public class SpecialityServiceImpl implements SpecialityService {
 
     }
 
+    @Transactional
     @Override
     public void create(SpecialityDTO specialityDTO) {
         Speciality speciality = specialityMapper.toEntity(specialityDTO);
@@ -48,6 +50,7 @@ public class SpecialityServiceImpl implements SpecialityService {
 
     }
 
+    @Transactional
     @Override
     public void update(Long id, SpecialityDTO specialityDTO) {
 
@@ -60,6 +63,7 @@ public class SpecialityServiceImpl implements SpecialityService {
 
     }
 
+    @Transactional
     @Override
     public void delete(Long id) {
 

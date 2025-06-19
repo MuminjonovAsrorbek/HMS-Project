@@ -1,5 +1,6 @@
 package uz.dev.hmsproject.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +28,14 @@ public class SpecialityController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody SpecialityDTO specialityDTO){
+    public ResponseEntity<?> create(@RequestBody @Valid SpecialityDTO specialityDTO){
         specialityService.create(specialityDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id,
-                       @RequestBody SpecialityDTO specialityDTO){
+                       @RequestBody @Valid SpecialityDTO specialityDTO){
         specialityService.update(id,specialityDTO);
         return ResponseEntity.noContent().build();
     }

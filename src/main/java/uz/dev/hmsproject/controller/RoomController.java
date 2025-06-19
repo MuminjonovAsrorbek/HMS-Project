@@ -1,5 +1,6 @@
 package uz.dev.hmsproject.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,14 +30,14 @@ public class RoomController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody RoomDTO roomDTO) {
+    public ResponseEntity<?> create(@RequestBody @Valid RoomDTO roomDTO) {
         roomService.create(roomDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id,
-                                    @RequestBody RoomDTO roomDTO) {
+                                    @RequestBody @Valid RoomDTO roomDTO) {
         roomService.update(id, roomDTO);
         return ResponseEntity.noContent().build();
     }

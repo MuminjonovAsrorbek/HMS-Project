@@ -1,5 +1,6 @@
 package uz.dev.hmsproject.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +29,14 @@ public class DoctorController {
 
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody DoctorDTO doctorDTO){
+    public ResponseEntity<?> create(@RequestBody @Valid DoctorDTO doctorDTO){
         doctorService.create(doctorDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id,
-                       @RequestBody DoctorDTO doctorDTO){
+                       @RequestBody @Valid DoctorDTO doctorDTO){
         doctorService.update(id,doctorDTO);
         return ResponseEntity.noContent().build();
     }
