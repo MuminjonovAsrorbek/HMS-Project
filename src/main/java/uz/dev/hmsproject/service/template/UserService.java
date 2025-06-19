@@ -9,4 +9,5 @@ import uz.dev.hmsproject.dto.UserDTO;
 
 public interface UserService extends BaseService<UserDTO, Long> {
 
+
 }

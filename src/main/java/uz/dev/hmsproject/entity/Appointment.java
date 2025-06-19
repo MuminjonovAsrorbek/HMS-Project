@@ -33,8 +33,7 @@ public class Appointment extends AbsLongEntity {
 
     private Timestamp dateTime;
 
-    @ManyToOne
-    private Room room;
+    private String room;
 
     private BigDecimal price;
 
