@@ -24,12 +24,10 @@ public class Doctor extends AbsLongEntity {
     @OneToOne
     private User user;
 
-    @OneToMany
-    @ToString.Exclude
-    private List<Speciality> specialities;
+    @OneToOne
+    private Speciality speciality;
 
-    @OneToMany
-    @ToString.Exclude
-    private List<Room> rooms;
+    @OneToOne
+    private Room room;
 
 }
