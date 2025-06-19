@@ -1,5 +1,6 @@
 package uz.dev.hmsproject.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -45,12 +46,14 @@ public class DoctorServiceImpl implements DoctorService {
         return doctorMapper.toDTO(doctor);
     }
 
+    @Transactional
     @Override
     public void create(DoctorDTO doctorDTO) {
         Doctor doctor = doctorMapper.toEntity(doctorDTO);
         doctorRepository.save(doctor);
     }
 
+    @Transactional
     @Override
     public void update(Long id, DoctorDTO doctorDTO) {
 
@@ -61,6 +64,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     }
 
+    @Transactional
     @Override
     public void delete(Long id) {
 

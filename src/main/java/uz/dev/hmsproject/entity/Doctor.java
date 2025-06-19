@@ -1,6 +1,7 @@
 package uz.dev.hmsproject.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.*;
@@ -25,9 +26,11 @@ public class Doctor extends AbsLongEntity {
     private User user;
 
     @OneToOne
+    @JoinColumn(unique = true)
     private Speciality speciality;
 
     @OneToOne
+    @JoinColumn(unique = true)
     private Room room;
 
 }

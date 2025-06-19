@@ -1,5 +1,6 @@
 package uz.dev.hmsproject.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ public class RoomServiceImpl implements RoomService {
         return roomMapper.toDTO(room);
     }
 
+    @Transactional
     @Override
     public void create(RoomDTO roomDTO) {
         Room room = roomMapper.toEntity(roomDTO);
@@ -43,6 +45,7 @@ public class RoomServiceImpl implements RoomService {
 
     }
 
+    @Transactional
     @Override
     public void update(Long id, RoomDTO roomDTO) {
 
@@ -54,6 +57,7 @@ public class RoomServiceImpl implements RoomService {
         roomRepository.save(room);
     }
 
+    @Transactional
     @Override
     public void delete(Long id) {
 
