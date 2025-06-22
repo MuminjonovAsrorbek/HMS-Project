@@ -1,9 +1,6 @@
 package uz.dev.hmsproject.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
 import org.hibernate.annotations.SQLDelete;
@@ -33,22 +30,28 @@ import java.time.LocalDateTime;
 public class Appointment extends AbsLongEntity implements AbsDeleteEntity {
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Patient patient;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Doctor doctor;
 
-    private LocalDateTime dateTime;
+    @JoinColumn(nullable = false)
+    private LocalDateTime appointmentDateTime;
 
-    @ManyToOne
-    private Room room;
+    @Column(name = "room_id", nullable = false)
+    private Long roomId;
 
+    @JoinColumn(nullable = false)
     private BigDecimal price;
 
     @Enumerated(value = EnumType.STRING)
+    @JoinColumn(nullable = false)
     private AppointmentStatus status;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private User createdBy;
 
 }
