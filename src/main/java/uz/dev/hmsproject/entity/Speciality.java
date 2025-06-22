@@ -2,6 +2,7 @@ package uz.dev.hmsproject.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
 
@@ -20,5 +21,7 @@ public class Speciality extends AbsLongEntity {
 
     @Column(nullable = false, unique = true)
     private String name;
+
+
 
 }
