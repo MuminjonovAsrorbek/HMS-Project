@@ -6,10 +6,11 @@ import uz.dev.hmsproject.dto.DoctorDTO;
 import uz.dev.hmsproject.entity.Doctor;
 import uz.dev.hmsproject.mapper.template.BaseMapper;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class DoctorMapper implements BaseMapper<Doctor, DoctorDTO> {
-
 
     @Override
     public Doctor toEntity(DoctorDTO doctorDTO) {
@@ -29,6 +30,10 @@ public class DoctorMapper implements BaseMapper<Doctor, DoctorDTO> {
         );
     }
 
+    @Override
+    public List<DoctorDTO> toDTO(List<Doctor> dtos) {
+        return List.of();
+    }
 
 
 }
