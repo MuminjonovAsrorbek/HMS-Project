@@ -17,7 +17,6 @@ public class RoleDTO {
     private Long id;
 
     @NotBlank
-
     private String name;
 
     private List<Permissions> permissions;
