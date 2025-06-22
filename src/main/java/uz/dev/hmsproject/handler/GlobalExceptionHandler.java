@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import uz.dev.hmsproject.dto.ErrorDTO;
 import uz.dev.hmsproject.dto.FieldErrorDTO;
-import uz.dev.hmsproject.exception.EntityNotFoundException;
-import uz.dev.hmsproject.exception.PasswordIncorrectException;
-import uz.dev.hmsproject.exception.UserAlreadyExistsException;
-import uz.dev.hmsproject.exception.UserAlreadyExistsWithUsernameException;
+import uz.dev.hmsproject.exception.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +17,14 @@ import java.util.List;
 
 @RestControllerAdvice(basePackages = "uz.dev.hmsproject")
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(value = EntityUniqueException.class)
+    public ResponseEntity<ErrorDTO> handleEntityUniqueException(EntityUniqueException e) {
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMessage(e.getMessage());
+        errorDTO.setCode(HttpStatus.CONFLICT.value());
+        return new ResponseEntity<>(errorDTO, HttpStatus.CONFLICT);
+    }
 
     @ExceptionHandler(value = EntityNotFoundException.class)
     public ResponseEntity<ErrorDTO> handle(EntityNotFoundException e) {
