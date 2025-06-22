@@ -7,8 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.UserDTO;
+import uz.dev.hmsproject.dto.UserFilterDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.service.template.UserService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -16,6 +19,12 @@ import uz.dev.hmsproject.service.template.UserService;
 public class UserController {
 
     private final UserService userService;
+
+    @PreAuthorize(value = "hasAuthority('FILTER_USERS')")
+    @GetMapping("/filter")
+    public ResponseEntity<List<UserDTO>> filter(UserFilterDTO filterDTO) {
+        return ResponseEntity.ok(userService.filter(filterDTO));
+    }
 
     @PreAuthorize(value = "hasAuthority('VIEW_USERS')")
     @GetMapping
