@@ -20,7 +20,6 @@ public class RoleDTO implements Serializable {
     private Long id;
 
     @NotBlank
-
     private String name;
 
     private List<Permission> permissions;
