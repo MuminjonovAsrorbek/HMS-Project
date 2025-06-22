@@ -23,7 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DoctorServiceImpl implements DoctorService {
 
-
     private final DoctorRepository doctorRepository;
 
     private final DoctorMapper doctorMapper;
@@ -36,6 +35,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<DoctorDTO> getAll() {
+        // pageableDTO qaytarish kerak
         return doctorRepository.findAll().stream()
                 .map(doctorMapper::toDTO).toList();
     }
