@@ -12,7 +12,7 @@ import uz.dev.hmsproject.service.template.RoomService;
 
 
 @RestController
-@RequestMapping("/api/room")
+@RequestMapping("/api/v1/room")
 @RequiredArgsConstructor
 public class RoomController {
 
