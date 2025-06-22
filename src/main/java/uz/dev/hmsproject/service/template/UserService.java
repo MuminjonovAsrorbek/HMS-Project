@@ -1,7 +1,6 @@
 package uz.dev.hmsproject.service.template;
 
 import uz.dev.hmsproject.dto.UserDTO;
-import uz.dev.hmsproject.dto.request.UserReqDTO;
 
 /**
  * Created by: asrorbek
@@ -9,6 +8,5 @@ import uz.dev.hmsproject.dto.request.UserReqDTO;
  **/
 
 public interface UserService extends BaseService<UserDTO, Long> {
-
 
 }

@@ -33,6 +33,7 @@ public class Appointment extends AbsLongEntity {
 
     private LocalDateTime dateTime;
 
+
     private Integer roomId;
 
     private BigDecimal price;

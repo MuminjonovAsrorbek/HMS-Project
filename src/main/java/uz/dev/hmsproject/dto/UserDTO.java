@@ -7,15 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 
-/**
- * DTO for {@link uz.dev.hmsproject.entity.User}
- */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO implements Serializable {
+public class UserDTO {
 
     private Long id;
 
@@ -27,6 +24,7 @@ public class UserDTO implements Serializable {
     private String username;
 
     @NotBlank
+    @Size(min = 8, max = 100)
     private String password;
 
     @NotNull

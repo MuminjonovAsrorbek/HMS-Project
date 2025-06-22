@@ -2,12 +2,7 @@ package uz.dev.hmsproject.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by: asrorbek
@@ -21,7 +16,7 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name = "users")
-public class User extends AbsLongEntity implements UserDetails {
+public class User extends AbsLongEntity {
 
     @Column(nullable = false)
     private String fullName;
@@ -37,8 +32,5 @@ public class User extends AbsLongEntity implements UserDetails {
 
     private boolean isActive = true;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
+    // to - do => Shu yerga security qismi ulanadi va User classi implement qiladi UserDetails classidan
 }
