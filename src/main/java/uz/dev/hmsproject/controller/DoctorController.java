@@ -12,6 +12,9 @@ import uz.dev.hmsproject.dto.response.DoctorResponseDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.service.template.DoctorService;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
@@ -63,5 +66,21 @@ public class DoctorController {
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         doctorService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{doctorId}/available-slots")
+    public ResponseEntity<List<String>> getAvailableSlots(
+            @PathVariable Long doctorId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+
+        List<LocalTime> slots = doctorService.getAvailable20MinuteSlots(doctorId, date);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        List<String> formatted = slots.stream()
+                .map(time -> time.format(formatter))
+                .toList();
+
+        return ResponseEntity.ok(formatted);
     }
 }

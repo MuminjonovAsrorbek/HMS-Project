@@ -20,7 +20,6 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 @Entity
 @SQLDelete(sql = "update patient set deleted=true where id=?")
 @SQLRestriction(value = "deleted=false")
@@ -40,4 +39,6 @@ public class Patient extends AbsLongEntity {
 
     @CreationTimestamp
     private Timestamp createdAt;
+
+
 }

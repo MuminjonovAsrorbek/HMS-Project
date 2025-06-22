@@ -43,6 +43,7 @@ public class UserController {
         return userService.getById(id);
 
     }
+
     @PreAuthorize(value = "hasAuthority('CREATE_USERS')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid UserDTO userDTO) {
@@ -65,8 +66,9 @@ public class UserController {
     @PreAuthorize(value = "hasAuthority('DELETE_USERS')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+
         userService.delete(id);
-        // to - do => databasedan ma'lumot o'chmasligi kerak .
-        return ResponseEntity.noContent().build();
+
+        return ResponseEntity.ok("User deleted successfully");
     }
 }
