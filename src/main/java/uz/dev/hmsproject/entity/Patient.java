@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
 
 import java.sql.Date;
@@ -19,6 +21,8 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @Entity
+@SQLDelete(sql = "update patient set deleted=true where id=?")
+@SQLRestriction(value = "deleted=false")
 public class Patient extends AbsLongEntity {
 
     @Column(nullable = false)
