@@ -1,46 +1,137 @@
 package uz.dev.hmsproject.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.UserDTO;
+import uz.dev.hmsproject.dto.response.PageableDTO;
+import uz.dev.hmsproject.entity.Role;
+import uz.dev.hmsproject.entity.User;
+import uz.dev.hmsproject.entity.template.AbsLongEntity;
+import uz.dev.hmsproject.exception.EntityNotFoundException;
+import uz.dev.hmsproject.exception.UserAlreadyExistsWithUsernameException;
+import uz.dev.hmsproject.mapper.UserMapperImpl;
+import uz.dev.hmsproject.repository.RoleRepository;
+import uz.dev.hmsproject.repository.UserRepository;
 import uz.dev.hmsproject.service.template.UserService;
 
 import java.util.List;
-
-/**
- * Created by: asrorbek
- * DateTime: 6/17/25 13:32
- **/
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    // User classi ustidagi to'liq crud va namunaviy crudlar shu yerda bo'lishi kerak
+    private final UserRepository userRepository;
+
+    private final UserMapperImpl userMapper;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final RoleRepository roleRepository;
 
     @Override
-    public List<UserDTO> getAll() {
-        return List.of();
+    public PageableDTO getAllPaginated(Integer page, Integer size) {
+
+        Sort sort = Sort.by(AbsLongEntity.Fields.id).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<User> usersPage = userRepository.findAll(pageable);
+
+        List<User> users = usersPage.getContent();
+
+        List<UserDTO> userDTOS = userMapper.toDTO(users);
+
+        return new PageableDTO(
+                usersPage.getSize(),
+                usersPage.getTotalElements(),
+                usersPage.getTotalPages(),
+                !usersPage.isLast(),
+                !usersPage.isFirst(),
+                userDTOS
+        );
     }
 
     @Override
-    public UserDTO getById(Long aLong) {
-        return null;
+    public List<UserDTO> getAll() {
+
+        List<User> users = userRepository.findAll();
+
+        return userMapper.toDTO(users);
+    }
+
+    @Override
+    public UserDTO getById(Long id) {
+
+        return userMapper.toDTO(userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with ID : " + id, HttpStatus.NOT_FOUND)));
     }
 
     @Override
     public void create(UserDTO userDTO) {
 
+        if (userRepository.existsByUsername(userDTO.getUsername())) {
+            throw new UserAlreadyExistsWithUsernameException(userDTO.getUsername(), HttpStatus.CONFLICT);
+        }
+
+        Role role = roleRepository.findById(userDTO.getRoleId())
+                .orElseThrow(
+                        () -> new EntityNotFoundException("User not found with ID : " + userDTO.getRoleId(), HttpStatus.NOT_FOUND)
+                );
+
+        User user = new User();
+
+        user.setUsername(userDTO.getUsername());
+        user.setFullName(userDTO.getFullName());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setRole(role);
+
+        userRepository.save(user);
+
     }
 
     @Override
-    public void update(Long aLong, UserDTO userDTO) {
+    public void update(Long id, UserDTO userDTO) {
 
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("User not found with ID : " + id, HttpStatus.NOT_FOUND)
+        );
+
+        if (userRepository.existsByUsername(userDTO.getUsername()) && !user.getUsername().equals(userDTO.getUsername())) {
+
+            throw new UserAlreadyExistsWithUsernameException(userDTO.getUsername(), HttpStatus.CONFLICT);
+
+        }
+
+        Role role = roleRepository.findById(userDTO.getRoleId())
+                .orElseThrow(
+                        () -> new EntityNotFoundException("User not found with ID : " + userDTO.getRoleId(), HttpStatus.NOT_FOUND)
+                );
+
+        user.setUsername(userDTO.getUsername());
+        user.setFullName(userDTO.getFullName());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setRole(role);
+
+        userRepository.save(user);
     }
 
     @Override
-    public void delete(Long aLong) {
+    public void delete(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new EntityNotFoundException("User not found with ID : " + id, HttpStatus.CONFLICT);
+        }
 
+        // to - do => User databasedan o'chrilmasligi kerak
+
+        userRepository.deleteById(optionalUser.get().getId());
     }
 
-}
+} 

@@ -19,4 +19,6 @@ public class SpecialityDTO implements Serializable {
 
     @NotBlank
     private String name;
+
+
 }
