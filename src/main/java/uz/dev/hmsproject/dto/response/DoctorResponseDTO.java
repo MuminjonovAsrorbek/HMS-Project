@@ -18,13 +18,13 @@ public class DoctorResponseDTO implements Serializable {
 
     private Long id;
 
-    private String userFullName;
+    private String fullName;
 
-    private String userUsername;
+    private String username;
 
-    private String specialityName;
+    private String speciality;
 
-    private PriceListDTO specialityPriceList;
+    private PriceListDTO priceList;
 
-    private String roomNumber;
+    private String room;
 }

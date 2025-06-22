@@ -63,11 +63,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         User currentUser = securityUtils.getCurrentUser();
 
-
-        if (!currentUser.getId().equals(doctor.getUser().getId())) {
-            throw new EntityNotFoundException("You are not authorized to create an appointment for this doctor", HttpStatus.FORBIDDEN);
-        }
-
         LocalDate date = dto.getAppointmentDateTime().toLocalDate();
         LocalTime time = dto.getAppointmentDateTime().toLocalTime();
 
@@ -156,13 +151,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Patient patient = patientRepository.findById(dto.getPatientId())
                 .orElseThrow(() -> new EntityNotFoundException("Patient not found with ID: " + dto.getPatientId(), HttpStatus.NOT_FOUND));
-
-        User currentUser = securityUtils.getCurrentUser();
-
-
-        if (!currentUser.getId().equals(doctor.getUser().getId())) {
-            throw new EntityNotFoundException("You are not authorized to create an appointment for this doctor", HttpStatus.FORBIDDEN);
-        }
 
         LocalDate date = dto.getAppointmentDateTime().toLocalDate();
         LocalTime time = dto.getAppointmentDateTime().toLocalTime();
