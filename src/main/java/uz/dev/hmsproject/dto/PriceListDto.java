@@ -9,9 +9,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-/**
- * DTO for {@link PriceList}
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
