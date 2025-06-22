@@ -8,4 +8,6 @@ import uz.dev.hmsproject.entity.Patient;
  */
 public interface PatientRepository extends JpaRepository<Patient,Long> {
 
+    boolean existsByPhoneNumber(String phoneNumber);
+
 }

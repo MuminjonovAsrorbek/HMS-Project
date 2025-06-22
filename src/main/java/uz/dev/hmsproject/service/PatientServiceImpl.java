@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.PatientDTO;
 import uz.dev.hmsproject.entity.Patient;
+import uz.dev.hmsproject.exception.DuplicatePhoneNumberException;
 import uz.dev.hmsproject.exception.PatientNotFoundException;
 import uz.dev.hmsproject.mapper.PatientMapper;
 import uz.dev.hmsproject.repository.PatientRepository;
@@ -37,9 +38,14 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public void create(PatientDTO patientDTO) {
+        if (patientRepository.existsByPhoneNumber(patientDTO.getPhoneNumber())) {
+            throw new DuplicatePhoneNumberException(patientDTO.getPhoneNumber());
+        }
+
         Patient patient = patientMapper.toEntity(patientDTO);
         patientRepository.save(patient);
     }
+
 
     @Override
     public void update(Long id, PatientDTO patientDTO) {
