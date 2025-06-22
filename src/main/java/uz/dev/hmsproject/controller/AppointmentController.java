@@ -3,6 +3,7 @@ package uz.dev.hmsproject.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.request.AppointmentFilterRequest;
 import uz.dev.hmsproject.dto.request.CreateAppointmentDTO;
@@ -22,6 +23,7 @@ public class AppointmentController {
 
     private final AppointmentService appointmentService;
 
+    @PreAuthorize("hasAuthority('APPOINTMENTS_CREATE')")
     @PostMapping
     public ResponseEntity<?> createAppointment(@RequestBody @Valid CreateAppointmentDTO createAppointmentDTO) {
 
@@ -30,6 +32,7 @@ public class AppointmentController {
         return ResponseEntity.ok("Appointment created successfully");
     }
 
+    @PreAuthorize("hasAuthority('APPOINTMENTS_READ')")
     @GetMapping("/{id}")
     public AppointmentDTO getAppointmentById(@PathVariable Long id) {
 
@@ -37,6 +40,7 @@ public class AppointmentController {
 
     }
 
+    @PreAuthorize("hasAuthority('APPOINTMENTS_READ')")
     @GetMapping("/filter")
     public List<AppointmentDTO> filterAppointments(AppointmentFilterRequest appointmentFilterRequest) {
 
@@ -44,6 +48,7 @@ public class AppointmentController {
 
     }
 
+    @PreAuthorize("hasAuthority('APPOINTMENTS_UPDATE')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAppointment(@PathVariable Long id, @RequestBody @Valid CreateAppointmentDTO appointmentDTO) {
 
@@ -53,6 +58,7 @@ public class AppointmentController {
 
     }
 
+    @PreAuthorize("hasAuthority('APPOINTMENTS_DELETE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAppointment(@PathVariable Long id) {
 
@@ -62,6 +68,7 @@ public class AppointmentController {
 
     }
 
+    @PreAuthorize("hasAuthority('APPOINTMENTS_CHANGE_STATUS')")
     @PatchMapping("/{id}/status")
     public ResponseEntity<?> changeAppointmentStatus(@PathVariable Long id, String status) {
 
