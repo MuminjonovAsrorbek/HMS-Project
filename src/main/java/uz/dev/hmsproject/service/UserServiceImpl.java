@@ -125,13 +125,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
+
         if (optionalUser.isEmpty()) {
             throw new EntityNotFoundException("User not found with ID : " + id, HttpStatus.CONFLICT);
         }
 
-        // to - do => User databasedan o'chrilmasligi kerak
+        User user = optionalUser.get();
 
-        userRepository.deleteById(optionalUser.get().getId());
+        userRepository.delete(user);
+
     }
 
 } 
