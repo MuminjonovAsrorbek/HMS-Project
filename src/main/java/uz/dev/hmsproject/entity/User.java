@@ -2,16 +2,12 @@ package uz.dev.hmsproject.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
-import uz.dev.hmsproject.enums.Permissions;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+/**
+ * Created by: asrorbek
+ * DateTime: 6/16/25 11:44
+ **/
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,7 +16,7 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name = "users")
-public class User extends AbsLongEntity implements UserDetails {
+public class User extends AbsLongEntity {
 
     @Column(nullable = false)
     private String fullName;
@@ -35,15 +31,4 @@ public class User extends AbsLongEntity implements UserDetails {
     private Role role;
 
     private boolean isActive = true;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        for (Permissions permission : this.role.getPermissions()) {
-            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(permission.name());
-            authorities.add(authority);
-        }
-        return authorities;
-    }
-    // to - do => Shu yerga security qismi ulanadi va User classi implement qiladi UserDetails classidan
 }

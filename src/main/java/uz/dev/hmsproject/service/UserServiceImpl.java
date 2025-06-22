@@ -1,4 +1,4 @@
-package uz.dev.hmsproject.serviceImpl;
+package uz.dev.hmsproject.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -127,6 +127,9 @@ public class UserServiceImpl implements UserService {
         if (optionalUser.isEmpty()) {
             throw new UserNotFoundException(id, HttpStatus.CONFLICT);
         }
+
+        // to - do => User databasedan o'chrilmasligi kerak
+
         userRepository.deleteById(optionalUser.get().getId());
     }
 
