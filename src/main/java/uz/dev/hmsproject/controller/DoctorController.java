@@ -2,6 +2,7 @@ package uz.dev.hmsproject.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +29,7 @@ public class DoctorController {
     @PreAuthorize(value = "hasAuthority('FILTER_DOCTORS')")
     @GetMapping("/filter")
     public List<DoctorResponseDTO> filter(@RequestBody @Valid DoctorFilterDTO dto) {
-        return  doctorService.filter(dto);
+        return doctorService.filter(dto);
     }
 
     @PreAuthorize(value = "hasAuthority('VIEW_DOCTORS')")
@@ -37,7 +38,6 @@ public class DoctorController {
                               @RequestParam(value = "size", defaultValue = "10") int size) {
         return doctorService.getAllPaginated(page, size);
     }
-
 
 
     @PreAuthorize(value = "hasAuthority('VIEW_DOCTOR')")

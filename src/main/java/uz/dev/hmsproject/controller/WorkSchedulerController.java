@@ -2,6 +2,7 @@ package uz.dev.hmsproject.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.WorkSchedulerDTO;
 import uz.dev.hmsproject.entity.User;
@@ -23,6 +24,7 @@ public class WorkSchedulerController {
     private final UserRepository userRepository;
     private final WorkSchedulerMapper mapper;
 
+    @PreAuthorize("hasAuthority('CREATE_WORK_SCHEDULES')")
     @PostMapping
     public ResponseEntity<WorkSchedulerDTO> create(@RequestBody WorkSchedulerDTO dto) {
         Optional<User> optionalUser = userRepository.findById(dto.getUserId());
@@ -48,6 +50,7 @@ public class WorkSchedulerController {
     }
 
 
+    @PreAuthorize("hasAuthority('VIEW_WORK_SCHEDULE')")
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<WorkSchedulerDTO>> getAllByUser(@PathVariable Long userId) {
         List<WorkScheduler> list = workSchedulerRepository.findAllByUserId(userId);
