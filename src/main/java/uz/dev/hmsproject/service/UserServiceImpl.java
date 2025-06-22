@@ -1,5 +1,10 @@
 package uz.dev.hmsproject.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.UserDTO;
+import uz.dev.hmsproject.dto.UserFilterDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.entity.Role;
 import uz.dev.hmsproject.entity.User;
@@ -20,6 +26,7 @@ import uz.dev.hmsproject.repository.RoleRepository;
 import uz.dev.hmsproject.repository.UserRepository;
 import uz.dev.hmsproject.service.template.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +41,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final RoleRepository roleRepository;
+    private final EntityManager manager;
 
     @Override
     public PageableDTO getAllPaginated(Integer page, Integer size) {
@@ -56,6 +64,47 @@ public class UserServiceImpl implements UserService {
                 !usersPage.isFirst(),
                 userDTOS
         );
+    }
+
+    @Override
+    public List<UserDTO> filter(UserFilterDTO filterDTO) {
+        if (filterDTO == null) {
+            return getAll();
+        }
+        CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        Root<User> rootUser = criteriaQuery.from(User.class);
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (filterDTO.getSearch() != null) {
+            predicates.add(criteriaBuilder.or(
+                    criteriaBuilder.like(rootUser.get("fullName"), "%" + filterDTO.getSearch() + "%"),
+                    criteriaBuilder.like(rootUser.get("username"), "%" + filterDTO.getSearch() + "%")
+            ));
+        }
+
+        if (filterDTO.getFullName() != null) {
+            predicates.add(criteriaBuilder.like(rootUser.get("fullName"), "%" + filterDTO.getFullName() + "%"));
+        }
+
+        if (filterDTO.getUsername() != null) {
+            predicates.add(criteriaBuilder.like(rootUser.get("username"), "%" + filterDTO.getUsername() + "%"));
+        }
+
+        if (filterDTO.getId() != null) {
+            predicates.add(criteriaBuilder.equal(rootUser.get("id"), filterDTO.getId()));
+        }
+
+        predicates.add(criteriaBuilder.equal(rootUser.get("isActive"), filterDTO.isActive()));
+
+        if (filterDTO.getRole() != null) {
+            predicates.add(criteriaBuilder.equal(rootUser.get("role").get("name"), filterDTO.getRole()));
+        }
+
+        criteriaQuery.where(predicates.toArray(new Predicate[0]));
+        List<User> users = manager.createQuery(criteriaQuery).getResultList();
+
+        return userMapper.toDTO(users);
     }
 
     @Override
