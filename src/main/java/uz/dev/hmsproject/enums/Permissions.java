@@ -50,8 +50,4 @@ public enum Permissions {
     APPOINTMENTS_UPDATE,
     APPOINTMENTS_DELETE,
 
-
-
-    ;
-
 }

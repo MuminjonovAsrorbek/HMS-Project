@@ -23,7 +23,7 @@ public class SecurityAccessExceptionHandler implements AuthenticationEntryPoint 
         ErrorDTO errorDTO = new ErrorDTO(
                 403,
                 authException.getMessage()
-        );
+                );
 
         String json = mapper.writeValueAsString(errorDTO);
 

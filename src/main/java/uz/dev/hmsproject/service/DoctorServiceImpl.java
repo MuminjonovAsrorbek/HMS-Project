@@ -15,16 +15,17 @@ import uz.dev.hmsproject.entity.Room;
 import uz.dev.hmsproject.entity.Speciality;
 import uz.dev.hmsproject.entity.User;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
+import uz.dev.hmsproject.entity.*;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.exception.EntityUniqueException;
 import uz.dev.hmsproject.mapper.DoctorMapper;
-import uz.dev.hmsproject.repository.DoctorRepository;
-import uz.dev.hmsproject.repository.RoomRepository;
-import uz.dev.hmsproject.repository.SpecialityRepository;
-import uz.dev.hmsproject.repository.UserRepository;
+import uz.dev.hmsproject.repository.*;
 import uz.dev.hmsproject.service.template.DoctorService;
 
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -66,8 +67,13 @@ public class DoctorServiceImpl implements DoctorService {
         );
     }
 
+    private final WorkSchedulerRepository workSchedulerRepository;
+
+    private final AppointmentRepository appointmentRepository;
+
     @Override
     public List<DoctorDTO> getAll() {
+        // pageableDTO qaytarish kerak
         return doctorRepository.findAll().stream()
                 .map(doctorMapper::toDTO).toList();
     }
@@ -181,5 +187,33 @@ public class DoctorServiceImpl implements DoctorService {
         doctorRepository.save(doctor);
     }
 
+
+    @Override
+    public List<LocalTime> getAvailable20MinuteSlots(Long doctorId, LocalDate date) {
+
+        int slotDurationMinutes = 20;
+
+        int dayOfWeak = date.getDayOfWeek().getValue();
+
+        WorkScheduler workScheduler = workSchedulerRepository.findByUserIdAndDayOfWeek(doctorId, dayOfWeak)
+                .orElseThrow(() -> new EntityNotFoundException("Work schedule not found for doctor id: " + doctorId + " on date: " + date, HttpStatus.NOT_FOUND));
+
+        LocalTime startTime = workScheduler.getStartTime();
+        LocalTime endTime = workScheduler.getEndTime();
+
+        List<LocalTime> booked = appointmentRepository.findByDoctorIdAndDateTime(doctorId, date)
+                .stream()
+                .map(appointment -> appointment.getDateTime().toLocalTime())
+                .toList();
+
+        List<LocalTime> slots = new ArrayList<>();
+        for (LocalTime time = startTime; !time.plusMinutes(slotDurationMinutes).isAfter(endTime); time = time.plusMinutes(slotDurationMinutes)) {
+            if (!booked.contains(time)) {
+                slots.add(time);
+            }
+        }
+
+        return slots;
+    }
 
 }

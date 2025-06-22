@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.SpecialityDTO;
-import uz.dev.hmsproject.service.SpecialityServiceImpl;
+import uz.dev.hmsproject.serviceImpl.SpecialityServiceImpl;
 
 import java.util.List;
 
