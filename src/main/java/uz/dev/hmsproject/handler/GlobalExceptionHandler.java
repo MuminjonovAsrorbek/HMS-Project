@@ -25,24 +25,24 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = UserNotFoundException.class)
     public ResponseEntity<ErrorDTO> handle(UserNotFoundException e) {
         ErrorDTO errorDTO = new ErrorDTO(
-                e.getStatus().value(),
-                e.getMessage()
+                e.getMessage(),
+                e.getStatus().value()
         );
         return new ResponseEntity<>(errorDTO, e.getStatus());
     }
     @ExceptionHandler(value = UserAlreadyExistsException.class)
     public ResponseEntity<ErrorDTO> handle(UserAlreadyExistsException e) {
         ErrorDTO errorDTO = new ErrorDTO(
-                e.getStatus().value(),
-                e.getMessage()
+                e.getMessage(),
+                e.getStatus().value()
         );
         return new ResponseEntity<>(errorDTO, e.getStatus());
     }
     @ExceptionHandler(value = UserAlreadyExistsWithUsernameException.class)
     public ResponseEntity<ErrorDTO> handle(UserAlreadyExistsWithUsernameException e) {
         ErrorDTO errorDTO = new ErrorDTO(
-                e.getStatus().value(),
-                e.getMessage()
+                e.getMessage(),
+                e.getStatus().value()
         );
         return new ResponseEntity<>(errorDTO, e.getStatus());
     }
@@ -68,8 +68,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<ErrorDTO> handle(Exception e) {
         ErrorDTO errorDTO = new ErrorDTO(
-                500,
-                "Server error please try again later"
+                "Server error please try again later",
+                500
         );
         return new ResponseEntity<>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
     }

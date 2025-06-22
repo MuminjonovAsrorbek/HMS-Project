@@ -5,6 +5,8 @@ import uz.dev.hmsproject.dto.SpecialityDTO;
 import uz.dev.hmsproject.entity.Speciality;
 import uz.dev.hmsproject.mapper.template.BaseMapper;
 
+import java.util.List;
+
 @Component
 public class SpecialityMapper implements BaseMapper<Speciality, SpecialityDTO> {
 
@@ -21,5 +23,10 @@ public class SpecialityMapper implements BaseMapper<Speciality, SpecialityDTO> {
                 speciality.getId(),
                 speciality.getName()
         );
+    }
+
+    @Override
+    public List<SpecialityDTO> toDTO(List<Speciality> dtos) {
+        return List.of();
     }
 }

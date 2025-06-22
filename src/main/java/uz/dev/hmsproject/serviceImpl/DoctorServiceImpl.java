@@ -1,4 +1,4 @@
-package uz.dev.hmsproject.service;
+package uz.dev.hmsproject.serviceImpl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -76,7 +76,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     public static void updateDoctor(DoctorDTO doctorDTO, Doctor doctor, UserRepository userRepository, SpecialityRepository specialityRepository, RoomRepository roomRepository) {
         User user = userRepository.findById(doctorDTO.getUserId()).orElseThrow(() ->
-                new UserNotFoundException("user not found by id: " + doctorDTO.getUserId(), HttpStatus.NOT_FOUND));
+                new UserNotFoundException(doctorDTO.getUserId(), HttpStatus.NOT_FOUND));
 
         Speciality speciality = specialityRepository.findById(doctorDTO.getSpecialityId()).orElseThrow(() ->
                 new SpecialityNotFoundException("speciality not found by id: " + doctorDTO.getSpecialityId(), HttpStatus.NOT_FOUND));

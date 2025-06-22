@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.RoleDTO;
+import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.service.template.RoleService;
 
 import java.util.List;
@@ -18,8 +19,9 @@ public class RoleController {
     private final RoleService roleService;
 
     @GetMapping
-    public List<RoleDTO> getAll() {
-        return roleService.getAll();
+    public PageableDTO getAll(@RequestParam(value = "page", defaultValue = "0") int page,
+                              @RequestParam(value = "size", defaultValue = "10") int size) {
+        return roleService.getAllPaginated(page, size);
     }
 
     @GetMapping("/{id}")

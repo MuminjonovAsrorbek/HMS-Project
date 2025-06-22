@@ -1,4 +1,4 @@
-package uz.dev.hmsproject.service;
+package uz.dev.hmsproject.serviceImpl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

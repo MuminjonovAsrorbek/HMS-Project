@@ -1,9 +1,14 @@
 package uz.dev.hmsproject.serviceImpl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.RoleDTO;
+import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.entity.Role;
 import uz.dev.hmsproject.exception.RoleAlreadyExistsException;
 import uz.dev.hmsproject.exception.RoleInvalidPermissionsException;
@@ -20,6 +25,28 @@ public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
+
+    @Override
+    public PageableDTO getAllPaginated(Integer page, Integer size) {
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Role> rolesPage = roleRepository.findAll(pageable);
+
+        List<Role> roles = rolesPage.getContent();
+
+        List<RoleDTO> roleDTOS = roleMapper.toDTO(roles);
+
+        return new PageableDTO(
+                rolesPage.getSize(),
+                rolesPage.getTotalElements(),
+                rolesPage.getTotalPages(),
+                !rolesPage.isLast(),
+                !rolesPage.isFirst(),
+                roleDTOS
+        );
+    }
 
     @Override
     public List<RoleDTO> getAll() {

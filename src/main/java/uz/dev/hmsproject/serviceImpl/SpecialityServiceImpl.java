@@ -1,4 +1,4 @@
-package uz.dev.hmsproject.service;
+package uz.dev.hmsproject.serviceImpl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -6,15 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.SpecialityDTO;
 import uz.dev.hmsproject.entity.Speciality;
-import uz.dev.hmsproject.exception.RoomNotFoundException;
 import uz.dev.hmsproject.exception.SpecialityNotFoundException;
 import uz.dev.hmsproject.mapper.SpecialityMapper;
 import uz.dev.hmsproject.repository.SpecialityRepository;
 import uz.dev.hmsproject.service.template.SpecialityService;
 
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
