@@ -65,6 +65,8 @@ public class PatientServiceImpl implements PatientService {
         if (!patientRepository.existsById(id)) {
             throw new PatientNotFoundException("Cannot delete. Patient not found with id: " + id, HttpStatus.BAD_REQUEST);
         }
+
         patientRepository.deleteById(id);
+
     }
 }
