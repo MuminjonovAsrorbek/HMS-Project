@@ -3,10 +3,16 @@ package uz.dev.hmsproject.service;
 import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.RoomDTO;
+import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.entity.Room;
+import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.mapper.RoomMapper;
 import uz.dev.hmsproject.repository.RoomRepository;
@@ -23,11 +29,26 @@ public class RoomServiceImpl implements RoomService {
     private final RoomMapper roomMapper;
 
     @Override
-    public List<RoomDTO> getAll() {
-        return roomRepository.findAll()
-                .stream()
-                .map(roomMapper::toDTO)
-                .toList();
+    public PageableDTO getAll(Integer page, Integer size) {
+
+        Sort sort = Sort.by(AbsLongEntity.Fields.id).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Room> roomPages = roomRepository.findAll(pageable);
+
+        List<Room> rooms = roomPages.getContent();
+
+        List<RoomDTO> roomDTOS = roomMapper.toDTO(rooms);
+
+        return new PageableDTO(
+                roomPages.getSize(),
+                roomPages.getTotalElements(),
+                roomPages.getTotalPages(),
+                !roomPages.isLast(),
+                !roomPages.isFirst(),
+                roomDTOS
+        );
     }
 
     @Override

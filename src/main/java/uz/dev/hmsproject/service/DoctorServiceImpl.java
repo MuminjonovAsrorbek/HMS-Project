@@ -44,6 +44,10 @@ public class DoctorServiceImpl implements DoctorService {
     private final RoomRepository roomRepository;
 
 
+    private final WorkSchedulerRepository workSchedulerRepository;
+
+    private final AppointmentRepository appointmentRepository;
+
     @Override
     public PageableDTO getAllPaginated(Integer page, Integer size) {
 
@@ -67,13 +71,9 @@ public class DoctorServiceImpl implements DoctorService {
         );
     }
 
-    private final WorkSchedulerRepository workSchedulerRepository;
-
-    private final AppointmentRepository appointmentRepository;
-
     @Override
     public List<DoctorDTO> getAll() {
-        // pageableDTO qaytarish kerak
+
         return doctorRepository.findAll().stream()
                 .map(doctorMapper::toDTO).toList();
     }
