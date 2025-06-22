@@ -5,6 +5,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import uz.dev.hmsproject.entity.template.AbsDeleteEntity;
@@ -28,6 +29,7 @@ import java.time.LocalDateTime;
 @Entity
 @SQLDelete(sql = "update appointment set deleted=true where id=?")
 @SQLRestriction(value = "deleted=false")
+@FieldNameConstants
 public class Appointment extends AbsLongEntity implements AbsDeleteEntity {
 
     @ManyToOne

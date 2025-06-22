@@ -10,7 +10,7 @@ import uz.dev.hmsproject.service.template.PriceListService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/price-list")
+@RequestMapping("/api/v1/price-list")
 @RequiredArgsConstructor
 
 public class PriceListController {
