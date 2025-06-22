@@ -5,6 +5,9 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import uz.dev.hmsproject.entity.template.AbsDeleteEntity;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.enums.AppointmentStatus;
 
@@ -23,7 +26,9 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @Entity
-public class Appointment extends AbsLongEntity {
+@SQLDelete(sql = "update appointment set deleted=true where id=?")
+@SQLRestriction(value = "deleted=false")
+public class Appointment extends AbsLongEntity implements AbsDeleteEntity {
 
     @ManyToOne
     private Patient patient;
@@ -33,7 +38,8 @@ public class Appointment extends AbsLongEntity {
 
     private LocalDateTime dateTime;
 
-    private Integer roomId;
+    @ManyToOne
+    private Room room;
 
     private BigDecimal price;
 

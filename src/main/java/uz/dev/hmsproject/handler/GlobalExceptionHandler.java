@@ -1,0 +1,101 @@
+package uz.dev.hmsproject.handler;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import uz.dev.hmsproject.dto.ErrorDTO;
+import uz.dev.hmsproject.dto.FieldErrorDTO;
+import uz.dev.hmsproject.exception.EntityNotFoundException;
+import uz.dev.hmsproject.exception.PasswordIncorrectException;
+import uz.dev.hmsproject.exception.UserAlreadyExistsException;
+import uz.dev.hmsproject.exception.UserAlreadyExistsWithUsernameException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+@RestControllerAdvice(basePackages = "uz.dev.hmsproject")
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(value = EntityNotFoundException.class)
+    public ResponseEntity<ErrorDTO> handle(EntityNotFoundException e) {
+        ErrorDTO errorDTO = new ErrorDTO(
+                e.getStatus().value(),
+                e.getMessage()
+        );
+        return new ResponseEntity<>(errorDTO, e.getStatus());
+    }
+
+    @ExceptionHandler(value = UserAlreadyExistsException.class)
+    public ResponseEntity<ErrorDTO> handle(UserAlreadyExistsException e) {
+        ErrorDTO errorDTO = new ErrorDTO(
+                e.getStatus().value(),
+                e.getMessage()
+        );
+        return new ResponseEntity<>(errorDTO, e.getStatus());
+    }
+
+    @ExceptionHandler(value = UserAlreadyExistsWithUsernameException.class)
+    public ResponseEntity<ErrorDTO> handle(UserAlreadyExistsWithUsernameException e) {
+        ErrorDTO errorDTO = new ErrorDTO(
+                e.getStatus().value(),
+                e.getMessage()
+        );
+        return new ResponseEntity<>(errorDTO, e.getStatus());
+    }
+
+
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorDTO> handle(MethodArgumentNotValidException e) {
+        BindingResult bindingResult = e.getBindingResult();
+
+        List<FieldErrorDTO> fieldErrors = new ArrayList<>();
+
+        for (FieldError fieldError : bindingResult.getFieldErrors()) {
+            String fieldName = fieldError.getField();
+            String message = fieldError.getDefaultMessage();
+            fieldErrors.add(new FieldErrorDTO(fieldName, message));
+        }
+
+        ErrorDTO error = new ErrorDTO(
+                HttpStatus.BAD_REQUEST.value(),
+                "Field not valid",
+                fieldErrors
+        );
+
+        return ResponseEntity
+                .status(400)
+                .body(error);
+    }
+
+    @ExceptionHandler(value = RuntimeException.class)
+    public ResponseEntity<ErrorDTO> handle(RuntimeException e) {
+
+        ErrorDTO error = new ErrorDTO(
+                500,
+                "Internal Server Error: " + e.getMessage()
+        );
+
+        return ResponseEntity
+                .status(500)
+                .body(error);
+    }
+
+    @ExceptionHandler(value = PasswordIncorrectException.class)
+    public ResponseEntity<ErrorDTO> handle(PasswordIncorrectException e) {
+
+        ErrorDTO error = new ErrorDTO(
+                e.getStatus().value(),
+                e.getMessage()
+        );
+
+        return ResponseEntity
+                .status(e.getStatus().value())
+                .body(error);
+    }
+
+}

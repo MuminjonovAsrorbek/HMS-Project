@@ -5,11 +5,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 
-/**
- * Created by: asrorbek
- * DateTime: 6/16/25 11:45
- **/
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,6 +14,7 @@ import lombok.*;
 @Setter
 @ToString
 @MappedSuperclass
+@FieldNameConstants
 public abstract class AbsLongEntity {
 
     @Id
