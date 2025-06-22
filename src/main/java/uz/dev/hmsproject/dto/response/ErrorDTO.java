@@ -18,14 +18,14 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorDTO {
 
-    private int status;
+    private int code;
 
     private String message;
 
     private List<FieldErrorDTO> fieldErrors;
 
     public ErrorDTO(int status, String message) {
-        this.status = status;
+        this.code = status;
         this.message = message;
     }
 
