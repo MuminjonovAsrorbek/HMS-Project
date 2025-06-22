@@ -12,7 +12,6 @@ import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.entity.Role;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.exception.EntityUniqueException;
-import uz.dev.hmsproject.exception.RoleAlreadyExistsException;
 import uz.dev.hmsproject.exception.RoleInvalidPermissionsException;
 import uz.dev.hmsproject.mapper.RoleMapper;
 import uz.dev.hmsproject.repository.RoleRepository;
