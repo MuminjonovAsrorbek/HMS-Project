@@ -25,21 +25,27 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     private final DoctorRepository doctorRepository;
+
     private final DoctorMapper doctorMapper;
+
     private final UserRepository userRepository;
+
     private final SpecialityRepository specialityRepository;
+
     private final RoomRepository roomRepository;
 
     @Override
     public List<DoctorDTO> getAll() {
-       return doctorRepository.findAll().stream()
-               .map(doctorMapper::toDTO).toList();
+        return doctorRepository.findAll().stream()
+                .map(doctorMapper::toDTO).toList();
     }
 
     @Override
     public DoctorDTO getById(Long id) {
+
         Doctor doctor = doctorRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("doctor not found by id: " + id, HttpStatus.NOT_FOUND));
+                new EntityNotFoundException("Doctor not found by id: " + id, HttpStatus.NOT_FOUND));
+
         return doctorMapper.toDTO(doctor);
     }
 
@@ -55,7 +61,7 @@ public class DoctorServiceImpl implements DoctorService {
     public void update(Long id, DoctorDTO doctorDTO) {
 
         Doctor doctor = doctorRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("doctor not found by id: " + id, HttpStatus.NOT_FOUND));
+                new EntityNotFoundException("Doctor not found by id: " + id, HttpStatus.NOT_FOUND));
 
         updateDoctor(doctorDTO, doctor, userRepository, specialityRepository, roomRepository);
 
