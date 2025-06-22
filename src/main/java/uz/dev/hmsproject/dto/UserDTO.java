@@ -1,5 +1,6 @@
 package uz.dev.hmsproject.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,16 +9,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 
-/**
- * DTO for {@link uz.dev.hmsproject.entity.User}
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO implements Serializable {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class UserDTO {
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @NotBlank
@@ -28,11 +27,12 @@ public class UserDTO implements Serializable {
     private String username;
 
     @NotBlank
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Size(min = 8, max = 100)
     private String password;
 
     @NotNull
     private Long roleId;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean isActive = true;
 }
