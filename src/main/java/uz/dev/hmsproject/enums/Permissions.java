@@ -37,6 +37,7 @@ public enum Permissions {
     CREATE_DOCTORS,
     UPDATE_DOCTORS,
     DELETE_DOCTORS,
+    FILTER_DOCTORS,
 
     // WORK SCHEDULES
     VIEW_WORK_SCHEDULES,

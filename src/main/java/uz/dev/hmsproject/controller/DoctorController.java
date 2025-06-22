@@ -7,8 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.DoctorDTO;
+import uz.dev.hmsproject.dto.DoctorFilterDTO;
+import uz.dev.hmsproject.dto.response.DoctorResponseDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.service.template.DoctorService;
+
+import java.util.List;
 
 
 @RestController
@@ -18,12 +22,19 @@ public class DoctorController {
 
     private final DoctorService doctorService;
 
+    @PreAuthorize(value = "hasAuthority('FILTER_DOCTORS')")
+    @GetMapping("/filter")
+    public List<DoctorResponseDTO> filter(@RequestBody @Valid DoctorFilterDTO dto) {
+        return  doctorService.filter(dto);
+    }
+
     @PreAuthorize(value = "hasAuthority('VIEW_DOCTORS')")
     @GetMapping
     public PageableDTO getAll(@RequestParam(value = "page", defaultValue = "0") int page,
                               @RequestParam(value = "size", defaultValue = "10") int size) {
         return doctorService.getAllPaginated(page, size);
     }
+
 
 
     @PreAuthorize(value = "hasAuthority('VIEW_DOCTOR')")

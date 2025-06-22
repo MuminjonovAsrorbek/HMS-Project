@@ -15,6 +15,7 @@ import uz.dev.hmsproject.entity.PriceList;
 import uz.dev.hmsproject.entity.Speciality;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
+import uz.dev.hmsproject.exception.EntityUniqueException;
 import uz.dev.hmsproject.mapper.SpecialityMapper;
 import uz.dev.hmsproject.repository.SpecialityRepository;
 import uz.dev.hmsproject.service.template.SpecialityService;
@@ -43,6 +44,10 @@ public class SpecialityServiceImpl implements SpecialityService {
     @Override
     public void create(SpecialityCreationDTO creationDTO) {
 
+        specialityRepository.findByName(creationDTO.getName()).ifPresent(speciality -> {
+            throw new EntityUniqueException("speciality already exists with name: " + creationDTO.getName(), HttpStatus.CONFLICT);
+        });
+
         Speciality speciality = new Speciality();
         speciality.setName(creationDTO.getName());
 
@@ -62,6 +67,12 @@ public class SpecialityServiceImpl implements SpecialityService {
 
         Speciality speciality = specialityRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("speciality not found by id: " + id, HttpStatus.NOT_FOUND));
+
+        specialityRepository.findByName(specialityDTO.getName())
+                .filter(s -> !s.getId().equals(id))
+                .ifPresent(s -> {
+                    throw new EntityUniqueException("speciality already exists with name: " + specialityDTO.getName(), HttpStatus.CONFLICT);
+                });
 
         speciality.setName(specialityDTO.getName());
 

@@ -2,6 +2,7 @@ package uz.dev.hmsproject.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,6 +30,7 @@ import java.util.List;
 @Table(name = "users")
 @SQLDelete(sql = "update users set deleted=true where id=?")
 @SQLRestriction(value = "deleted=false")
+@FieldNameConstants
 public class User extends AbsLongEntity implements UserDetails, AbsDeleteEntity {
 
     @Column(nullable = false)
