@@ -93,7 +93,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setDoctor(doctor);
         appointment.setAppointmentDateTime(dto.getAppointmentDateTime());
         appointment.setPrice(price);
-        appointment.setRoom(doctor.getRoom());
+        appointment.setRoomId(doctor.getRoom().getId());
         appointment.setStatus(AppointmentStatus.SCHEDULED);
         appointment.setCreatedBy(currentUser);
 
