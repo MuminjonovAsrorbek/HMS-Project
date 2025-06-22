@@ -1,6 +1,8 @@
 package uz.dev.hmsproject.serviceImpl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.UserDTO;
@@ -22,6 +24,12 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     private final UserMapperImpl userMapper;
+
+    @Override
+    public Page<UserDTO> getAllPaginated(Pageable pageable) {
+        Page<User> usersPage = userRepository.findAll(pageable);
+        return usersPage.map(userMapper::toDTO);
+    }
 
     @Override
     public List<UserDTO> getAll() {
