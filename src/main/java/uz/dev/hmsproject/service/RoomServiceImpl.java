@@ -1,5 +1,6 @@
 package uz.dev.hmsproject.service;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,14 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     @Override
     public void create(RoomDTO roomDTO) {
-        Room room = roomMapper.toEntity(roomDTO);
+
+        roomRepository.findByNumber(roomDTO.getNumber()).ifPresent(room -> {
+            throw new EntityExistsException("room already exists with number: " + roomDTO.getNumber());
+        });
+
+        Room room = new Room(
+                roomDTO.getNumber()
+        );
         roomRepository.save(room);
 
     }
@@ -51,6 +59,12 @@ public class RoomServiceImpl implements RoomService {
 
         Room room = roomRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("room not found by id: " + id, HttpStatus.NOT_FOUND));
+
+        roomRepository.findByNumber(roomDTO.getNumber())
+                .filter(existing -> !existing.getId().equals(id))
+                .ifPresent(existing -> {
+                    throw new EntityExistsException("room already exists with number: " + roomDTO.getNumber());
+                });
 
         room.setNumber(roomDTO.getNumber());
 
