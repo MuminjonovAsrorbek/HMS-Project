@@ -4,10 +4,6 @@ import uz.dev.hmsproject.exception.RoomNotFoundException;
 
 import java.util.List;
 
-/**
- * Created by: asrorbek
- * DateTime: 6/17/25 13:30
- **/
 
 public interface BaseService<T, ID> {
 

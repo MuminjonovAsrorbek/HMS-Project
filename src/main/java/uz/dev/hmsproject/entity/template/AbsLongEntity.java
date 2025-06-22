@@ -6,10 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 
-/**
- * Created by: asrorbek
- * DateTime: 6/16/25 11:45
- **/
+
 
 @AllArgsConstructor
 @NoArgsConstructor
