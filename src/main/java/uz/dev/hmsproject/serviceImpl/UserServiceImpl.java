@@ -18,19 +18,22 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
-    private final UserMapperImpl userMapper;
 
-    // User classi ustidagi to'liq crud va namunaviy crudlar shu yerda bo'lishi kerak
+    private final UserRepository userRepository;
+
+    private final UserMapperImpl userMapper;
 
     @Override
     public List<UserDTO> getAll() {
+
         List<User> users = userRepository.findAll();
+
         return userMapper.toDTO(users);
     }
 
     @Override
     public UserDTO getById(Long id) {
+
         return userMapper.toDTO(userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id, HttpStatus.NOT_FOUND)));
     }
