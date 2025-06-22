@@ -83,5 +83,20 @@ public class GlobalHandler {
         return new ResponseEntity<>(errorDTO, e.getStatus());
     }
 
+    @ExceptionHandler(RoleAlreadyExistsException.class)
+    public ResponseEntity<ErrorDTO> handleRoleAlreadyExists(RoleAlreadyExistsException e) {
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMessage(e.getMessage());
+        errorDTO.setStatusCode(e.getStatus().value());
+        return new ResponseEntity<>(errorDTO, e.getStatus());
+    }
+
+    @ExceptionHandler(RoleInvalidPermissionsException.class)
+    public ResponseEntity<ErrorDTO> handleRoleInvalidPermissions(RoleInvalidPermissionsException e) {
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMessage(e.getMessage());
+        errorDTO.setStatusCode(e.getStatus().value());
+        return new ResponseEntity<>(errorDTO, e.getStatus());
+    }
 
 }

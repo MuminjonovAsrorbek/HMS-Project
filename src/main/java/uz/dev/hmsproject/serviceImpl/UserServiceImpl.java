@@ -59,9 +59,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> getAll() {
-
         List<User> users = userRepository.findAll();
-
         return userMapper.toDTO(users);
     }
 
@@ -127,7 +125,8 @@ public class UserServiceImpl implements UserService {
         if (optionalUser.isEmpty()) {
             throw new UserNotFoundException(id, HttpStatus.CONFLICT);
         }
-        userRepository.deleteById(optionalUser.get().getId());
+        User user = optionalUser.get();
+        userRepository.delete(user);
     }
 
 } 

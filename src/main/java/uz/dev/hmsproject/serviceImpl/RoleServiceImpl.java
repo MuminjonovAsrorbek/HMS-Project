@@ -1,15 +1,18 @@
 package uz.dev.hmsproject.serviceImpl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.RoleDTO;
 import uz.dev.hmsproject.entity.Role;
+import uz.dev.hmsproject.exception.RoleAlreadyExistsException;
+import uz.dev.hmsproject.exception.RoleInvalidPermissionsException;
+import uz.dev.hmsproject.exception.RoleIsNotFoundException;
 import uz.dev.hmsproject.mapper.RoleMapper;
 import uz.dev.hmsproject.repository.RoleRepository;
 import uz.dev.hmsproject.service.template.RoleService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,35 +23,53 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<RoleDTO> getAll() {
-        return roleRepository.findAll().stream()
-                .map(roleMapper::toDTO)
-                .collect(Collectors.toList());
+        return roleMapper.toDTO(roleRepository.findAll());
     }
 
     @Override
     public RoleDTO getById(Long id) {
-        return roleRepository.findById(id)
-                .map(roleMapper::toDTO)
-                .orElse(null);
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> new RoleIsNotFoundException("Role not found with id: " + id, HttpStatus.NOT_FOUND));
+        return roleMapper.toDTO(role);
     }
 
     @Override
     public void create(RoleDTO roleDTO) {
+        if (roleRepository.existsByName(roleDTO.getName())) {
+            throw new RoleAlreadyExistsException("Role already exists with name: " + roleDTO.getName(), HttpStatus.CONFLICT);
+        }
+
+        if (roleDTO.getPermissions() == null || roleDTO.getPermissions().isEmpty()) {
+            throw new RoleInvalidPermissionsException("Permissions cannot be null or empty", HttpStatus.BAD_REQUEST);
+        }
+
         Role role = roleMapper.toEntity(roleDTO);
         roleRepository.save(role);
     }
 
     @Override
     public void update(Long id, RoleDTO roleDTO) {
-        if (roleRepository.existsById(id)) {
-            Role role = roleMapper.toEntity(roleDTO);
-            role.setId(id);
-            roleRepository.save(role);
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> new RoleIsNotFoundException("Role not found with id: " + id, HttpStatus.NOT_FOUND));
+
+        if (roleRepository.existsByName(roleDTO.getName()) && !role.getName().equals(roleDTO.getName())) {
+            throw new RoleAlreadyExistsException("Role already exists with name: " + roleDTO.getName(), HttpStatus.CONFLICT);
         }
+
+        if (roleDTO.getPermissions() == null || roleDTO.getPermissions().isEmpty()) {
+            throw new RoleInvalidPermissionsException("Permissions cannot be null or empty", HttpStatus.BAD_REQUEST);
+        }
+
+        Role updatedRole = roleMapper.toEntity(roleDTO);
+        updatedRole.setId(id);
+        roleRepository.save(updatedRole);
     }
 
     @Override
     public void delete(Long id) {
+        if (!roleRepository.existsById(id)) {
+            throw new RoleIsNotFoundException("Role not found with id: " + id, HttpStatus.NOT_FOUND);
+        }
         roleRepository.deleteById(id);
     }
 }
