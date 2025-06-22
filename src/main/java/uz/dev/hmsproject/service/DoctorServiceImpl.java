@@ -29,7 +29,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class DoctorServiceImpl implements DoctorService{
+public class DoctorServiceImpl implements DoctorService {
 
 
     private final DoctorRepository doctorRepository;
@@ -98,7 +98,6 @@ public class DoctorServiceImpl implements DoctorService{
                         doctorDTO.getRoomId(), HttpStatus.NOT_FOUND));
 
 
-
         doctorRepository.findByUser(user).ifPresent(doctor -> {
             throw new EntityUniqueException("Doctor already exists for user id: " +
                     doctorDTO.getUserId(), HttpStatus.CONFLICT);
@@ -127,7 +126,7 @@ public class DoctorServiceImpl implements DoctorService{
         Doctor doctor = doctorRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Doctor not found by id: " + id, HttpStatus.NOT_FOUND));
 
-        updateDoctor(doctorDTO, doctor, userRepository, specialityRepository, roomRepository,doctorRepository);
+        updateDoctor(doctorDTO, doctor, userRepository, specialityRepository, roomRepository, doctorRepository);
 
     }
 
@@ -156,7 +155,7 @@ public class DoctorServiceImpl implements DoctorService{
                 .filter(existing -> !existing.getId().equals(doctor.getId()))
                 .ifPresent(d -> {
                     throw new EntityUniqueException("Another doctor already exists for user id: " +
-                            doctorDTO.getUserId(),HttpStatus.CONFLICT);
+                            doctorDTO.getUserId(), HttpStatus.CONFLICT);
                 });
 
 
@@ -164,7 +163,7 @@ public class DoctorServiceImpl implements DoctorService{
                 .filter(existing -> !existing.getId().equals(doctor.getId()))
                 .ifPresent(d -> {
                     throw new EntityUniqueException("Another doctor already exists for speciality id: " +
-                            doctorDTO.getSpecialityId(),HttpStatus.CONFLICT);
+                            doctorDTO.getSpecialityId(), HttpStatus.CONFLICT);
                 });
 
 
@@ -172,7 +171,7 @@ public class DoctorServiceImpl implements DoctorService{
                 .filter(existing -> !existing.getId().equals(doctor.getId()))
                 .ifPresent(d -> {
                     throw new EntityUniqueException("Another doctor already exists for room id: " +
-                            doctorDTO.getRoomId(),HttpStatus.CONFLICT);
+                            doctorDTO.getRoomId(), HttpStatus.CONFLICT);
                 });
 
 
