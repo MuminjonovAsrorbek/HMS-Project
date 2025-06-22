@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class PriceServiceImpl implements PriceListService {
+public class PriceListServiceImpl implements PriceListService {
 
     private final PriceListRepository priceListRepository;
     private final PriceListMapper priceListMapper;
@@ -43,15 +43,4 @@ public class PriceServiceImpl implements PriceListService {
         priceListRepository.save(priceList);
     }
 
-    @Override
-    public void create(PriceListDTO dto) {
-    }
-
-    @Override
-    public void update(Long aLong, PriceListDTO dto) {
-    }
-
-    @Override
-    public void delete(Long aLong) {
-    }
 }
