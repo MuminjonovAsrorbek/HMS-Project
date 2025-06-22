@@ -4,11 +4,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.RoomDTO;
+import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.service.template.RoomService;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/room")
@@ -17,24 +18,29 @@ public class RoomController {
 
     private final RoomService roomService;
 
+    @PreAuthorize(value = "hasAuthority('VIEW_ROOMS')")
     @GetMapping
-    public List<RoomDTO> getAll() {
-        return roomService.getAll();
+    public PageableDTO getAll(@RequestParam(value = "page", defaultValue = "0") int page,
+                              @RequestParam(value = "size", defaultValue = "10") int size) {
+        return roomService.getAll(page,size);
 
     }
 
+    @PreAuthorize(value = "hasAuthority('VIEW_ROOM')")
     @GetMapping("/{id}")
     public RoomDTO getById(@PathVariable("id") Long id) {
         return roomService.getById(id);
 
     }
 
+    @PreAuthorize(value = "hasAuthority('CREATE_ROOMS')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid RoomDTO roomDTO) {
         roomService.create(roomDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PreAuthorize(value = "hasAuthority('UPDATE_ROOMS')")
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id,
                                     @RequestBody @Valid RoomDTO roomDTO) {
@@ -42,6 +48,7 @@ public class RoomController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize(value = "hasAuthority('DELETE_ROOMS')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         roomService.delete(id);

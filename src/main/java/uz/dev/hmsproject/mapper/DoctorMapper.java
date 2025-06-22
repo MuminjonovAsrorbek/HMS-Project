@@ -7,6 +7,7 @@ import uz.dev.hmsproject.entity.Doctor;
 import uz.dev.hmsproject.mapper.template.BaseMapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class DoctorMapper implements BaseMapper<Doctor, DoctorDTO> {
 
     @Override
     public List<DoctorDTO> toDTO(List<Doctor> dtos) {
-        return List.of();
+        return dtos.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
 

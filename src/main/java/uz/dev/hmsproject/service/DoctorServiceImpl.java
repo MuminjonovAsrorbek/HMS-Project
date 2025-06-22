@@ -1,5 +1,7 @@
 package uz.dev.hmsproject.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,6 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.DoctorDTO;
+import uz.dev.hmsproject.dto.DoctorFilterDTO;
+import uz.dev.hmsproject.dto.response.DoctorResponseDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.entity.*;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
@@ -38,6 +42,12 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final RoomRepository roomRepository;
 
+    private final EntityManager entityManager;
+
+
+    private final WorkSchedulerRepository workSchedulerRepository;
+
+    private final AppointmentRepository appointmentRepository;
 
     @Override
     public PageableDTO getAllPaginated(Integer page, Integer size) {
@@ -62,16 +72,56 @@ public class DoctorServiceImpl implements DoctorService {
         );
     }
 
-    private final WorkSchedulerRepository workSchedulerRepository;
-
-    private final AppointmentRepository appointmentRepository;
-
     @Override
-    public List<DoctorDTO> getAll() {
-        // pageableDTO qaytarish kerak
-        return doctorRepository.findAll().stream()
-                .map(doctorMapper::toDTO).toList();
+    public List<DoctorResponseDTO> filter(DoctorFilterDTO filterDTO) {
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Doctor> criteriaQuery = criteriaBuilder.createQuery(Doctor.class);
+        Root<Doctor> root = criteriaQuery.from(Doctor.class);
+
+        Join<Object, Object> userJoin = root.join(Doctor.Fields.user);
+        Join<Object, Object> specialityJoin = root.join(Doctor.Fields.speciality);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (filterDTO.getFullName() != null && !filterDTO.getFullName().isBlank()) {
+            predicates.add(criteriaBuilder.like(
+                    criteriaBuilder.lower(userJoin.get(User.Fields.fullName)),
+                    "%" + filterDTO.getFullName().toLowerCase() + "%"
+            ));
+        }
+
+        if (filterDTO.getUsername() != null && !filterDTO.getUsername().isBlank()) {
+            predicates.add(criteriaBuilder.like(
+                    criteriaBuilder.lower(userJoin.get(User.Fields.username)),
+                    "%" + filterDTO.getUsername().toLowerCase() + "%"
+            ));
+        }
+
+        if (filterDTO.getSpecialityName() != null && !filterDTO.getSpecialityName().isBlank()) {
+            predicates.add(criteriaBuilder.like(
+                    criteriaBuilder.lower(specialityJoin.get(Speciality.Fields.name)),
+                    "%" + filterDTO.getSpecialityName().toLowerCase() + "%"
+            ));
+        }
+
+        criteriaQuery.where(predicates.toArray(new Predicate[0]));
+
+        List<Doctor> doctors = entityManager.createQuery(criteriaQuery).getResultList();
+
+        return doctors.stream().map(doctor -> {
+            DoctorResponseDTO dto = new DoctorResponseDTO();
+            dto.setId(doctor.getId());
+            dto.setUserFullName(doctor.getUser().getFullName());
+            dto.setUserUsername(doctor.getUser().getUsername());
+            dto.setSpecialityName(doctor.getSpeciality().getName());
+            dto.setSpecialityPriceList(doctor.getSpeciality().getPriceList());
+            dto.setRoomNumber(doctor.getRoom().getNumber());
+            return dto;
+        }).toList();
     }
+
+
 
     @Override
     public DoctorDTO getById(Long id) {
