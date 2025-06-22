@@ -8,28 +8,28 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import uz.dev.hmsproject.dto.ErrorDTO;
-import uz.dev.hmsproject.dto.ErrorFieldsKeeperDTO;
 import uz.dev.hmsproject.dto.FieldErrorDTO;
+import uz.dev.hmsproject.exception.EntityNotFoundException;
+import uz.dev.hmsproject.exception.PasswordIncorrectException;
 import uz.dev.hmsproject.exception.UserAlreadyExistsException;
 import uz.dev.hmsproject.exception.UserAlreadyExistsWithUsernameException;
-import uz.dev.hmsproject.exception.UserNotFoundException;
-
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-@RestControllerAdvice(basePackages = "uz.pdp")
+@RestControllerAdvice(basePackages = "uz.dev.hmsproject")
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = UserNotFoundException.class)
-    public ResponseEntity<ErrorDTO> handle(UserNotFoundException e) {
+    @ExceptionHandler(value = EntityNotFoundException.class)
+    public ResponseEntity<ErrorDTO> handle(EntityNotFoundException e) {
         ErrorDTO errorDTO = new ErrorDTO(
                 e.getStatus().value(),
                 e.getMessage()
         );
         return new ResponseEntity<>(errorDTO, e.getStatus());
     }
+
     @ExceptionHandler(value = UserAlreadyExistsException.class)
     public ResponseEntity<ErrorDTO> handle(UserAlreadyExistsException e) {
         ErrorDTO errorDTO = new ErrorDTO(
@@ -38,6 +38,7 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorDTO, e.getStatus());
     }
+
     @ExceptionHandler(value = UserAlreadyExistsWithUsernameException.class)
     public ResponseEntity<ErrorDTO> handle(UserAlreadyExistsWithUsernameException e) {
         ErrorDTO errorDTO = new ErrorDTO(
@@ -49,29 +50,52 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorFieldsKeeperDTO> handle(MethodArgumentNotValidException e) {
+    public ResponseEntity<ErrorDTO> handle(MethodArgumentNotValidException e) {
         BindingResult bindingResult = e.getBindingResult();
+
         List<FieldErrorDTO> fieldErrors = new ArrayList<>();
+
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
             String fieldName = fieldError.getField();
             String message = fieldError.getDefaultMessage();
             fieldErrors.add(new FieldErrorDTO(fieldName, message));
         }
-        ErrorFieldsKeeperDTO errorDTO = new ErrorFieldsKeeperDTO(
-                400,
-                "field not valid",
+
+        ErrorDTO error = new ErrorDTO(
+                HttpStatus.BAD_REQUEST.value(),
+                "Field not valid",
                 fieldErrors
         );
-        return new ResponseEntity<>(errorDTO, HttpStatus.BAD_REQUEST);
+
+        return ResponseEntity
+                .status(400)
+                .body(error);
     }
 
-    @ExceptionHandler(value = Exception.class)
-    public ResponseEntity<ErrorDTO> handle(Exception e) {
-        ErrorDTO errorDTO = new ErrorDTO(
+    @ExceptionHandler(value = RuntimeException.class)
+    public ResponseEntity<ErrorDTO> handle(RuntimeException e) {
+
+        ErrorDTO error = new ErrorDTO(
                 500,
-                "Server error please try again later"
+                "Internal Server Error: " + e.getMessage()
         );
-        return new ResponseEntity<>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        return ResponseEntity
+                .status(500)
+                .body(error);
+    }
+
+    @ExceptionHandler(value = PasswordIncorrectException.class)
+    public ResponseEntity<ErrorDTO> handle(PasswordIncorrectException e) {
+
+        ErrorDTO error = new ErrorDTO(
+                e.getStatus().value(),
+                e.getMessage()
+        );
+
+        return ResponseEntity
+                .status(e.getStatus().value())
+                .body(error);
     }
 
 }

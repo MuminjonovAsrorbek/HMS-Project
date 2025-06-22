@@ -1,7 +1,5 @@
 package uz.dev.hmsproject.service.template;
 
-import uz.dev.hmsproject.exception.RoomNotFoundException;
-
 import java.util.List;
 
 
