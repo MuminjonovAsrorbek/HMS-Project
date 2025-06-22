@@ -18,7 +18,6 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 @Entity
 public class Patient extends AbsLongEntity {
 
@@ -36,4 +35,6 @@ public class Patient extends AbsLongEntity {
 
     @CreationTimestamp
     private Timestamp createdAt;
+
+
 }

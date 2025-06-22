@@ -23,4 +23,5 @@ public abstract class AbsLongEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
 }
