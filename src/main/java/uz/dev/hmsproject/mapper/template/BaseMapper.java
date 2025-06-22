@@ -1,9 +1,7 @@
 package uz.dev.hmsproject.mapper.template;
 
-/**
- * Created by: asrorbek
- * DateTime: 6/17/25 15:05
- **/
+
+import java.util.List;
 
 public interface BaseMapper<T, R> {
 
@@ -11,4 +9,5 @@ public interface BaseMapper<T, R> {
 
     R toDTO(T t);
 
+    List<R> toDTO(List<T> dtos);
 }

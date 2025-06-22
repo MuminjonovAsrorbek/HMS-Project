@@ -4,18 +4,15 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uz.dev.hmsproject.enums.Permission;
+import uz.dev.hmsproject.enums.Permissions;
 
-import java.io.Serializable;
 import java.util.List;
 
-/**
- * DTO for {@link uz.dev.hmsproject.entity.Role}
- */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleDTO implements Serializable {
+public class RoleDTO {
 
     private Long id;
 
@@ -23,5 +20,5 @@ public class RoleDTO implements Serializable {
 
     private String name;
 
-    private List<Permission> permissions;
+    private List<Permissions> permissions;
 }
