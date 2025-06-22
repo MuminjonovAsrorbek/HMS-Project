@@ -1,16 +1,18 @@
 package uz.dev.hmsproject.mapper;
 
 import org.springframework.stereotype.Component;
-import uz.dev.hmsproject.dto.PriceListDto;
+import uz.dev.hmsproject.dto.PriceListDTO;
 import uz.dev.hmsproject.entity.PriceList;
 import uz.dev.hmsproject.mapper.template.BaseMapper;
 
+import java.util.List;
+
 @Component
-public class PriceListMapper implements BaseMapper<PriceList, PriceListDto> {
+public class PriceListMapper implements BaseMapper<PriceList, PriceListDTO> {
 
     @Override
-    public PriceListDto toDTO(PriceList priceList) {
-        PriceListDto dto = new PriceListDto();
+    public PriceListDTO toDTO(PriceList priceList) {
+        PriceListDTO dto = new PriceListDTO();
         dto.setId(priceList.getId());
         dto.setSpecialityId(priceList.getSpeciality().getId());
         dto.setPrice(priceList.getPrice());
@@ -19,7 +21,12 @@ public class PriceListMapper implements BaseMapper<PriceList, PriceListDto> {
     }
 
     @Override
-    public PriceList toEntity(PriceListDto priceListDto) {
+    public List<PriceListDTO> toDTO(List<PriceList> dtos) {
+        return List.of();
+    }
+
+    @Override
+    public PriceList toEntity(PriceListDTO priceListDto) {
         return null;
     }
 }
