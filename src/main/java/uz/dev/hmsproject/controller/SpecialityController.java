@@ -10,7 +10,6 @@ import uz.dev.hmsproject.dto.SpecialityCreationDTO;
 import uz.dev.hmsproject.dto.SpecialityDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.service.SpecialityServiceImpl;
-import uz.dev.hmsproject.service.SpecialityServiceImpl;
 
 
 @RestController
@@ -26,9 +25,8 @@ public class SpecialityController {
     public PageableDTO getAll(@RequestParam(value = "page", defaultValue = "0") int page,
                               @RequestParam(value = "size", defaultValue = "10") int size) {
         return specialityService.getAllByPage(page, size);
-    public List<SpecialityDTO> getAll() {
-        return specialityService.getAll();
     }
+
 
     @PreAuthorize(value = "hasAuthority('VIEW_SPECIALTY')")
     @GetMapping("/{id}")
@@ -39,7 +37,6 @@ public class SpecialityController {
     @PreAuthorize(value = "hasAuthority('CREATE_SPECIALTIES')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid SpecialityCreationDTO specialityDTO){
-    public ResponseEntity<?> create(@RequestBody @Valid SpecialityDTO specialityDTO) {
         specialityService.create(specialityDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
