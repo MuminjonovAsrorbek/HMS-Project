@@ -10,4 +10,10 @@ public enum Permissions {
     DELETE_USERS,
     VIEW_USER,
 
+    VIEW_ROLES,
+    CREATE_ROLES,
+    UPDATE_ROLES,
+    DELETE_ROLES,
+    VIEW_ROLE
+
 }
