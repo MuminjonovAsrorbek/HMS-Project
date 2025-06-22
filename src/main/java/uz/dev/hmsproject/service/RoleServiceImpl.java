@@ -11,6 +11,7 @@ import uz.dev.hmsproject.dto.RoleDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.entity.Role;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
+import uz.dev.hmsproject.exception.EntityUniqueException;
 import uz.dev.hmsproject.exception.RoleAlreadyExistsException;
 import uz.dev.hmsproject.exception.RoleInvalidPermissionsException;
 import uz.dev.hmsproject.mapper.RoleMapper;
@@ -64,7 +65,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void create(RoleDTO roleDTO) {
         if (roleRepository.existsByName(roleDTO.getName())) {
-            throw new RoleAlreadyExistsException("Role already exists with name: " + roleDTO.getName(), HttpStatus.CONFLICT);
+            throw new EntityUniqueException("Role already exists with name: " + roleDTO.getName(), HttpStatus.CONFLICT);
         }
 
         if (roleDTO.getPermissions() == null || roleDTO.getPermissions().isEmpty()) {
@@ -81,7 +82,7 @@ public class RoleServiceImpl implements RoleService {
                 .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + id, HttpStatus.NOT_FOUND));
 
         if (roleRepository.existsByName(roleDTO.getName()) && !role.getName().equals(roleDTO.getName())) {
-            throw new RoleAlreadyExistsException("Role already exists with name: " + roleDTO.getName(), HttpStatus.CONFLICT);
+            throw new EntityUniqueException("Role already exists with name: " + roleDTO.getName(), HttpStatus.CONFLICT);
         }
 
         if (roleDTO.getPermissions() == null || roleDTO.getPermissions().isEmpty()) {
