@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.RoomDTO;
 import uz.dev.hmsproject.entity.Room;
-import uz.dev.hmsproject.exception.RoomNotFoundException;
+import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.mapper.RoomMapper;
 import uz.dev.hmsproject.repository.RoomRepository;
 import uz.dev.hmsproject.service.template.RoomService;
@@ -32,7 +32,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomDTO getById(Long id)  {
         Room room = roomRepository.findById(id).orElseThrow(() ->
-                new RoomNotFoundException("room not found by id: " + id, HttpStatus.NOT_FOUND));
+                new EntityNotFoundException("room not found by id: " + id, HttpStatus.NOT_FOUND));
 
         return roomMapper.toDTO(room);
     }
@@ -50,7 +50,7 @@ public class RoomServiceImpl implements RoomService {
     public void update(Long id, RoomDTO roomDTO) {
 
         Room room = roomRepository.findById(id).orElseThrow(() ->
-                new RoomNotFoundException("room not found by id: " + id, HttpStatus.NOT_FOUND));
+                new EntityNotFoundException("room not found by id: " + id, HttpStatus.NOT_FOUND));
 
         room.setNumber(roomDTO.getNumber());
 
@@ -62,7 +62,7 @@ public class RoomServiceImpl implements RoomService {
     public void delete(Long id) {
 
         Room room = roomRepository.findById(id).orElseThrow(() ->
-                new RoomNotFoundException("room not found by id: " + id, HttpStatus.NOT_FOUND));
+                new EntityNotFoundException("room not found by id: " + id, HttpStatus.NOT_FOUND));
 
         roomRepository.delete(room);
 

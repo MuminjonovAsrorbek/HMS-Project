@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Created by: asrorbek
+ * DateTime: 6/16/25 11:44
+ **/
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -45,5 +49,4 @@ public class User extends AbsLongEntity implements UserDetails {
         }
         return authorities;
     }
-    // to - do => Shu yerga security qismi ulanadi va User classi implement qiladi UserDetails classidan
 }
