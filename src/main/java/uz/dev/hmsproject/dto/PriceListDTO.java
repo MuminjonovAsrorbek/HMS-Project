@@ -3,7 +3,6 @@ package uz.dev.hmsproject.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uz.dev.hmsproject.entity.PriceList;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -12,7 +11,7 @@ import java.sql.Timestamp;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PriceListDto implements Serializable {
+public class PriceListDTO implements Serializable {
 
     private Long id;
 
