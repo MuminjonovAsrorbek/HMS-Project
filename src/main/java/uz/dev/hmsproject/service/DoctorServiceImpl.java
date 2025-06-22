@@ -60,7 +60,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         List<Doctor> doctors = doctorsPage.getContent();
 
-        List<DoctorDTO> doctorDTOS = doctorMapper.toDTO(doctors);
+        List<DoctorResponseDTO> doctorDTOS = doctorMapper.toDTO(doctors);
 
         return new PageableDTO(
                 doctorsPage.getSize(),
@@ -109,18 +109,8 @@ public class DoctorServiceImpl implements DoctorService {
 
         List<Doctor> doctors = entityManager.createQuery(criteriaQuery).getResultList();
 
-        return doctors.stream().map(doctor -> {
-            DoctorResponseDTO dto = new DoctorResponseDTO();
-            dto.setId(doctor.getId());
-            dto.setUserFullName(doctor.getUser().getFullName());
-            dto.setUserUsername(doctor.getUser().getUsername());
-            dto.setSpecialityName(doctor.getSpeciality().getName());
-            dto.setSpecialityPriceList(doctor.getSpeciality().getPriceList());
-            dto.setRoomNumber(doctor.getRoom().getNumber());
-            return dto;
-        }).toList();
+        return doctorMapper.toDTO(doctors);
     }
-
 
 
     @Override

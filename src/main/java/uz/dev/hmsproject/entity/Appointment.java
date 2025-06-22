@@ -6,7 +6,6 @@ import lombok.experimental.FieldNameConstants;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import uz.dev.hmsproject.entity.template.AbsDeleteEntity;
-import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.enums.AppointmentStatus;
 
 import java.math.BigDecimal;
@@ -27,7 +26,7 @@ import java.time.LocalDateTime;
 @SQLDelete(sql = "update appointment set deleted=true where id=?")
 @SQLRestriction(value = "deleted=false")
 @FieldNameConstants
-public class Appointment extends AbsLongEntity implements AbsDeleteEntity {
+public class Appointment extends AbsDeleteEntity {
 
     @ManyToOne
     @JoinColumn(nullable = false)

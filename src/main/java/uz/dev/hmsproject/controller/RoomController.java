@@ -2,7 +2,6 @@ package uz.dev.hmsproject.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +21,7 @@ public class RoomController {
     @GetMapping
     public PageableDTO getAll(@RequestParam(value = "page", defaultValue = "0") int page,
                               @RequestParam(value = "size", defaultValue = "10") int size) {
-        return roomService.getAll(page,size);
+        return roomService.getAll(page, size);
 
     }
 
@@ -36,8 +35,10 @@ public class RoomController {
     @PreAuthorize(value = "hasAuthority('CREATE_ROOMS')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid RoomDTO roomDTO) {
+
         roomService.create(roomDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+
+        return ResponseEntity.ok("Room created successfully");
     }
 
     @PreAuthorize(value = "hasAuthority('UPDATE_ROOMS')")
@@ -45,13 +46,13 @@ public class RoomController {
     public ResponseEntity<?> update(@PathVariable("id") Long id,
                                     @RequestBody @Valid RoomDTO roomDTO) {
         roomService.update(id, roomDTO);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Room updated successfully");
     }
 
     @PreAuthorize(value = "hasAuthority('DELETE_ROOMS')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         roomService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Room deleted successfully");
     }
 }

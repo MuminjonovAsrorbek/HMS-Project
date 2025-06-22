@@ -3,24 +3,18 @@ package uz.dev.hmsproject.mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import uz.dev.hmsproject.dto.DoctorDTO;
+import uz.dev.hmsproject.dto.response.DoctorResponseDTO;
 import uz.dev.hmsproject.entity.Doctor;
-import uz.dev.hmsproject.mapper.template.BaseMapper;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class DoctorMapper implements BaseMapper<Doctor, DoctorDTO> {
+public class DoctorMapper {
 
-    @Override
-    public Doctor toEntity(DoctorDTO doctorDTO) {
+    private final PriceListMapper priceListMapper;
 
-     return null;
 
-    }
-
-    @Override
     public DoctorDTO toDTO(Doctor doctor) {
 
         return new DoctorDTO(
@@ -31,10 +25,19 @@ public class DoctorMapper implements BaseMapper<Doctor, DoctorDTO> {
         );
     }
 
-    @Override
-    public List<DoctorDTO> toDTO(List<Doctor> dtos) {
-        return dtos.stream().map(this::toDTO).collect(Collectors.toList());
-    }
+    public List<DoctorResponseDTO> toDTO(List<Doctor> doctors) {
 
+        return doctors.stream().map(
+                doctor -> new DoctorResponseDTO(
+                        doctor.getId(),
+                        doctor.getUser().getFullName(),
+                        doctor.getUser().getUsername(),
+                        doctor.getSpeciality().getName(),
+                        priceListMapper.toDTO(doctor.getSpeciality().getPriceList()),
+                        doctor.getRoom().getNumber()
+                )
+        ).toList();
+
+    }
 
 }

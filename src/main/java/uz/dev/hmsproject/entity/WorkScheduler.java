@@ -6,7 +6,6 @@ import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import uz.dev.hmsproject.entity.template.AbsDeleteEntity;
-import uz.dev.hmsproject.entity.template.AbsLongEntity;
 
 import java.time.LocalTime;
 
@@ -23,7 +22,7 @@ import java.time.LocalTime;
 @Entity
 @SQLDelete(sql = "update workscheduler set deleted=true where id=?")
 @SQLRestriction(value = "deleted=false")
-public class WorkScheduler extends AbsLongEntity implements AbsDeleteEntity {
+public class WorkScheduler extends AbsDeleteEntity {
 
     @ManyToOne
     private User user;

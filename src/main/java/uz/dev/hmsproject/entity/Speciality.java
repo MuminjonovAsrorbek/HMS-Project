@@ -1,12 +1,14 @@
 package uz.dev.hmsproject.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import uz.dev.hmsproject.entity.template.AbsDeleteEntity;
-import uz.dev.hmsproject.entity.template.AbsLongEntity;
 
 /**
  * Created by: asrorbek
@@ -22,7 +24,7 @@ import uz.dev.hmsproject.entity.template.AbsLongEntity;
 @SQLDelete(sql = "update speciality set deleted=true where id=?")
 @SQLRestriction(value = "deleted=false")
 @FieldNameConstants
-public class Speciality extends AbsLongEntity implements AbsDeleteEntity {
+public class Speciality extends AbsDeleteEntity {
 
     @Column(nullable = false, unique = true)
     private String name;

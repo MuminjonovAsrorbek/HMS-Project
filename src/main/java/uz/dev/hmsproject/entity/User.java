@@ -9,7 +9,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import uz.dev.hmsproject.entity.template.AbsDeleteEntity;
-import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.enums.Permissions;
 
 import java.util.ArrayList;
@@ -31,7 +30,7 @@ import java.util.List;
 @SQLDelete(sql = "update users set deleted=true where id=?")
 @SQLRestriction(value = "deleted=false")
 @FieldNameConstants
-public class User extends AbsLongEntity implements UserDetails, AbsDeleteEntity {
+public class User extends AbsDeleteEntity implements UserDetails {
 
     @Column(nullable = false)
     private String fullName;

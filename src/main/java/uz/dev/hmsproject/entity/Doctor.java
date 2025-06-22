@@ -8,7 +8,6 @@ import lombok.experimental.FieldNameConstants;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import uz.dev.hmsproject.entity.template.AbsDeleteEntity;
-import uz.dev.hmsproject.entity.template.AbsLongEntity;
 
 /**
  * Created by: asrorbek
@@ -24,7 +23,7 @@ import uz.dev.hmsproject.entity.template.AbsLongEntity;
 @SQLDelete(sql = "update doctor set deleted=true where id=?")
 @SQLRestriction(value = "deleted=false")
 @FieldNameConstants
-public class Doctor extends AbsLongEntity implements AbsDeleteEntity {
+public class Doctor extends AbsDeleteEntity {
 
     @OneToOne
     @JoinColumn(unique = true)

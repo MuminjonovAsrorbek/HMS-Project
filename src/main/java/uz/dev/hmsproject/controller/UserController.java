@@ -50,7 +50,7 @@ public class UserController {
 
         userService.create(userDTO);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.ok("User created successfully");
 
     }
 

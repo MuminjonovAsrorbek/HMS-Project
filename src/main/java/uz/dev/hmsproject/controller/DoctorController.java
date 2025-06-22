@@ -3,7 +3,6 @@ package uz.dev.hmsproject.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +27,7 @@ public class DoctorController {
 
     @PreAuthorize(value = "hasAuthority('FILTER_DOCTORS')")
     @GetMapping("/filter")
-    public List<DoctorResponseDTO> filter(@RequestBody @Valid DoctorFilterDTO dto) {
+    public List<DoctorResponseDTO> filter(DoctorFilterDTO dto) {
         return doctorService.filter(dto);
     }
 
@@ -50,7 +49,7 @@ public class DoctorController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid DoctorDTO doctorDTO) {
         doctorService.create(doctorDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.ok("Doctor created successfully");
     }
 
     @PreAuthorize(value = "hasAuthority('UPDATE_DOCTORS')")
@@ -58,14 +57,14 @@ public class DoctorController {
     public ResponseEntity<?> update(@PathVariable("id") Long id,
                                     @RequestBody @Valid DoctorDTO doctorDTO) {
         doctorService.update(id, doctorDTO);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Doctor updated successfully");
     }
 
     @PreAuthorize(value = "hasAuthority('DELETE_DOCTORS')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         doctorService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Doctor deleted successfully");
     }
 
     @GetMapping("/{doctorId}/available-slots")

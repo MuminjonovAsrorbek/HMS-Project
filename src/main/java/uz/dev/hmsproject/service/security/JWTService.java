@@ -28,7 +28,7 @@ public class JWTService {
                 .subject(email)
                 .claim("role", "USER")
                 .claim("randomId", UUID.randomUUID().toString())
-                .expiration(new Date(System.currentTimeMillis() + 3600 * 1000))
+                .expiration(new Date(System.currentTimeMillis() + 3 * 3600 * 1000))
                 .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
                 .compact();
 

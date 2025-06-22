@@ -2,7 +2,6 @@ package uz.dev.hmsproject.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -36,9 +35,9 @@ public class SpecialityController {
 
     @PreAuthorize(value = "hasAuthority('CREATE_SPECIALTIES')")
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody @Valid SpecialityCreationDTO specialityDTO){
+    public ResponseEntity<?> create(@RequestBody @Valid SpecialityCreationDTO specialityDTO) {
         specialityService.create(specialityDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.ok("Speciality created successfully");
     }
 
     @PreAuthorize(value = "hasAuthority('UPDATE_SPECIALTIES')")
@@ -46,13 +45,13 @@ public class SpecialityController {
     public ResponseEntity<?> update(@PathVariable("id") Long id,
                                     @RequestBody @Valid SpecialityDTO specialityDTO) {
         specialityService.update(id, specialityDTO);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Speciality updated successfully");
     }
 
     @PreAuthorize(value = "hasAuthority('DELETE_SPECIALTIES')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         specialityService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Speciality deleted successfully");
     }
 }

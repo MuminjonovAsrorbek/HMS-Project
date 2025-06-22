@@ -3,8 +3,8 @@ package uz.dev.hmsproject.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uz.dev.hmsproject.dto.PriceListDTO;
 import uz.dev.hmsproject.entity.Doctor;
-import uz.dev.hmsproject.entity.PriceList;
 
 import java.io.Serializable;
 
@@ -24,7 +24,7 @@ public class DoctorResponseDTO implements Serializable {
 
     private String specialityName;
 
-    private PriceList specialityPriceList;
+    private PriceListDTO specialityPriceList;
 
     private String roomNumber;
 }
