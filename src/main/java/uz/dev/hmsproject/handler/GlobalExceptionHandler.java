@@ -103,4 +103,15 @@ public class GlobalExceptionHandler {
                 .body(error);
     }
 
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public ResponseEntity<ErrorDTO> handle(IllegalArgumentException e) {
+        ErrorDTO error = new ErrorDTO(
+                HttpStatus.BAD_REQUEST.value(),
+                e.getMessage()
+        );
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);
+    }
+
 }

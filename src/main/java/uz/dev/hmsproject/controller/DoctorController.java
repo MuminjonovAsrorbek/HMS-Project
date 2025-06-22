@@ -11,6 +11,7 @@ import uz.dev.hmsproject.service.template.DoctorService;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -57,8 +58,10 @@ public class DoctorController {
 
         List<LocalTime> slots = doctorService.getAvailable20MinuteSlots(doctorId, date);
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+
         List<String> formatted = slots.stream()
-                .map(LocalTime::toString)
+                .map(time -> time.format(formatter))
                 .toList();
 
         return ResponseEntity.ok(formatted);
