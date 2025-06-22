@@ -14,6 +14,7 @@ import uz.dev.hmsproject.entity.Role;
 import uz.dev.hmsproject.entity.User;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
+import uz.dev.hmsproject.exception.EntityUniqueException;
 import uz.dev.hmsproject.exception.UserAlreadyExistsWithUsernameException;
 import uz.dev.hmsproject.mapper.UserMapperImpl;
 import uz.dev.hmsproject.repository.RoleRepository;
@@ -77,7 +78,7 @@ public class UserServiceImpl implements UserService {
     public void create(UserDTO userDTO) {
 
         if (userRepository.existsByUsername(userDTO.getUsername())) {
-            throw new UserAlreadyExistsWithUsernameException(userDTO.getUsername(), HttpStatus.CONFLICT);
+            throw new EntityUniqueException(userDTO.getUsername(), HttpStatus.CONFLICT);
         }
 
         Role role = roleRepository.findById(userDTO.getRoleId())
@@ -105,7 +106,7 @@ public class UserServiceImpl implements UserService {
 
         if (userRepository.existsByUsername(userDTO.getUsername()) && !user.getUsername().equals(userDTO.getUsername())) {
 
-            throw new UserAlreadyExistsWithUsernameException(userDTO.getUsername(), HttpStatus.CONFLICT);
+            throw new EntityUniqueException(userDTO.getUsername(), HttpStatus.CONFLICT);
 
         }
 
@@ -128,10 +129,7 @@ public class UserServiceImpl implements UserService {
         if (optionalUser.isEmpty()) {
             throw new EntityNotFoundException("User not found with ID : " + id, HttpStatus.CONFLICT);
         }
-
-        // to - do => User databasedan o'chrilmasligi kerak
-
-        userRepository.deleteById(optionalUser.get().getId());
+        userRepository.delete(optionalUser.get());
     }
 
 } 
