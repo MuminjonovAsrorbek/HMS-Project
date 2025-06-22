@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.SpecialityDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
+import uz.dev.hmsproject.entity.PriceList;
 import uz.dev.hmsproject.entity.Speciality;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
@@ -52,6 +53,14 @@ public class SpecialityServiceImpl implements SpecialityService {
         Speciality speciality = specialityMapper.toEntity(specialityDTO);
         specialityRepository.save(speciality);
 
+//        PriceList priceList = new PriceList();
+//
+//        priceList.setPrice(price);
+//        priceList.setSpeciality(speciality);
+//
+//        speciality.setPriceList(priceList);
+//
+//        specialityRepository.save(speciality);
     }
 
     @Transactional
