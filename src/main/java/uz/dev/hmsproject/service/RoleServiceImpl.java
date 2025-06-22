@@ -10,14 +10,15 @@ import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.RoleDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.entity.Role;
+import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.exception.RoleAlreadyExistsException;
 import uz.dev.hmsproject.exception.RoleInvalidPermissionsException;
-import uz.dev.hmsproject.exception.RoleIsNotFoundException;
 import uz.dev.hmsproject.mapper.RoleMapper;
 import uz.dev.hmsproject.repository.RoleRepository;
 import uz.dev.hmsproject.service.template.RoleService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -56,7 +57,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public RoleDTO getById(Long id) {
         Role role = roleRepository.findById(id)
-                .orElseThrow(() -> new RoleIsNotFoundException("Role not found with id: " + id, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + id, HttpStatus.NOT_FOUND));
         return roleMapper.toDTO(role);
     }
 
@@ -77,7 +78,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void update(Long id, RoleDTO roleDTO) {
         Role role = roleRepository.findById(id)
-                .orElseThrow(() -> new RoleIsNotFoundException("Role not found with id: " + id, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + id, HttpStatus.NOT_FOUND));
 
         if (roleRepository.existsByName(roleDTO.getName()) && !role.getName().equals(roleDTO.getName())) {
             throw new RoleAlreadyExistsException("Role already exists with name: " + roleDTO.getName(), HttpStatus.CONFLICT);
@@ -94,9 +95,10 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void delete(Long id) {
-        if (!roleRepository.existsById(id)) {
-            throw new RoleIsNotFoundException("Role not found with id: " + id, HttpStatus.NOT_FOUND);
+        Optional<Role> role = roleRepository.findById(id);
+        if (role.isEmpty()){
+            throw new EntityNotFoundException("Role not found with id: " + id, HttpStatus.NOT_FOUND);
         }
-        roleRepository.deleteById(id);
+        roleRepository.delete(role.get());
     }
 }
