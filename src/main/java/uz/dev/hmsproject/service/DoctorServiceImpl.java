@@ -10,18 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.DoctorDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
-import uz.dev.hmsproject.entity.Doctor;
-import uz.dev.hmsproject.entity.Room;
-import uz.dev.hmsproject.entity.Speciality;
-import uz.dev.hmsproject.entity.User;
-import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.entity.*;
+import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.exception.EntityUniqueException;
 import uz.dev.hmsproject.mapper.DoctorMapper;
 import uz.dev.hmsproject.repository.*;
 import uz.dev.hmsproject.service.template.DoctorService;
-
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -203,7 +198,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         List<LocalTime> booked = appointmentRepository.findByDoctorIdAndDateTime(doctorId, date)
                 .stream()
-                .map(appointment -> appointment.getDateTime().toLocalTime())
+                .map(appointment -> appointment.getAppointmentDateTime().toLocalTime())
                 .toList();
 
         List<LocalTime> slots = new ArrayList<>();
