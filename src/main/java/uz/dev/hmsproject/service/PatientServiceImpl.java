@@ -3,7 +3,9 @@ package uz.dev.hmsproject.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import uz.dev.hmsproject.Specification.PatientSpecification;
 import uz.dev.hmsproject.dto.PatientDTO;
+import uz.dev.hmsproject.dto.PatientSearchDTO;
 import uz.dev.hmsproject.entity.Patient;
 import uz.dev.hmsproject.exception.DuplicatePhoneNumberException;
 import uz.dev.hmsproject.exception.PatientNotFoundException;
@@ -60,6 +62,7 @@ public class PatientServiceImpl implements PatientService {
         patientRepository.save(patient);
     }
 
+
     @Override
     public void delete(Long id) {
         if (!patientRepository.existsById(id)) {
@@ -69,4 +72,18 @@ public class PatientServiceImpl implements PatientService {
         patientRepository.deleteById(id);
 
     }
+
+    @Override
+    public List<PatientDTO> search(PatientSearchDTO searchDTO) {
+        return patientRepository.findAll(
+                        PatientSpecification.build(
+                                searchDTO.getFullName(),
+                                searchDTO.getPhoneNumber()
+                        )
+                ).stream()
+                .map(patientMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+
 }
