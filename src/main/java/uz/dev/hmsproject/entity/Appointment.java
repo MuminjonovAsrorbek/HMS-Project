@@ -9,7 +9,7 @@ import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.enums.AppointmentStatus;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * Created by: asrorbek
@@ -31,9 +31,10 @@ public class Appointment extends AbsLongEntity {
     @ManyToOne
     private Doctor doctor;
 
-    private Timestamp dateTime;
+    private LocalDateTime dateTime;
 
-    private String room;
+
+    private Integer roomId;
 
     private BigDecimal price;
 
@@ -41,6 +42,6 @@ public class Appointment extends AbsLongEntity {
     private AppointmentStatus status;
 
     @ManyToOne
-    private User createdByUser;
+    private User createdBy;
 
 }
