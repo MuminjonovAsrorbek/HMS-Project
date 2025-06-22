@@ -1,4 +1,4 @@
-package uz.dev.hmsproject.serviceImpl;
+package uz.dev.hmsproject.service.serviceImpl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

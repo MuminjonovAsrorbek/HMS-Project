@@ -31,6 +31,4 @@ public class User extends AbsLongEntity {
     private Role role;
 
     private boolean isActive = true;
-
-    // to - do => Shu yerga security qismi ulanadi va User classi implement qiladi UserDetails classidan
 }
