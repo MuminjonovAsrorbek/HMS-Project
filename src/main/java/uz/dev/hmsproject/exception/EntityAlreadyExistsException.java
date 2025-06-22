@@ -4,11 +4,11 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class RoomAlreadyExistsException extends RuntimeException {
+public class EntityAlreadyExistsException extends RuntimeException {
 
     private final HttpStatus status;
 
-    public RoomAlreadyExistsException(String number, HttpStatus status) {
+    public EntityAlreadyExistsException(String number, HttpStatus status) {
         super(number);
         this.status = status;
     }

@@ -5,16 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.SpecialityDTO;
+import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.entity.Speciality;
-import uz.dev.hmsproject.exception.RoomNotFoundException;
-import uz.dev.hmsproject.exception.SpecialityNotFoundException;
+import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.mapper.SpecialityMapper;
 import uz.dev.hmsproject.repository.SpecialityRepository;
 import uz.dev.hmsproject.service.template.SpecialityService;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +35,7 @@ public class SpecialityServiceImpl implements SpecialityService {
     @Override
     public SpecialityDTO getById(Long id)  {
         Speciality speciality = specialityRepository.findById(id).orElseThrow(() ->
-                new SpecialityNotFoundException("speciality not found by id: " + id, HttpStatus.NOT_FOUND));
+                new EntityNotFoundException("speciality not found by id: " + id, HttpStatus.NOT_FOUND));
 
         return specialityMapper.toDTO(speciality);
 
@@ -55,7 +54,7 @@ public class SpecialityServiceImpl implements SpecialityService {
     public void update(Long id, SpecialityDTO specialityDTO) {
 
         Speciality speciality = specialityRepository.findById(id).orElseThrow(() ->
-                new SpecialityNotFoundException("speciality not found by id: " + id, HttpStatus.NOT_FOUND));
+                new EntityNotFoundException("speciality not found by id: " + id, HttpStatus.NOT_FOUND));
 
         speciality.setName(specialityDTO.getName());
 
@@ -68,9 +67,14 @@ public class SpecialityServiceImpl implements SpecialityService {
     public void delete(Long id) {
 
         Speciality speciality = specialityRepository.findById(id).orElseThrow(() ->
-                new SpecialityNotFoundException("speciality not found by id: " + id, HttpStatus.NOT_FOUND));
+                new EntityNotFoundException("speciality not found by id: " + id, HttpStatus.NOT_FOUND));
 
         specialityRepository.delete(speciality);
 
+    }
+
+    @Override
+    public PageableDTO getAllByPage(Integer page, Integer size) {
+return null;
     }
 }

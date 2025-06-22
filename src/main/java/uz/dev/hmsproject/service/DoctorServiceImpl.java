@@ -9,10 +9,7 @@ import uz.dev.hmsproject.entity.Doctor;
 import uz.dev.hmsproject.entity.Room;
 import uz.dev.hmsproject.entity.Speciality;
 import uz.dev.hmsproject.entity.User;
-import uz.dev.hmsproject.exception.DoctorNotFoundException;
-import uz.dev.hmsproject.exception.RoomNotFoundException;
-import uz.dev.hmsproject.exception.SpecialityNotFoundException;
-import uz.dev.hmsproject.exception.UserNotFoundException;
+import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.mapper.DoctorMapper;
 import uz.dev.hmsproject.repository.DoctorRepository;
 import uz.dev.hmsproject.repository.RoomRepository;
@@ -42,7 +39,7 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public DoctorDTO getById(Long id) {
         Doctor doctor = doctorRepository.findById(id).orElseThrow(() ->
-                new DoctorNotFoundException("doctor not found by id: " + id, HttpStatus.NOT_FOUND));
+                new EntityNotFoundException("doctor not found by id: " + id, HttpStatus.NOT_FOUND));
         return doctorMapper.toDTO(doctor);
     }
 
@@ -58,7 +55,7 @@ public class DoctorServiceImpl implements DoctorService {
     public void update(Long id, DoctorDTO doctorDTO) {
 
         Doctor doctor = doctorRepository.findById(id).orElseThrow(() ->
-                new DoctorNotFoundException("doctor not found by id: " + id, HttpStatus.NOT_FOUND));
+                new EntityNotFoundException("doctor not found by id: " + id, HttpStatus.NOT_FOUND));
 
         updateDoctor(doctorDTO, doctor, userRepository, specialityRepository, roomRepository);
 
@@ -69,20 +66,20 @@ public class DoctorServiceImpl implements DoctorService {
     public void delete(Long id) {
 
         Doctor doctor = doctorRepository.findById(id).orElseThrow(() ->
-                new DoctorNotFoundException("doctor not found by id: " + id, HttpStatus.NOT_FOUND));
+                new EntityNotFoundException("doctor not found by id: " + id, HttpStatus.NOT_FOUND));
 
         doctorRepository.delete(doctor);
     }
 
     public static void updateDoctor(DoctorDTO doctorDTO, Doctor doctor, UserRepository userRepository, SpecialityRepository specialityRepository, RoomRepository roomRepository) {
         User user = userRepository.findById(doctorDTO.getUserId()).orElseThrow(() ->
-                new UserNotFoundException("user not found by id: " + doctorDTO.getUserId(), HttpStatus.NOT_FOUND));
+                new EntityNotFoundException("user not found by id: " + doctorDTO.getUserId(), HttpStatus.NOT_FOUND));
 
         Speciality speciality = specialityRepository.findById(doctorDTO.getSpecialityId()).orElseThrow(() ->
-                new SpecialityNotFoundException("speciality not found by id: " + doctorDTO.getSpecialityId(), HttpStatus.NOT_FOUND));
+                new EntityNotFoundException("speciality not found by id: " + doctorDTO.getSpecialityId(), HttpStatus.NOT_FOUND));
 
         Room room = roomRepository.findById(doctorDTO.getRoomId()).orElseThrow(() ->
-                new RoomNotFoundException("room not found by id: " + doctorDTO.getRoomId(), HttpStatus.NOT_FOUND));
+                new EntityNotFoundException("room not found by id: " + doctorDTO.getRoomId(), HttpStatus.NOT_FOUND));
 
         doctor.setUser(user);
         doctor.setSpeciality(speciality);
