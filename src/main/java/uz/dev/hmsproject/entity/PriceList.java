@@ -10,11 +10,6 @@ import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-/**
- * Created by: asrorbek
- * DateTime: 6/16/25 12:11
- **/
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
