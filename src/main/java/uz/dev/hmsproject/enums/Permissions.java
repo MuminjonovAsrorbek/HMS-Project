@@ -9,6 +9,7 @@ public enum Permissions {
     UPDATE_USERS,
     DELETE_USERS,
     VIEW_USER,
+    FILTER_USERS,
 
     VIEW_ROLES,
     VIEW_ROLE,
