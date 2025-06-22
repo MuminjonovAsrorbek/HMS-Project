@@ -1,21 +1,28 @@
 package uz.dev.hmsproject.serviceImpl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.UserDTO;
+import uz.dev.hmsproject.dto.response.PageableDTO;
+import uz.dev.hmsproject.entity.Role;
 import uz.dev.hmsproject.entity.User;
 import uz.dev.hmsproject.exception.UserAlreadyExistsWithUsernameException;
 import uz.dev.hmsproject.exception.UserNotFoundException;
 import uz.dev.hmsproject.mapper.UserMapperImpl;
+import uz.dev.hmsproject.repository.RoleRepository;
 import uz.dev.hmsproject.repository.UserRepository;
 import uz.dev.hmsproject.service.template.UserService;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,10 +32,31 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapperImpl userMapper;
 
+    private final PasswordEncoder passwordEncoder;
+
+    private final RoleRepository roleRepository;
+
     @Override
-    public Page<UserDTO> getAllPaginated(Pageable pageable) {
+    public PageableDTO getAllPaginated(Integer page, Integer size) {
+
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
         Page<User> usersPage = userRepository.findAll(pageable);
-        return usersPage.map(userMapper::toDTO);
+
+        List<User> users = usersPage.getContent();
+
+        List<UserDTO> userDTOS = userMapper.toDTO(users);
+
+        return new PageableDTO(
+                usersPage.getSize(),
+                usersPage.getTotalElements(),
+                usersPage.getTotalPages(),
+                !usersPage.isLast(),
+                !usersPage.isFirst(),
+                userDTOS
+        );
     }
 
     @Override
@@ -48,20 +76,51 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void create(UserDTO userDTO) {
+
         if (userRepository.existsByUsername(userDTO.getUsername())) {
             throw new UserAlreadyExistsWithUsernameException(userDTO.getUsername(), HttpStatus.CONFLICT);
         }
-        User user = userMapper.toEntity(userDTO);
+
+        Role role = roleRepository.findById(userDTO.getRoleId())
+                .orElseThrow(
+                        () -> new UserNotFoundException(userDTO.getRoleId(), HttpStatus.NOT_FOUND)
+                );
+
+        User user = new User();
+
+        user.setUsername(userDTO.getUsername());
+        user.setFullName(userDTO.getFullName());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setRole(role);
+
         userRepository.save(user);
+
     }
 
     @Override
     public void update(Long id, UserDTO userDTO) {
-        if (userRepository.existsById(id)) {
-            User user = userMapper.toEntity(userDTO);
-            user.setId(id);
-            userRepository.save(user);
+
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException(id, HttpStatus.NOT_FOUND)
+        );
+
+        if (userRepository.existsByUsername(userDTO.getUsername()) && !user.getUsername().equals(userDTO.getUsername())) {
+
+            throw new UserAlreadyExistsWithUsernameException(userDTO.getUsername(), HttpStatus.CONFLICT);
+
         }
+
+        Role role = roleRepository.findById(userDTO.getRoleId())
+                .orElseThrow(
+                        () -> new UserNotFoundException(userDTO.getRoleId(), HttpStatus.NOT_FOUND)
+                );
+
+        user.setUsername(userDTO.getUsername());
+        user.setFullName(userDTO.getFullName());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setRole(role);
+
+        userRepository.save(user);
     }
 
     @Override

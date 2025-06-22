@@ -1,11 +1,10 @@
 package uz.dev.hmsproject.service.template;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import uz.dev.hmsproject.dto.UserDTO;
+import uz.dev.hmsproject.dto.response.PageableDTO;
 
 
 public interface UserService extends BaseService<UserDTO, Long> {
 
-    Page<UserDTO> getAllPaginated(Pageable pageable);
+    PageableDTO getAllPaginated(Integer page, Integer size);
 }
