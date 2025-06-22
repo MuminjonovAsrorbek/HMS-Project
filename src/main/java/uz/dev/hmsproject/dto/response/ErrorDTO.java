@@ -1,4 +1,4 @@
-package uz.dev.hmsproject.dto;
+package uz.dev.hmsproject.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Created by: asrorbek
+ * DateTime: 5/28/25 15:06
+ **/
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,14 +18,14 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorDTO {
 
-    private int code;
+    private int status;
 
     private String message;
 
-    List<FieldErrorDTO> fieldErrors;
+    private List<FieldErrorDTO> fieldErrors;
 
-    public ErrorDTO(int code, String message) {
-        this.code = code;
+    public ErrorDTO(int status, String message) {
+        this.status = status;
         this.message = message;
     }
 

@@ -1,4 +1,4 @@
-package uz.dev.hmsproject.serviceImpl;
+package uz.dev.hmsproject.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,8 +12,9 @@ import uz.dev.hmsproject.dto.UserDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.entity.Role;
 import uz.dev.hmsproject.entity.User;
+import uz.dev.hmsproject.entity.template.AbsLongEntity;
+import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.exception.UserAlreadyExistsWithUsernameException;
-import uz.dev.hmsproject.exception.UserNotFoundException;
 import uz.dev.hmsproject.mapper.UserMapperImpl;
 import uz.dev.hmsproject.repository.RoleRepository;
 import uz.dev.hmsproject.repository.UserRepository;
@@ -37,7 +38,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public PageableDTO getAllPaginated(Integer page, Integer size) {
 
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(AbsLongEntity.Fields.id).ascending();
 
         Pageable pageable = PageRequest.of(page, size, sort);
 
@@ -59,7 +60,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> getAll() {
+
         List<User> users = userRepository.findAll();
+
         return userMapper.toDTO(users);
     }
 
@@ -67,7 +70,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO getById(Long id) {
 
         return userMapper.toDTO(userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id, HttpStatus.NOT_FOUND)));
+                .orElseThrow(() -> new EntityNotFoundException("User not found with ID : " + id, HttpStatus.NOT_FOUND)));
     }
 
     @Override
@@ -79,7 +82,7 @@ public class UserServiceImpl implements UserService {
 
         Role role = roleRepository.findById(userDTO.getRoleId())
                 .orElseThrow(
-                        () -> new UserNotFoundException(userDTO.getRoleId(), HttpStatus.NOT_FOUND)
+                        () -> new EntityNotFoundException("User not found with ID : " + userDTO.getRoleId(), HttpStatus.NOT_FOUND)
                 );
 
         User user = new User();
@@ -97,7 +100,7 @@ public class UserServiceImpl implements UserService {
     public void update(Long id, UserDTO userDTO) {
 
         User user = userRepository.findById(id).orElseThrow(
-                () -> new UserNotFoundException(id, HttpStatus.NOT_FOUND)
+                () -> new EntityNotFoundException("User not found with ID : " + id, HttpStatus.NOT_FOUND)
         );
 
         if (userRepository.existsByUsername(userDTO.getUsername()) && !user.getUsername().equals(userDTO.getUsername())) {
@@ -108,7 +111,7 @@ public class UserServiceImpl implements UserService {
 
         Role role = roleRepository.findById(userDTO.getRoleId())
                 .orElseThrow(
-                        () -> new UserNotFoundException(userDTO.getRoleId(), HttpStatus.NOT_FOUND)
+                        () -> new EntityNotFoundException("User not found with ID : " + userDTO.getRoleId(), HttpStatus.NOT_FOUND)
                 );
 
         user.setUsername(userDTO.getUsername());
@@ -123,10 +126,12 @@ public class UserServiceImpl implements UserService {
     public void delete(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) {
-            throw new UserNotFoundException(id, HttpStatus.CONFLICT);
+            throw new EntityNotFoundException("User not found with ID : " + id, HttpStatus.CONFLICT);
         }
-        User user = optionalUser.get();
-        userRepository.delete(user);
+
+        // to - do => User databasedan o'chrilmasligi kerak
+
+        userRepository.deleteById(optionalUser.get().getId());
     }
 
 } 

@@ -13,8 +13,8 @@ import java.io.IOException;
 
 @Component
 public class SecurityAccessExceptionHandler implements AuthenticationEntryPoint {
-    private final ObjectMapper mapper = new ObjectMapper();
 
+    private final ObjectMapper mapper = new ObjectMapper();
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,

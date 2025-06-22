@@ -3,6 +3,9 @@ package uz.dev.hmsproject.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import uz.dev.hmsproject.entity.template.AbsDeleteEntity;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
 
 import java.time.LocalTime;
@@ -18,7 +21,9 @@ import java.time.LocalTime;
 @Setter
 @ToString
 @Entity
-public class WorkScheduler extends AbsLongEntity {
+@SQLDelete(sql = "update workscheduler set deleted=true where id=?")
+@SQLRestriction(value = "deleted=false")
+public class WorkScheduler extends AbsLongEntity implements AbsDeleteEntity {
 
     @ManyToOne
     private User user;

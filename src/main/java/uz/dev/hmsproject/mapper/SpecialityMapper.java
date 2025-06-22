@@ -13,12 +13,13 @@ public class SpecialityMapper implements BaseMapper<Speciality, SpecialityDTO> {
     @Override
     public Speciality toEntity(SpecialityDTO specialityDTO) {
         return new Speciality(
-                specialityDTO.getName()
+                specialityDTO.getName(),
+                null
         );
     }
 
     @Override
-    public  SpecialityDTO toDTO(Speciality speciality) {
+    public SpecialityDTO toDTO(Speciality speciality) {
         return new SpecialityDTO(
                 speciality.getId(),
                 speciality.getName()

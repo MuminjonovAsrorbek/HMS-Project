@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class FieldErrorDTO {
+
     private String field;
+
     private String message;
 }

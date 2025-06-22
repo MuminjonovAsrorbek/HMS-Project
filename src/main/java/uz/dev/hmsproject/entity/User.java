@@ -2,9 +2,12 @@ package uz.dev.hmsproject.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import uz.dev.hmsproject.entity.template.AbsDeleteEntity;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.enums.Permissions;
 
@@ -12,6 +15,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Created by: asrorbek
+ * DateTime: 6/16/25 11:44
+ **/
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,7 +27,9 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name = "users")
-public class User extends AbsLongEntity implements UserDetails {
+@SQLDelete(sql = "update users set deleted=true where id=?")
+@SQLRestriction(value = "deleted=false")
+public class User extends AbsLongEntity implements UserDetails, AbsDeleteEntity {
 
     @Column(nullable = false)
     private String fullName;
@@ -36,6 +45,11 @@ public class User extends AbsLongEntity implements UserDetails {
 
     private boolean isActive = true;
 
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<WorkScheduler> workSchedulers;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
@@ -45,5 +59,4 @@ public class User extends AbsLongEntity implements UserDetails {
         }
         return authorities;
     }
-    // to - do => Shu yerga security qismi ulanadi va User classi implement qiladi UserDetails classidan
 }

@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PriceListDto implements Serializable {
+public class PriceListDTO implements Serializable {
 
     private Long id;
 

@@ -1,4 +1,4 @@
-package uz.dev.hmsproject.serviceImpl;
+package uz.dev.hmsproject.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

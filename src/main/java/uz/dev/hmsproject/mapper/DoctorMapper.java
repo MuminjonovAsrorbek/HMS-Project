@@ -12,7 +12,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DoctorMapper implements BaseMapper<Doctor, DoctorDTO> {
 
-
     @Override
     public Doctor toEntity(DoctorDTO doctorDTO) {
 

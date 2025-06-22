@@ -1,9 +1,10 @@
 package uz.dev.hmsproject.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import uz.dev.hmsproject.entity.template.AbsDeleteEntity;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
 
 /**
@@ -17,11 +18,16 @@ import uz.dev.hmsproject.entity.template.AbsLongEntity;
 @Setter
 @ToString
 @Entity
-public class Speciality extends AbsLongEntity {
+@SQLDelete(sql = "update speciality set deleted=true where id=?")
+@SQLRestriction(value = "deleted=false")
+public class Speciality extends AbsLongEntity implements AbsDeleteEntity {
 
     @Column(nullable = false, unique = true)
     private String name;
 
-
+    @OneToOne(mappedBy = "speciality", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private PriceList priceList;
 
 }
