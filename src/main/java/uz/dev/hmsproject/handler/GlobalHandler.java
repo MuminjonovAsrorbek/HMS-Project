@@ -83,5 +83,29 @@ public class GlobalHandler {
         return new ResponseEntity<>(errorDTO, e.getStatus());
     }
 
+    @ExceptionHandler(RoomAlreadyExistsException.class)
+    public ResponseEntity<ErrorDTO> handleRoomAlreadyExists(RoomAlreadyExistsException e) {
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMessage(e.getMessage());
+        errorDTO.setStatusCode(e.getStatus().value());
+        return new ResponseEntity<>(errorDTO, e.getStatus());
+    }
+
+    @ExceptionHandler(SpecialityAlreadyExistsException.class)
+    public ResponseEntity<ErrorDTO> handleSpecialityExists(SpecialityAlreadyExistsException e) {
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMessage(e.getMessage());
+        errorDTO.setStatusCode(e.getStatus().value());
+        return new ResponseEntity<>(errorDTO, e.getStatus());
+    }
+
+    @ExceptionHandler(DoctorAlreadyExistsException.class)
+    public ResponseEntity<ErrorDTO> handleDoctorExists(DoctorAlreadyExistsException e) {
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMessage(e.getMessage());
+        errorDTO.setStatusCode(e.getStatus().value());
+        return new ResponseEntity<>(errorDTO, e.getStatus());
+    }
+
 
 }

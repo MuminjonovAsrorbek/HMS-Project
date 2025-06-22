@@ -6,12 +6,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.RoomDTO;
 import uz.dev.hmsproject.entity.Room;
+import uz.dev.hmsproject.exception.RoomAlreadyExistsException;
 import uz.dev.hmsproject.exception.RoomNotFoundException;
 import uz.dev.hmsproject.mapper.RoomMapper;
 import uz.dev.hmsproject.repository.RoomRepository;
 import uz.dev.hmsproject.service.template.RoomService;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +43,14 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     @Override
     public void create(RoomDTO roomDTO) {
+
+        roomRepository.findByNumber(roomDTO.getNumber()).ifPresent(room -> {
+            throw new RoomAlreadyExistsException(
+                    "room already exists with number: " + roomDTO.getNumber(), HttpStatus.CONFLICT);
+        });
+
         Room room = roomMapper.toEntity(roomDTO);
+
         roomRepository.save(room);
 
     }
@@ -51,6 +61,15 @@ public class RoomServiceImpl implements RoomService {
 
         Room room = roomRepository.findById(id).orElseThrow(() ->
                 new RoomNotFoundException("room not found by id: " + id, HttpStatus.NOT_FOUND));
+
+        Optional<Room> optionalRoom = roomRepository.findByNumber(roomDTO.getNumber());
+
+        if (optionalRoom.isPresent() && !Objects.equals(optionalRoom.get().getId(), room.getId())) {
+
+            throw new RoomAlreadyExistsException(
+                    "room already exists with number: " + roomDTO.getNumber(), HttpStatus.CONFLICT);
+
+        }
 
         room.setNumber(roomDTO.getNumber());
 

@@ -23,6 +23,7 @@ import java.util.List;
 public class Doctor extends AbsLongEntity {
 
     @OneToOne
+    @JoinColumn(unique = true)
     private User user;
 
     @OneToOne

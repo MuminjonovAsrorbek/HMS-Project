@@ -6,15 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.SpecialityDTO;
 import uz.dev.hmsproject.entity.Speciality;
-import uz.dev.hmsproject.exception.RoomNotFoundException;
+import uz.dev.hmsproject.exception.SpecialityAlreadyExistsException;
 import uz.dev.hmsproject.exception.SpecialityNotFoundException;
 import uz.dev.hmsproject.mapper.SpecialityMapper;
 import uz.dev.hmsproject.repository.SpecialityRepository;
 import uz.dev.hmsproject.service.template.SpecialityService;
 
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +44,12 @@ public class SpecialityServiceImpl implements SpecialityService {
     @Transactional
     @Override
     public void create(SpecialityDTO specialityDTO) {
+
+        specialityRepository.findByName(specialityDTO.getName()).ifPresent(speciality -> {
+            throw new SpecialityAlreadyExistsException("speciality name already exists by name: " + specialityDTO.getName(), HttpStatus.CONFLICT);
+        });
+
+
         Speciality speciality = specialityMapper.toEntity(specialityDTO);
         specialityRepository.save(speciality);
 
@@ -56,6 +61,11 @@ public class SpecialityServiceImpl implements SpecialityService {
 
         Speciality speciality = specialityRepository.findById(id).orElseThrow(() ->
                 new SpecialityNotFoundException("speciality not found by id: " + id, HttpStatus.NOT_FOUND));
+
+        Optional<Speciality> optionalSpeciality = specialityRepository.findByName(specialityDTO.getName());
+        if (optionalSpeciality.isPresent() && !optionalSpeciality.get().getId().equals(speciality.getId())) {
+            throw new SpecialityAlreadyExistsException("speciality name already exists by name: " + specialityDTO.getName(), HttpStatus.CONFLICT);
+        }
 
         speciality.setName(specialityDTO.getName());
 
