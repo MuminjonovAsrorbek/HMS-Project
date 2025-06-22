@@ -2,14 +2,26 @@ package uz.dev.hmsproject.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.DoctorDTO;
+import uz.dev.hmsproject.dto.response.PageableDTO;
+import uz.dev.hmsproject.entity.Doctor;
+import uz.dev.hmsproject.entity.Room;
+import uz.dev.hmsproject.entity.Speciality;
+import uz.dev.hmsproject.entity.User;
+import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.entity.*;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
+import uz.dev.hmsproject.exception.EntityUniqueException;
 import uz.dev.hmsproject.mapper.DoctorMapper;
 import uz.dev.hmsproject.repository.*;
 import uz.dev.hmsproject.service.template.DoctorService;
+
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -20,6 +32,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DoctorServiceImpl implements DoctorService {
 
+
     private final DoctorRepository doctorRepository;
 
     private final DoctorMapper doctorMapper;
@@ -29,6 +42,30 @@ public class DoctorServiceImpl implements DoctorService {
     private final SpecialityRepository specialityRepository;
 
     private final RoomRepository roomRepository;
+
+
+    @Override
+    public PageableDTO getAllPaginated(Integer page, Integer size) {
+
+        Sort sort = Sort.by(AbsLongEntity.Fields.id).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Doctor> doctorsPage = doctorRepository.findAll(pageable);
+
+        List<Doctor> doctors = doctorsPage.getContent();
+
+        List<DoctorDTO> doctorDTOS = doctorMapper.toDTO(doctors);
+
+        return new PageableDTO(
+                doctorsPage.getSize(),
+                doctorsPage.getTotalElements(),
+                doctorsPage.getTotalPages(),
+                !doctorsPage.isLast(),
+                !doctorsPage.isFirst(),
+                doctorDTOS
+        );
+    }
 
     private final WorkSchedulerRepository workSchedulerRepository;
 
@@ -53,7 +90,38 @@ public class DoctorServiceImpl implements DoctorService {
     @Transactional
     @Override
     public void create(DoctorDTO doctorDTO) {
-        Doctor doctor = doctorMapper.toEntity(doctorDTO);
+
+        User user = userRepository.findById(doctorDTO.getUserId()).orElseThrow(() ->
+                new EntityNotFoundException("User not found by id: " +
+                        doctorDTO.getUserId(), HttpStatus.NOT_FOUND));
+
+        Speciality speciality = specialityRepository.findById(doctorDTO.getSpecialityId()).orElseThrow(() ->
+                new EntityNotFoundException("Speciality not found by id: " +
+                        doctorDTO.getSpecialityId(), HttpStatus.NOT_FOUND));
+
+        Room room = roomRepository.findById(doctorDTO.getRoomId()).orElseThrow(() ->
+                new EntityNotFoundException("Room not found by id: " +
+                        doctorDTO.getRoomId(), HttpStatus.NOT_FOUND));
+
+
+        doctorRepository.findByUser(user).ifPresent(doctor -> {
+            throw new EntityUniqueException("Doctor already exists for user id: " +
+                    doctorDTO.getUserId(), HttpStatus.CONFLICT);
+        });
+
+        doctorRepository.findBySpeciality(speciality).ifPresent(doctor -> {
+            throw new EntityUniqueException("Doctor already exists for speciality id: " +
+                    doctorDTO.getSpecialityId(), HttpStatus.CONFLICT);
+        });
+
+        doctorRepository.findByRoom(room).ifPresent(doctor -> {
+            throw new EntityUniqueException("Doctor already exists for room id: " +
+                    doctorDTO.getRoomId(), HttpStatus.CONFLICT);
+        });
+
+
+        Doctor doctor = new Doctor(user, speciality, room);
+
         doctorRepository.save(doctor);
     }
 
@@ -64,7 +132,7 @@ public class DoctorServiceImpl implements DoctorService {
         Doctor doctor = doctorRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Doctor not found by id: " + id, HttpStatus.NOT_FOUND));
 
-        updateDoctor(doctorDTO, doctor, userRepository, specialityRepository, roomRepository);
+        updateDoctor(doctorDTO, doctor, userRepository, specialityRepository, roomRepository, doctorRepository);
 
     }
 
@@ -78,7 +146,7 @@ public class DoctorServiceImpl implements DoctorService {
         doctorRepository.delete(doctor);
     }
 
-    public static void updateDoctor(DoctorDTO doctorDTO, Doctor doctor, UserRepository userRepository, SpecialityRepository specialityRepository, RoomRepository roomRepository) {
+    private void updateDoctor(DoctorDTO doctorDTO, Doctor doctor, UserRepository userRepository, SpecialityRepository specialityRepository, RoomRepository roomRepository, DoctorRepository doctorRepository) {
         User user = userRepository.findById(doctorDTO.getUserId()).orElseThrow(() ->
                 new EntityNotFoundException("user not found by id: " + doctorDTO.getUserId(), HttpStatus.NOT_FOUND));
 
@@ -88,9 +156,35 @@ public class DoctorServiceImpl implements DoctorService {
         Room room = roomRepository.findById(doctorDTO.getRoomId()).orElseThrow(() ->
                 new EntityNotFoundException("room not found by id: " + doctorDTO.getRoomId(), HttpStatus.NOT_FOUND));
 
+
+        doctorRepository.findByUser(user)
+                .filter(existing -> !existing.getId().equals(doctor.getId()))
+                .ifPresent(d -> {
+                    throw new EntityUniqueException("Another doctor already exists for user id: " +
+                            doctorDTO.getUserId(), HttpStatus.CONFLICT);
+                });
+
+
+        doctorRepository.findBySpeciality(speciality)
+                .filter(existing -> !existing.getId().equals(doctor.getId()))
+                .ifPresent(d -> {
+                    throw new EntityUniqueException("Another doctor already exists for speciality id: " +
+                            doctorDTO.getSpecialityId(), HttpStatus.CONFLICT);
+                });
+
+
+        doctorRepository.findByRoom(room)
+                .filter(existing -> !existing.getId().equals(doctor.getId()))
+                .ifPresent(d -> {
+                    throw new EntityUniqueException("Another doctor already exists for room id: " +
+                            doctorDTO.getRoomId(), HttpStatus.CONFLICT);
+                });
+
+
         doctor.setUser(user);
         doctor.setSpeciality(speciality);
         doctor.setRoom(room);
+        doctorRepository.save(doctor);
     }
 
 
