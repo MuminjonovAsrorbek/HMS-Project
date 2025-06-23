@@ -2,7 +2,6 @@ package uz.dev.hmsproject.service.template;
 
 import uz.dev.hmsproject.dto.WorkSchedulerDTO;
 import uz.dev.hmsproject.dto.WorkSchedulerUpdateDto;
-
 import java.util.List;
 
 public interface WorkSchedulerService {
