@@ -1,15 +1,19 @@
 package uz.dev.hmsproject.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.WorkSchedulerDTO;
+import uz.dev.hmsproject.dto.WorkSchedulerUpdateDto;
 import uz.dev.hmsproject.entity.User;
 import uz.dev.hmsproject.entity.WorkScheduler;
+import uz.dev.hmsproject.exception.EntityNotFoundException;
+import uz.dev.hmsproject.exception.EntityUniqueException;
+import uz.dev.hmsproject.mapper.WorkSchedulerMapper;
 import uz.dev.hmsproject.repository.UserRepository;
 import uz.dev.hmsproject.repository.WorkSchedulerRepository;
 import uz.dev.hmsproject.service.template.WorkSchedulerService;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,61 +23,62 @@ public class WorkSchedulerServiceImpl implements WorkSchedulerService {
     private final WorkSchedulerRepository workSchedulerRepository;
     private final UserRepository userRepository;
 
+    private final WorkSchedulerMapper mapper;
+
     @Override
     public WorkSchedulerDTO create(WorkSchedulerDTO dto) {
         User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "User not found by id: " + dto.getUserId(), HttpStatus.NOT_FOUND));
 
-        Optional<WorkScheduler> existingSchedule = workSchedulerRepository
-                .findByUserIdAndDayOfWeek(user.getId(), dto.getDayOfWeek());
+        workSchedulerRepository.findByUserIdAndDayOfWeek(user.getId(), dto.getDayOfWeek())
+                .ifPresent(ws -> {
+                    throw new EntityUniqueException(
+                            "Schedule already exists for this user on day: " + dto.getDayOfWeek(),
+                            HttpStatus.CONFLICT);
+                });
 
-        if (existingSchedule.isPresent()) {
-            throw new RuntimeException("Schedule already exists for this user on this day");
-        }
+        WorkScheduler workScheduler = new WorkScheduler();
+        workScheduler.setUser(user);
+        workScheduler.setDayOfWeek(dto.getDayOfWeek());
+        workScheduler.setStartTime(dto.getStartTime());
+        workScheduler.setEndTime(dto.getEndTime());
 
-        WorkScheduler ws = new WorkScheduler();
-        ws.setUser(user);
-        ws.setDayOfWeek(dto.getDayOfWeek());
-        ws.setStartTime(dto.getStartTime());
-        ws.setEndTime(dto.getEndTime());
+        WorkScheduler saved = workSchedulerRepository.save(workScheduler);
 
-        WorkScheduler saved = workSchedulerRepository.save(ws);
-        dto.setId(saved.getId());
-
-        return dto;
+        return new WorkSchedulerDTO(
+                saved.getId(),
+                saved.getUser().getId(),
+                saved.getDayOfWeek(),
+                saved.getStartTime(),
+                saved.getEndTime()
+        );
     }
 
     @Override
-    public WorkSchedulerDTO update(Long id, WorkSchedulerDTO dto) {
+    public WorkSchedulerDTO update(Long id, WorkSchedulerUpdateDto dto) {
         WorkScheduler ws = workSchedulerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Work schedule not found"));
-
-        if (!ws.getUser().getId().equals(dto.getUserId())) {
-            User user = userRepository.findById(dto.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-            ws.setUser(user);
-        }
+                .orElseThrow(() -> new EntityNotFoundException("Work schedule not found", HttpStatus.NOT_FOUND));
 
         ws.setDayOfWeek(dto.getDayOfWeek());
         ws.setStartTime(dto.getStartTime());
         ws.setEndTime(dto.getEndTime());
 
-        WorkScheduler saved = workSchedulerRepository.save(ws);
-        return mapToDto(saved);
+        WorkScheduler updated = workSchedulerRepository.save(ws);
+        return mapper.toDTO(updated);
     }
 
     @Override
     public void delete(Long id) {
         WorkScheduler ws = workSchedulerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("schedule not found"));
+                .orElseThrow(() -> new EntityNotFoundException("schedule not found", HttpStatus.NOT_FOUND));
         workSchedulerRepository.delete(ws);
     }
-
 
     @Override
     public List<WorkSchedulerDTO> getByUserId(Long userId) {
         return workSchedulerRepository.findAllByUserId(userId).stream()
-                .map(this::mapToDto)
+                .map(mapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -81,17 +86,7 @@ public class WorkSchedulerServiceImpl implements WorkSchedulerService {
     public WorkSchedulerDTO getByUserIdAndDayOfWeek(Long userId, int dayOfWeek) {
         WorkScheduler ws = workSchedulerRepository
                 .findByUserIdAndDayOfWeek(userId, dayOfWeek)
-                .orElseThrow(() -> new RuntimeException("No schedule found"));
-        return mapToDto(ws);
-    }
-
-    private WorkSchedulerDTO mapToDto(WorkScheduler ws) {
-        return new WorkSchedulerDTO(
-                ws.getId(),
-                ws.getUser().getId(),
-                ws.getDayOfWeek(),
-                ws.getStartTime(),
-                ws.getEndTime()
-        );
+                .orElseThrow(() -> new EntityNotFoundException("No schedule found", HttpStatus.NOT_FOUND));
+        return mapper.toDTO(ws) ;
     }
 }
