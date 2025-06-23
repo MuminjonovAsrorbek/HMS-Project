@@ -1,5 +1,7 @@
 package uz.dev.hmsproject.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,24 +11,26 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.DoctorDTO;
+import uz.dev.hmsproject.dto.DoctorFilterDTO;
+import uz.dev.hmsproject.dto.response.DoctorResponseDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
-import uz.dev.hmsproject.entity.Doctor;
-import uz.dev.hmsproject.entity.Room;
-import uz.dev.hmsproject.entity.Speciality;
-import uz.dev.hmsproject.entity.User;
-import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.entity.*;
+import uz.dev.hmsproject.entity.template.AbsLongEntity;
+import uz.dev.hmsproject.enums.AppointmentStatus;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.exception.EntityUniqueException;
 import uz.dev.hmsproject.mapper.DoctorMapper;
 import uz.dev.hmsproject.repository.*;
 import uz.dev.hmsproject.service.template.DoctorService;
 
-
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +47,12 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final RoomRepository roomRepository;
 
+    private final EntityManager entityManager;
+
+
+    private final WorkSchedulerRepository workSchedulerRepository;
+
+    private final AppointmentRepository appointmentRepository;
 
     @Override
     public PageableDTO getAllPaginated(Integer page, Integer size) {
@@ -55,7 +65,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         List<Doctor> doctors = doctorsPage.getContent();
 
-        List<DoctorDTO> doctorDTOS = doctorMapper.toDTO(doctors);
+        List<DoctorResponseDTO> doctorDTOS = doctorMapper.toDTO(doctors);
 
         return new PageableDTO(
                 doctorsPage.getSize(),
@@ -67,16 +77,46 @@ public class DoctorServiceImpl implements DoctorService {
         );
     }
 
-    private final WorkSchedulerRepository workSchedulerRepository;
-
-    private final AppointmentRepository appointmentRepository;
-
     @Override
-    public List<DoctorDTO> getAll() {
-        // pageableDTO qaytarish kerak
-        return doctorRepository.findAll().stream()
-                .map(doctorMapper::toDTO).toList();
+    public List<DoctorResponseDTO> filter(DoctorFilterDTO filterDTO) {
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Doctor> criteriaQuery = criteriaBuilder.createQuery(Doctor.class);
+        Root<Doctor> root = criteriaQuery.from(Doctor.class);
+
+        Join<Object, Object> userJoin = root.join(Doctor.Fields.user);
+        Join<Object, Object> specialityJoin = root.join(Doctor.Fields.speciality);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (filterDTO.getFullName() != null && !filterDTO.getFullName().isBlank()) {
+            predicates.add(criteriaBuilder.like(
+                    criteriaBuilder.lower(userJoin.get(User.Fields.fullName)),
+                    "%" + filterDTO.getFullName().toLowerCase() + "%"
+            ));
+        }
+
+        if (filterDTO.getUsername() != null && !filterDTO.getUsername().isBlank()) {
+            predicates.add(criteriaBuilder.like(
+                    criteriaBuilder.lower(userJoin.get(User.Fields.username)),
+                    "%" + filterDTO.getUsername().toLowerCase() + "%"
+            ));
+        }
+
+        if (filterDTO.getSpecialityName() != null && !filterDTO.getSpecialityName().isBlank()) {
+            predicates.add(criteriaBuilder.like(
+                    criteriaBuilder.lower(specialityJoin.get(Speciality.Fields.name)),
+                    "%" + filterDTO.getSpecialityName().toLowerCase() + "%"
+            ));
+        }
+
+        criteriaQuery.where(predicates.toArray(new Predicate[0]));
+
+        List<Doctor> doctors = entityManager.createQuery(criteriaQuery).getResultList();
+
+        return doctorMapper.toDTO(doctors);
     }
+
 
     @Override
     public DoctorDTO getById(Long id) {
@@ -192,28 +232,42 @@ public class DoctorServiceImpl implements DoctorService {
     public List<LocalTime> getAvailable20MinuteSlots(Long doctorId, LocalDate date) {
 
         int slotDurationMinutes = 20;
+        int dayOfWeek = date.getDayOfWeek().getValue(); // 1 = Monday
 
-        int dayOfWeak = date.getDayOfWeek().getValue();
+        // 1. Doctor mavjudligini tekshirish
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new EntityNotFoundException("Doctor not found with id: " + doctorId, HttpStatus.NOT_FOUND));
 
-        WorkScheduler workScheduler = workSchedulerRepository.findByUserIdAndDayOfWeek(doctorId, dayOfWeak)
-                .orElseThrow(() -> new EntityNotFoundException("Work schedule not found for doctor id: " + doctorId + " on date: " + date, HttpStatus.NOT_FOUND));
+        // 2. Ish jadvalini olish
+        WorkScheduler workSchedule = workSchedulerRepository
+                .findByUserIdAndDayOfWeek(doctor.getUser().getId(), dayOfWeek)
+                .orElseThrow(() -> new EntityNotFoundException("Ish jadvali topilmadi shifokor uchun", HttpStatus.NOT_FOUND));
 
-        LocalTime startTime = workScheduler.getStartTime();
-        LocalTime endTime = workScheduler.getEndTime();
+        LocalTime startTime = workSchedule.getStartTime(); // masalan 09:00
+//        LocalTime startTime = LocalTime.now();
+        LocalTime endTime = workSchedule.getEndTime();     // masalan 13:00
 
-        List<LocalTime> booked = appointmentRepository.findByDoctorIdAndDateTime(doctorId, date)
-                .stream()
-                .map(appointment -> appointment.getDateTime().toLocalTime())
-                .toList();
+        // 3. Shu kundagi band appointmentlarni olish
+        LocalDateTime from = date.atStartOfDay();
+        LocalDateTime to = date.atTime(LocalTime.MAX);
 
-        List<LocalTime> slots = new ArrayList<>();
+        List<Appointment> bookedAppointments = appointmentRepository
+                .findByDoctor_IdAndAppointmentDateTimeBetweenAndStatusNot(doctorId, from, to, AppointmentStatus.CANCELED);
+
+        Set<LocalTime> bookedTimes = bookedAppointments.stream()
+                .map(appointment -> appointment.getAppointmentDateTime().toLocalTime()
+                        .truncatedTo(ChronoUnit.MINUTES))
+                .collect(Collectors.toSet());
+
+        // 4. Bo'sh slotlarni hisoblash
+        List<LocalTime> availableSlots = new ArrayList<>();
         for (LocalTime time = startTime; !time.plusMinutes(slotDurationMinutes).isAfter(endTime); time = time.plusMinutes(slotDurationMinutes)) {
-            if (!booked.contains(time)) {
-                slots.add(time);
+            if (!bookedTimes.contains(time)) {
+                availableSlots.add(time);
             }
         }
 
-        return slots;
+        return availableSlots;
     }
 
 }

@@ -1,6 +1,7 @@
 package uz.dev.hmsproject.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,5 +22,6 @@ public class RoleDTO {
     @Size(min = 3, max = 1000000000)
     private String name;
 
+    @NotNull
     private List<Permissions> permissions;
 }

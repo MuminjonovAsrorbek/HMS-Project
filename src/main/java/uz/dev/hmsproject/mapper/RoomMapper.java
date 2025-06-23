@@ -28,6 +28,6 @@ public class RoomMapper implements BaseMapper<Room, RoomDTO> {
 
     @Override
     public List<RoomDTO> toDTO(List<Room> dtos) {
-        return List.of();
+        return dtos.stream().map(this::toDTO).toList();
     }
 }

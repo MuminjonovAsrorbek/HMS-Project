@@ -95,7 +95,9 @@ public class UserServiceImpl implements UserService {
             predicates.add(criteriaBuilder.equal(rootUser.get("id"), filterDTO.getId()));
         }
 
-        predicates.add(criteriaBuilder.equal(rootUser.get("isActive"), filterDTO.isActive()));
+        if (filterDTO.isActive()) {
+            predicates.add(criteriaBuilder.equal(rootUser.get("isActive"), filterDTO.isActive()));
+        }
 
         if (filterDTO.getRole() != null) {
             predicates.add(criteriaBuilder.equal(rootUser.get("role").get("name"), filterDTO.getRole()));

@@ -2,8 +2,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/hms_project
-    username: postgres #Bu yerga postgres username yoziladi
-    password: elik0416 # Bu yerga postgres username pasroli yoziladi
+    username: postgres
+    password: postgres
   jpa:
     hibernate:
       ddl-auto: update
@@ -15,3 +15,9 @@ spring:
     location: classpath:product-banner.txt
 myapp:
   secret-key: 'c0388696-55b0-479c-a142-a2ae7cbe269a'
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html

@@ -6,6 +6,7 @@ import uz.dev.hmsproject.entity.Speciality;
 import uz.dev.hmsproject.mapper.template.BaseMapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class SpecialityMapper implements BaseMapper<Speciality, SpecialityDTO> {
@@ -28,6 +29,6 @@ public class SpecialityMapper implements BaseMapper<Speciality, SpecialityDTO> {
 
     @Override
     public List<SpecialityDTO> toDTO(List<Speciality> dtos) {
-        return List.of();
+        return dtos.stream().map(this::toDTO).collect(Collectors.toList());
     }
 }
