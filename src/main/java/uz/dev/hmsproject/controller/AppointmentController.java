@@ -17,7 +17,8 @@ import java.util.List;
  * DateTime: 6/22/25 15:27
  **/
 
-@RestController("/api/v1/appointment")
+@RestController
+@RequestMapping("/api/v1/appointment")
 @RequiredArgsConstructor
 public class AppointmentController {
 

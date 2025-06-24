@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-import uz.dev.hmsproject.dto.ErrorDTO;
+import uz.dev.hmsproject.dto.response.ErrorDTO;
 
 import java.io.IOException;
 

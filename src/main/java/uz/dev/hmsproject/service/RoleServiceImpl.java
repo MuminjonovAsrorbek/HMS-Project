@@ -1,5 +1,6 @@
 package uz.dev.hmsproject.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,13 +11,16 @@ import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.RoleDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.entity.Role;
+import uz.dev.hmsproject.enums.Permissions;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.exception.EntityUniqueException;
 import uz.dev.hmsproject.exception.RoleInvalidPermissionsException;
 import uz.dev.hmsproject.mapper.RoleMapper;
 import uz.dev.hmsproject.repository.RoleRepository;
 import uz.dev.hmsproject.service.template.RoleService;
+import uz.dev.hmsproject.utils.CommonUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,7 +66,9 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional
     public void create(RoleDTO roleDTO) {
+
         if (roleRepository.existsByName(roleDTO.getName())) {
             throw new EntityUniqueException("Role already exists with name: " + roleDTO.getName(), HttpStatus.CONFLICT);
         }
@@ -71,12 +77,18 @@ public class RoleServiceImpl implements RoleService {
             throw new RoleInvalidPermissionsException("Permissions cannot be null or empty", HttpStatus.BAD_REQUEST);
         }
 
-        Role role = roleMapper.toEntity(roleDTO);
+        Role role = new Role();
+
+        role.setName(roleDTO.getName());
+        role.setPermissions(roleDTO.getPermissions());
+
         roleRepository.save(role);
     }
 
     @Override
+    @Transactional
     public void update(Long id, RoleDTO roleDTO) {
+
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + id, HttpStatus.NOT_FOUND));
 
@@ -88,15 +100,22 @@ public class RoleServiceImpl implements RoleService {
             throw new RoleInvalidPermissionsException("Permissions cannot be null or empty", HttpStatus.BAD_REQUEST);
         }
 
-        Role updatedRole = roleMapper.toEntity(roleDTO);
-        updatedRole.setId(id);
-        roleRepository.save(updatedRole);
+        role.setName(roleDTO.getName());
+
+        List<Permissions> permissions = CommonUtils.getOrDef(role.getPermissions(), new ArrayList<>());
+
+        permissions.addAll(roleDTO.getPermissions());
+
+        role.setPermissions(permissions);
+
+        roleRepository.save(role);
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         Optional<Role> role = roleRepository.findById(id);
-        if (role.isEmpty()){
+        if (role.isEmpty()) {
             throw new EntityNotFoundException("Role not found with id: " + id, HttpStatus.NOT_FOUND);
         }
         roleRepository.delete(role.get());

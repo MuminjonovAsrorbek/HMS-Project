@@ -2,7 +2,6 @@ package uz.dev.hmsproject.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -22,34 +21,45 @@ public class RoleController {
     @GetMapping
     public PageableDTO getAll(@RequestParam(value = "page", defaultValue = "0") int page,
                               @RequestParam(value = "size", defaultValue = "10") int size) {
+
         return roleService.getAllPaginated(page, size);
+
     }
 
     @PreAuthorize(value = "hasAuthority('VIEW_ROLE')")
     @GetMapping("/{id}")
     public RoleDTO getById(@PathVariable("id") Long id) {
+
         return roleService.getById(id);
+
     }
 
     @PreAuthorize(value = "hasAuthority('CREATE_ROLES')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid RoleDTO roleDTO) {
+
         roleService.create(roleDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+
+        return ResponseEntity.ok("Role created successfully");
     }
 
     @PreAuthorize(value = "hasAuthority('UPDATE_ROLES')")
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id,
-                                   @RequestBody @Valid RoleDTO roleDTO) {
+                                    @RequestBody @Valid RoleDTO roleDTO) {
+
         roleService.update(id, roleDTO);
+
         return ResponseEntity.ok("Role updated successfully");
     }
 
     @PreAuthorize(value = "hasAuthority('DELETE_ROLES')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+
         roleService.delete(id);
-        return ResponseEntity.noContent().build();
+
+        return ResponseEntity.ok("Role deleted successfully");
+
     }
 }

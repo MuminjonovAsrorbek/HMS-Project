@@ -7,8 +7,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import uz.dev.hmsproject.dto.ErrorDTO;
-import uz.dev.hmsproject.dto.FieldErrorDTO;
+import uz.dev.hmsproject.dto.response.ErrorDTO;
+import uz.dev.hmsproject.dto.response.FieldErrorDTO;
 import uz.dev.hmsproject.exception.*;
 
 import java.util.ArrayList;

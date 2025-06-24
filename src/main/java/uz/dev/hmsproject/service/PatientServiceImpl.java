@@ -34,17 +34,24 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public PatientDTO getById(Long id) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new PatientNotFoundException("Patient not found with id: " + id,HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new PatientNotFoundException("Patient not found with id: " + id, HttpStatus.BAD_REQUEST));
         return patientMapper.toDTO(patient);
     }
 
     @Override
     public void create(PatientDTO patientDTO) {
+
         if (patientRepository.existsByPhoneNumber(patientDTO.getPhoneNumber())) {
             throw new DuplicatePhoneNumberException(patientDTO.getPhoneNumber());
         }
 
-        Patient patient = patientMapper.toEntity(patientDTO);
+        Patient patient = new Patient();
+
+        patient.setFullName(patientDTO.getFullName());
+        patient.setBirthDate(patientDTO.getBirthDate());
+        patient.setAddress(patientDTO.getAddress());
+        patient.setPhoneNumber(patientDTO.getPhoneNumber());
+
         patientRepository.save(patient);
     }
 
@@ -52,7 +59,7 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public void update(Long id, PatientDTO patientDTO) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new PatientNotFoundException("Cannot update. Patient not found with id: " + id,HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new PatientNotFoundException("Cannot update. Patient not found with id: " + id, HttpStatus.BAD_REQUEST));
 
         patient.setFullName(patientDTO.getFullName());
         patient.setBirthDate(patientDTO.getBirthDate());

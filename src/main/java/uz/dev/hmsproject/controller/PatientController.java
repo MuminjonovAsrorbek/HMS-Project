@@ -28,7 +28,7 @@ public class PatientController {
         this.patientService = patientService;
     }
 
-    @PreAuthorize(value = "hasAuthority('PATIENTS_READ_ALL')")
+    @PreAuthorize(value = "hasAuthority('VIEW_PATIENTS')")
     @GetMapping
     public ResponseEntity<List<PatientDTO>> getAllPatients() {
         return ResponseEntity
@@ -36,7 +36,7 @@ public class PatientController {
     }
 
 
-    @PreAuthorize(value = "hasAuthority('PATIENTS_READ_BY_ID')")
+    @PreAuthorize(value = "hasAuthority('VIEW_PATIENT')")
     @GetMapping("/{id}")
     public ResponseEntity<PatientDTO> getPatientById(@PathVariable Long id) {
         return ResponseEntity
@@ -44,7 +44,7 @@ public class PatientController {
     }
 
 
-    @PreAuthorize(value = "hasAuthority('PATIENTS_CREATE')")
+    @PreAuthorize(value = "hasAuthority('CREATE_PATIENTS')")
     @PostMapping
     public ResponseEntity<?> createPatient(@RequestBody @Valid PatientDTO patientDTO) {
         patientService.create(patientDTO);
@@ -53,7 +53,7 @@ public class PatientController {
     }
 
 
-    @PreAuthorize(value = "hasAuthority('PATIENTS_UPDATE')")
+    @PreAuthorize(value = "hasAuthority('UPDATE_PATIENTS')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePatient(@PathVariable Long id, @RequestBody PatientDTO patientDTO) {
         patientService.update(id, patientDTO);
@@ -62,7 +62,7 @@ public class PatientController {
     }
 
 
-    @PreAuthorize(value = "hasAuthority('PATIENTS_DELETE')")
+    @PreAuthorize(value = "hasAuthority('DELETE_PATIENTS')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePatient(@PathVariable Long id) {
 

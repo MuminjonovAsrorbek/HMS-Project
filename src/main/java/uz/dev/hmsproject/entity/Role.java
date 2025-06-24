@@ -5,7 +5,6 @@ import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import uz.dev.hmsproject.entity.template.AbsDeleteEntity;
-import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.enums.Permissions;
 
 import java.util.List;
@@ -16,17 +15,18 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@Entity(name = "roles")
+@Entity
+@Table(name = "roles")
 @SQLDelete(sql = "update roles set deleted=true where id=?")
 @SQLRestriction(value = "deleted=false")
-public class Role extends AbsLongEntity implements AbsDeleteEntity {
+public class Role extends AbsDeleteEntity {
 
     @Column(unique = true, nullable = false)
     private String name;
 
     @ToString.Exclude
     @Enumerated(EnumType.STRING)
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "role_permissions",
             joinColumns = {@JoinColumn(name = "role_id")}

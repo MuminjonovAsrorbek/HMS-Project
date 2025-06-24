@@ -3,9 +3,8 @@ package uz.dev.hmsproject.entity.template;
 import jakarta.persistence.MappedSuperclass;
 
 
-
 @MappedSuperclass
-public interface AbsDeleteEntity {
+public abstract class AbsDeleteEntity extends AbsLongEntity {
 
     boolean deleted = false;
 

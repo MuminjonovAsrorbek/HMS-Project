@@ -12,6 +12,9 @@ import uz.dev.hmsproject.enums.Permissions;
 import uz.dev.hmsproject.repository.RoleRepository;
 import uz.dev.hmsproject.repository.UserRepository;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 /**
  * Created by: asrorbek
  * DateTime: 6/22/25 16:57
@@ -47,9 +50,21 @@ public class DataInitializer implements ApplicationRunner {
 
         for (Permissions permission : permissions) {
 
-            if (!adminRole.getPermissions().contains(permission)) {
+            if (Objects.nonNull(adminRole.getPermissions())) {
+
+                if (!adminRole.getPermissions().contains(permission)) {
+
+                    adminRole.getPermissions().add(permission);
+
+                }
+
+            } else {
+
+                adminRole.setPermissions(new ArrayList<>());
                 adminRole.getPermissions().add(permission);
+
             }
+
         }
 
         if (!userRepository.existsByUsername("admin")) {
