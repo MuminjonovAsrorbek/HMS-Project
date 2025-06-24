@@ -5,6 +5,8 @@ import uz.dev.hmsproject.dto.PatientDTO;
 import uz.dev.hmsproject.entity.Patient;
 import uz.dev.hmsproject.mapper.template.BaseMapper;
 
+import java.util.List;
+
 /**
  * Created by:suhrob
  */
@@ -23,6 +25,11 @@ public class PatientMapper implements BaseMapper<Patient, PatientDTO> {
                 patient.getAddress(),
                 patient.getCreatedAt()
         );
+    }
+
+    @Override
+    public List<PatientDTO> toDTO(List<Patient> dtos) {
+        return List.of();
     }
 
     @Override
