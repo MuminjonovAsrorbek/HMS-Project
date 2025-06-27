@@ -128,6 +128,4 @@ public class GlobalExceptionHandler {
                 .body(error);
 
     }
-
-    // Conflict bo'lib qolishi oldini olish uchun @Version anotatsiyasi qo'yildi.
 }
