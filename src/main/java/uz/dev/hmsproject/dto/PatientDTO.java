@@ -34,11 +34,11 @@ public class PatientDTO implements Serializable {
     @NotBlank
     private String phoneNumber;
 
+    private String email;
+
     @NotBlank
     private String address;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Timestamp createdAt;
-
-
 }

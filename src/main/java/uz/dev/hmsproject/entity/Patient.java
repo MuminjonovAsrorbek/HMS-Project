@@ -37,6 +37,9 @@ public class Patient extends AbsDeleteEntity {
     @Column(nullable = false, unique = true)
     private String phoneNumber;
 
+    @Column(unique = true)
+    private String email;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String address;
 
