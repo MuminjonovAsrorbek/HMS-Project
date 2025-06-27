@@ -20,21 +20,27 @@ public class PriceListController {
 
     @PreAuthorize("hasAuthority('VIEW_PRICE_LIST')")
     @GetMapping
-    public ResponseEntity<List<PriceListDTO>> getAll() {
-        return ResponseEntity.ok(priceListService.getAll());
+    public List<PriceListDTO> getAll() {
+
+        return priceListService.getAll();
+
     }
 
     @PreAuthorize("hasAuthority('VIEW_PRICE')")
     @GetMapping("/{id}")
-    public ResponseEntity<PriceListDTO> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(priceListService.getById(id));
+    public PriceListDTO getById(@PathVariable Long id) {
+
+        return priceListService.getById(id);
+
     }
 
     @PreAuthorize("hasAuthority('UPDATE_PRICE_BY_SPECIALITY_ID')")
     @PatchMapping("/{specialityId}/price")
-    public ResponseEntity<String> updateSpeciality(@PathVariable Long specialityId,
-                                                   @RequestBody UpdatePrice dto) {
+    public ResponseEntity<?> updateSpeciality(@PathVariable Long specialityId,
+                                              @RequestBody UpdatePrice dto) {
+
         priceListService.updatePriceBySpecialityId(specialityId, dto.getPrice());
+
         return ResponseEntity.ok("Price updated successfully");
     }
 }
