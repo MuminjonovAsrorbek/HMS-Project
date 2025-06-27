@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.PriceListDTO;
-import uz.dev.hmsproject.dto.UpdatePrice;
+import uz.dev.hmsproject.dto.UpdatePriceDTO;
 import uz.dev.hmsproject.service.template.PriceListService;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class PriceListController {
     @PreAuthorize("hasAuthority('UPDATE_PRICE_BY_SPECIALITY_ID')")
     @PatchMapping("/{specialityId}/price")
     public ResponseEntity<?> updateSpeciality(@PathVariable Long specialityId,
-                                              @RequestBody UpdatePrice dto) {
+                                              @RequestBody UpdatePriceDTO dto) {
 
         priceListService.updatePriceBySpecialityId(specialityId, dto.getPrice());
 
