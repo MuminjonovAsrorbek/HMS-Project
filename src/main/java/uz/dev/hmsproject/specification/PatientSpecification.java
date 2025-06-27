@@ -1,4 +1,4 @@
-package uz.dev.hmsproject.Specification;
+package uz.dev.hmsproject.specification;
 
 
 import jakarta.persistence.criteria.Predicate;

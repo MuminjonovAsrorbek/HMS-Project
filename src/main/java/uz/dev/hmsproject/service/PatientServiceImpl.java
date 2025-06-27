@@ -3,7 +3,7 @@ package uz.dev.hmsproject.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import uz.dev.hmsproject.Specification.PatientSpecification;
+import uz.dev.hmsproject.specification.PatientSpecification;
 import uz.dev.hmsproject.dto.PatientDTO;
 import uz.dev.hmsproject.dto.PatientSearchDTO;
 import uz.dev.hmsproject.entity.Patient;
