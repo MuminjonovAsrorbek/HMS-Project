@@ -20,4 +20,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     Page<Appointment> findAllByAppointmentDateTimeBetween(LocalDateTime localDateTime, LocalDateTime localDateTime1, Pageable pageable);
 
+    Page<Appointment> findAllByPatientId(Long patientId, Pageable pageable);
+
 }

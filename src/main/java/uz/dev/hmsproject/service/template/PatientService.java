@@ -2,7 +2,7 @@ package uz.dev.hmsproject.service.template;
 
 import uz.dev.hmsproject.dto.PatientDTO;
 import uz.dev.hmsproject.dto.PatientSearchDTO;
-import uz.dev.hmsproject.dto.UserDTO;
+import uz.dev.hmsproject.dto.response.PageableDTO;
 
 import java.util.List;
 
@@ -13,4 +13,5 @@ public interface PatientService extends BaseService<PatientDTO, Long>{
 
     List<PatientDTO> search(PatientSearchDTO searchDTO);
 
+    PageableDTO getPatientHistory(Long patientId, Integer page);
 }

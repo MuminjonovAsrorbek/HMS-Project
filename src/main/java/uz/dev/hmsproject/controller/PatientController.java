@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.PatientDTO;
 import uz.dev.hmsproject.dto.PatientSearchDTO;
+import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.service.template.PatientService;
 
 import java.util.List;
@@ -83,4 +84,14 @@ public class PatientController {
         return patientService.search(searchDTO);
 
     }
+
+    @PreAuthorize(value = "hasAuthority('APPOINTMENTS_READ')")
+    @GetMapping("/{patientId}/appointments")
+    public PageableDTO getPatientHistory(@PathVariable Long patientId,
+                                         @RequestParam(value = "page", defaultValue = "0") Integer page) {
+
+        return patientService.getPatientHistory(patientId, page);
+
+    }
+
 }
