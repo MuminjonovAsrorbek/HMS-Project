@@ -83,6 +83,4 @@ public class PatientController {
         return patientService.search(searchDTO);
 
     }
-
-    // patient entitysidagi CRUD dagi xatoliklar va kamchiliklarni to'girlandi
 }
