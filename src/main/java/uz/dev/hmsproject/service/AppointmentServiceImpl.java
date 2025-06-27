@@ -7,6 +7,11 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -245,5 +250,13 @@ public class AppointmentServiceImpl implements AppointmentService {
                 !appointmentPage.isFirst(),
                 appointmentRespDTOS
         );
+    }
+
+    @Override
+    public List<Appointment> getAppointmentsByDate(LocalDate date) {
+
+        return appointmentRepository.findAllByAppointmentDateTimeBetween(date.atStartOfDay(),
+                date.plusDays(1).atStartOfDay());
+
     }
 }
