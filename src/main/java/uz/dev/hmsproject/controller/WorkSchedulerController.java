@@ -36,22 +36,31 @@ public class WorkSchedulerController {
     @PreAuthorize("hasAuthority('CREATE_WORK_SCHEDULES')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid WorkSchedulerDTO dto) {
+
         workSchedulerService.create(dto);
+
         return ResponseEntity.ok("Work schedule created successfully");
+
     }
 
     @PreAuthorize("hasAuthority('UPDATE_WORK_SCHEDULES')")
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id,
                                     @RequestBody @Valid WorkSchedulerUpdateDto dto) {
+
         workSchedulerService.update(id, dto);
+
         return ResponseEntity.ok("Work schedule updated successfully");
+
     }
 
     @PreAuthorize("hasAuthority('DELETE_WORK_SCHEDULES')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
+
         workSchedulerService.delete(id);
+
         return ResponseEntity.ok("Work schedule deleted successfully");
+
     }
 }
