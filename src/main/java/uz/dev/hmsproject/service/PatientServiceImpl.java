@@ -2,7 +2,17 @@ package uz.dev.hmsproject.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import uz.dev.hmsproject.dto.response.AppointmentRespDTO;
+import uz.dev.hmsproject.dto.response.PageableDTO;
+import uz.dev.hmsproject.entity.Appointment;
+import uz.dev.hmsproject.entity.template.AbsLongEntity;
+import uz.dev.hmsproject.mapper.AppointmentMapper;
+import uz.dev.hmsproject.repository.AppointmentRepository;
 import uz.dev.hmsproject.specification.PatientSpecification;
 import uz.dev.hmsproject.dto.PatientDTO;
 import uz.dev.hmsproject.dto.PatientSearchDTO;
@@ -22,6 +32,9 @@ public class PatientServiceImpl implements PatientService {
     private final PatientRepository patientRepository;
 
     private final PatientMapper patientMapper;
+
+    private final AppointmentRepository appointmentRepository;
+    private final AppointmentMapper appointmentMapper;
 
     @Override
     public List<PatientDTO> getAll() {
@@ -91,5 +104,28 @@ public class PatientServiceImpl implements PatientService {
                 .map(patientMapper::toDTO)
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public PageableDTO getPatientHistory(Long patientId, Integer page) {
+
+        Sort sort = Sort.by(AbsLongEntity.Fields.id).ascending();
+
+        Pageable pageable = PageRequest.of(page, 10, sort);
+
+        Page<Appointment> appointmentPage = appointmentRepository.findAllByPatientId(patientId, pageable);
+
+        List<Appointment> appointments = appointmentPage.getContent();
+
+        List<AppointmentRespDTO> appointmentRespDTOS = appointmentMapper.toRespDTO(appointments);
+
+        return new PageableDTO(
+                appointmentPage.getSize(),
+                appointmentPage.getTotalElements(),
+                appointmentPage.getTotalPages(),
+                !appointmentPage.isLast(),
+                !appointmentPage.isFirst(),
+                appointmentRespDTOS
+        );
     }
 }

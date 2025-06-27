@@ -84,7 +84,7 @@ public class AppointmentController {
 
     @PreAuthorize("hasAuthority('APPOINTMENTS_READ')")
     @GetMapping("/today")
-    public PageableDTO getTodayAppointments(@RequestParam(value = "page", defaultValue = "0") int page) {
+    public PageableDTO getTodayAppointments(@RequestParam(value = "page", defaultValue = "0") Integer page) {
 
         return appointmentService.getTodayAppointments(page);
 
