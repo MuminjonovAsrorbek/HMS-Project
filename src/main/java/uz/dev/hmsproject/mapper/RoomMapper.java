@@ -1,6 +1,5 @@
 package uz.dev.hmsproject.mapper;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import uz.dev.hmsproject.dto.RoomDTO;
 import uz.dev.hmsproject.entity.Room;
