@@ -246,7 +246,7 @@ public class DoctorServiceImpl implements DoctorService {
         LocalDateTime to = date.atTime(LocalTime.MAX);
 
         List<Appointment> bookedAppointments = appointmentRepository
-                .findByDoctor_IdAndAppointmentDateTimeBetweenAndStatusNot(doctorId, from, to, AppointmentStatus.CANCELED);
+                .findByDoctorIdAndAppointmentDateTimeBetweenAndStatusNot(doctorId, from, to, AppointmentStatus.CANCELED);
 
         Set<LocalTime> bookedTimes = bookedAppointments.stream()
                 .map(appointment -> appointment.getAppointmentDateTime().toLocalTime()
