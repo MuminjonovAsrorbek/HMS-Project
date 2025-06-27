@@ -13,8 +13,6 @@ import java.util.List;
  * Created by: suhrob
  */
 
-
-
 public class PatientSpecification {
 
     public static Specification<Patient> build(String fullName, String phoneNumber) {
