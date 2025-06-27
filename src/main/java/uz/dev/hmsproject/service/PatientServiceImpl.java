@@ -109,7 +109,7 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public PageableDTO getPatientHistory(Long patientId, Integer page) {
 
-        Sort sort = Sort.by(AbsLongEntity.Fields.id).ascending();
+        Sort sort = Sort.by(AbsLongEntity.Fields.id).descending();
 
         Pageable pageable = PageRequest.of(page, 10, sort);
 
