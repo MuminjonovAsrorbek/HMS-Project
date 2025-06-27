@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DoctorServiceImpl implements DoctorService {
 
-
     private final DoctorRepository doctorRepository;
 
     private final DoctorMapper doctorMapper;
@@ -48,7 +47,6 @@ public class DoctorServiceImpl implements DoctorService {
     private final RoomRepository roomRepository;
 
     private final EntityManager entityManager;
-
 
     private final WorkSchedulerRepository workSchedulerRepository;
 
@@ -234,32 +232,27 @@ public class DoctorServiceImpl implements DoctorService {
         int slotDurationMinutes = 20;
         int dayOfWeek = date.getDayOfWeek().getValue(); // 1 = Monday
 
-        // 1. Doctor mavjudligini tekshirish
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new EntityNotFoundException("Doctor not found with id: " + doctorId, HttpStatus.NOT_FOUND));
 
-        // 2. Ish jadvalini olish
         WorkScheduler workSchedule = workSchedulerRepository
                 .findByUserIdAndDayOfWeek(doctor.getUser().getId(), dayOfWeek)
-                .orElseThrow(() -> new EntityNotFoundException("Ish jadvali topilmadi shifokor uchun", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException("Work schedule not found Doctor", HttpStatus.NOT_FOUND));
 
-        LocalTime startTime = workSchedule.getStartTime(); // masalan 09:00
-//        LocalTime startTime = LocalTime.now();
-        LocalTime endTime = workSchedule.getEndTime();     // masalan 13:00
+        LocalTime startTime = workSchedule.getStartTime();
+        LocalTime endTime = workSchedule.getEndTime();
 
-        // 3. Shu kundagi band appointmentlarni olish
         LocalDateTime from = date.atStartOfDay();
         LocalDateTime to = date.atTime(LocalTime.MAX);
 
         List<Appointment> bookedAppointments = appointmentRepository
-                .findByDoctor_IdAndAppointmentDateTimeBetweenAndStatusNot(doctorId, from, to, AppointmentStatus.CANCELED);
+                .findByDoctorIdAndAppointmentDateTimeBetweenAndStatusNot(doctorId, from, to, AppointmentStatus.CANCELED);
 
         Set<LocalTime> bookedTimes = bookedAppointments.stream()
                 .map(appointment -> appointment.getAppointmentDateTime().toLocalTime()
                         .truncatedTo(ChronoUnit.MINUTES))
                 .collect(Collectors.toSet());
 
-        // 4. Bo'sh slotlarni hisoblash
         List<LocalTime> availableSlots = new ArrayList<>();
         for (LocalTime time = startTime; !time.plusMinutes(slotDurationMinutes).isAfter(endTime); time = time.plusMinutes(slotDurationMinutes)) {
             if (!bookedTimes.contains(time)) {

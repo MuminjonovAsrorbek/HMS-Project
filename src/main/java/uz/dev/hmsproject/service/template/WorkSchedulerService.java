@@ -8,7 +8,7 @@ public interface WorkSchedulerService {
 
     WorkSchedulerDTO create(WorkSchedulerDTO dto);
 
-    WorkSchedulerDTO update(Long id, WorkSchedulerUpdateDto dto);
+    void update(Long id, WorkSchedulerUpdateDto dto);
 
     void delete(Long id);
 

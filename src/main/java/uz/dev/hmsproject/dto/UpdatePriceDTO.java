@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UpdatePrice {
+public class UpdatePriceDTO {
 
     private BigDecimal price;
 

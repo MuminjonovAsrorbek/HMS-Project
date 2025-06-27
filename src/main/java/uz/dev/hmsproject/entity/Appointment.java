@@ -53,4 +53,7 @@ public class Appointment extends AbsDeleteEntity {
     @JoinColumn(nullable = false)
     private User createdBy;
 
+    @Version
+    private Integer version;
+
 }

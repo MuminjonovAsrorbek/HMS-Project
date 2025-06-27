@@ -24,8 +24,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
 
-
     private final RoomRepository roomRepository;
+
     private final RoomMapper roomMapper;
 
     @Override
@@ -53,6 +53,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomDTO getById(Long id) {
+
         Room room = roomRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("room not found by id: " + id, HttpStatus.NOT_FOUND));
 

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.request.AppointmentFilterRequest;
 import uz.dev.hmsproject.dto.request.CreateAppointmentDTO;
 import uz.dev.hmsproject.dto.response.AppointmentDTO;
+import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.service.template.AppointmentService;
 
 import java.util.List;
@@ -51,7 +52,8 @@ public class AppointmentController {
 
     @PreAuthorize("hasAuthority('APPOINTMENTS_UPDATE')")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateAppointment(@PathVariable Long id, @RequestBody @Valid CreateAppointmentDTO appointmentDTO) {
+    public ResponseEntity<?> updateAppointment(@PathVariable Long id,
+                                               @RequestBody @Valid CreateAppointmentDTO appointmentDTO) {
 
         appointmentService.updateAppointment(id, appointmentDTO);
 
@@ -71,11 +73,20 @@ public class AppointmentController {
 
     @PreAuthorize("hasAuthority('APPOINTMENTS_CHANGE_STATUS')")
     @PatchMapping("/{id}/status")
-    public ResponseEntity<?> changeAppointmentStatus(@PathVariable Long id, String status) {
+    public ResponseEntity<?> changeAppointmentStatus(@PathVariable Long id,
+                                                     @RequestParam String status) {
 
         appointmentService.changeAppointmentStatus(id, status);
 
         return ResponseEntity.ok("Appointment status updated successfully");
+
+    }
+
+    @PreAuthorize("hasAuthority('APPOINTMENTS_READ')")
+    @GetMapping("/today")
+    public PageableDTO getTodayAppointments(@RequestParam(value = "page", defaultValue = "0") int page) {
+
+        return appointmentService.getTodayAppointments(page);
 
     }
 }

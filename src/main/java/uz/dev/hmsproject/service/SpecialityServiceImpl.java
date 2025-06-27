@@ -28,8 +28,8 @@ import java.util.List;
 public class SpecialityServiceImpl implements SpecialityService {
 
     private final SpecialityRepository specialityRepository;
-    private final SpecialityMapper specialityMapper;
 
+    private final SpecialityMapper specialityMapper;
 
     @Override
     public SpecialityDTO getById(Long id) {

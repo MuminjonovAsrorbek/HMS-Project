@@ -22,8 +22,10 @@ public class UserController {
 
     @PreAuthorize(value = "hasAuthority('FILTER_USERS')")
     @GetMapping("/filter")
-    public ResponseEntity<List<UserDTO>> filter(UserFilterDTO filterDTO) {
-        return ResponseEntity.ok(userService.filter(filterDTO));
+    public List<UserDTO> filter(UserFilterDTO filterDTO) {
+
+        return userService.filter(filterDTO);
+
     }
 
     @PreAuthorize(value = "hasAuthority('VIEW_USERS')")
@@ -58,6 +60,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id,
                                     @RequestBody @Valid UserDTO userDTO) {
+
         userService.update(id, userDTO);
 
         return ResponseEntity.ok("User updated successfully");

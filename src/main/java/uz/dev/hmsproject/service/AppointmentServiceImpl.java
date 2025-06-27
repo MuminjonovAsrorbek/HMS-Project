@@ -7,12 +7,19 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.request.AppointmentFilterRequest;
 import uz.dev.hmsproject.dto.request.CreateAppointmentDTO;
 import uz.dev.hmsproject.dto.response.AppointmentDTO;
+import uz.dev.hmsproject.dto.response.AppointmentRespDTO;
+import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.entity.*;
+import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.enums.AppointmentStatus;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.mapper.AppointmentMapper;
@@ -212,4 +219,31 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     }
 
+    @Override
+    public PageableDTO getTodayAppointments(Integer page) {
+
+        LocalDate today = LocalDate.now();
+
+        Sort sort = Sort.by(AbsLongEntity.Fields.id).ascending();
+
+        Pageable pageable = PageRequest.of(page, 10, sort);
+
+        Page<Appointment> appointmentPage = appointmentRepository.findAllByAppointmentDateTimeBetween(
+                today.atStartOfDay(),
+                today.plusDays(1).atStartOfDay(),
+                pageable);
+
+        List<Appointment> appointments = appointmentPage.getContent();
+
+        List<AppointmentRespDTO> appointmentRespDTOS = appointmentMapper.toRespDTO(appointments);
+
+        return new PageableDTO(
+                appointmentPage.getSize(),
+                appointmentPage.getTotalElements(),
+                appointmentPage.getTotalPages(),
+                !appointmentPage.isLast(),
+                !appointmentPage.isFirst(),
+                appointmentRespDTOS
+        );
+    }
 }

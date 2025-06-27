@@ -1,5 +1,6 @@
 package uz.dev.hmsproject.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import uz.dev.hmsproject.mapper.WorkSchedulerMapper;
 import uz.dev.hmsproject.repository.UserRepository;
 import uz.dev.hmsproject.repository.WorkSchedulerRepository;
 import uz.dev.hmsproject.service.template.WorkSchedulerService;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,12 +23,15 @@ import java.util.stream.Collectors;
 public class WorkSchedulerServiceImpl implements WorkSchedulerService {
 
     private final WorkSchedulerRepository workSchedulerRepository;
+
     private final UserRepository userRepository;
 
     private final WorkSchedulerMapper mapper;
 
     @Override
+    @Transactional
     public WorkSchedulerDTO create(WorkSchedulerDTO dto) {
+
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException(
                         "User not found by id: " + dto.getUserId(), HttpStatus.NOT_FOUND));
@@ -57,7 +62,9 @@ public class WorkSchedulerServiceImpl implements WorkSchedulerService {
 
 
     @Override
-    public WorkSchedulerDTO update(Long id, WorkSchedulerUpdateDto dto) {
+    @Transactional
+    public void update(Long id, WorkSchedulerUpdateDto dto) {
+
         WorkScheduler ws = workSchedulerRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Work schedule not found", HttpStatus.NOT_FOUND));
 
@@ -65,11 +72,12 @@ public class WorkSchedulerServiceImpl implements WorkSchedulerService {
         ws.setStartTime(dto.getStartTime());
         ws.setEndTime(dto.getEndTime());
 
-        WorkScheduler updated = workSchedulerRepository.save(ws);
-        return mapper.toDTO(updated);
+        workSchedulerRepository.save(ws);
+
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         WorkScheduler ws = workSchedulerRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("schedule not found", HttpStatus.NOT_FOUND));
@@ -89,6 +97,6 @@ public class WorkSchedulerServiceImpl implements WorkSchedulerService {
         WorkScheduler ws = workSchedulerRepository
                 .findByUserIdAndDayOfWeek(userId, dayOfWeek)
                 .orElseThrow(() -> new EntityNotFoundException("No schedule found", HttpStatus.NOT_FOUND));
-        return mapper.toDTO(ws) ;
+        return mapper.toDTO(ws);
     }
 }

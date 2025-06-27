@@ -2,6 +2,7 @@ package uz.dev.hmsproject.controller;
 
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,35 +20,34 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/patients")
-
+@RequiredArgsConstructor
 public class PatientController {
 
     private final PatientService patientService;
 
-    public PatientController(PatientService patientService) {
-        this.patientService = patientService;
-    }
-
     @PreAuthorize(value = "hasAuthority('VIEW_PATIENTS')")
     @GetMapping
-    public ResponseEntity<List<PatientDTO>> getAllPatients() {
-        return ResponseEntity
-                .ok(patientService.getAll());
-    }
+    public List<PatientDTO> getAllPatients() {
 
+        return patientService.getAll();
+
+    }
 
     @PreAuthorize(value = "hasAuthority('VIEW_PATIENT')")
     @GetMapping("/{id}")
-    public ResponseEntity<PatientDTO> getPatientById(@PathVariable Long id) {
-        return ResponseEntity
-                .ok(patientService.getById(id));
+    public PatientDTO getPatientById(@PathVariable Long id) {
+
+        return patientService.getById(id);
+
     }
 
 
     @PreAuthorize(value = "hasAuthority('CREATE_PATIENTS')")
     @PostMapping
     public ResponseEntity<?> createPatient(@RequestBody @Valid PatientDTO patientDTO) {
+
         patientService.create(patientDTO);
+
         return ResponseEntity
                 .ok("Patient created successfully");
     }
@@ -56,7 +56,9 @@ public class PatientController {
     @PreAuthorize(value = "hasAuthority('UPDATE_PATIENTS')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePatient(@PathVariable Long id, @RequestBody PatientDTO patientDTO) {
+
         patientService.update(id, patientDTO);
+
         return ResponseEntity
                 .ok("Patient updated successfully");
     }
@@ -67,20 +69,18 @@ public class PatientController {
     public ResponseEntity<?> deletePatient(@PathVariable Long id) {
 
         patientService.delete(id);
+
         return ResponseEntity
                 .ok("Patient deleted successfully");
 
     }
 
 
-
     @PreAuthorize(value = "hasAuthority('PATIENTS_SEARCH')")
     @PostMapping("/search")
-    public ResponseEntity<List<PatientDTO>> searchPatients(@RequestBody PatientSearchDTO searchDTO) {
-        return ResponseEntity
-                .ok(patientService
-                        .search(searchDTO));
+    public List<PatientDTO> searchPatients(@RequestBody PatientSearchDTO searchDTO) {
+
+        return patientService.search(searchDTO);
+
     }
-
-
 }

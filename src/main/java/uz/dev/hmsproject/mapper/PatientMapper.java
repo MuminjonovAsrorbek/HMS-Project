@@ -1,47 +1,30 @@
 package uz.dev.hmsproject.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
 import uz.dev.hmsproject.dto.PatientDTO;
 import uz.dev.hmsproject.entity.Patient;
-import uz.dev.hmsproject.mapper.template.BaseMapper;
 
 import java.util.List;
 
 /**
- * Created by:suhrob
- */
+ * Created by: asrorbek
+ * DateTime: 6/27/25 14:23
+ **/
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface PatientMapper {
 
-@Component
-public class PatientMapper implements BaseMapper<Patient, PatientDTO> {
+    PatientDTO toDTO(Patient patient);
 
-    @Override
-    public PatientDTO toDTO(Patient patient) {
-        if (patient == null) return null;
-        return new PatientDTO(
-                patient.getId(),
-                patient.getFullName(),
-                patient.getBirthDate(),
-                patient.getPhoneNumber(),
-                patient.getAddress(),
-                patient.getCreatedAt()
-        );
-    }
+    List<PatientDTO> toDTO(List<Patient> patients);
 
-    @Override
-    public List<PatientDTO> toDTO(List<Patient> dtos) {
-        return List.of();
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    Patient toEntity(PatientDTO patientDTO);
 
-    @Override
-    public Patient toEntity(PatientDTO dto) {
-        if (dto == null) return null;
-        Patient patient = new Patient();
-        patient.setId(dto.getId());
-        patient.setFullName(dto.getFullName());
-        patient.setBirthDate(dto.getBirthDate());
-        patient.setPhoneNumber(dto.getPhoneNumber());
-        patient.setAddress(dto.getAddress());
-        patient.setCreatedAt(dto.getCreatedAt());
-        return patient;
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    Patient updatePatient(PatientDTO patientDTO, @MappingTarget Patient patient);
 }

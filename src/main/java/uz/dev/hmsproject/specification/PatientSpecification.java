@@ -1,4 +1,4 @@
-package uz.dev.hmsproject.Specification;
+package uz.dev.hmsproject.specification;
 
 
 import jakarta.persistence.criteria.Predicate;
@@ -12,8 +12,6 @@ import java.util.List;
 /**
  * Created by: suhrob
  */
-
-
 
 public class PatientSpecification {
 
