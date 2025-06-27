@@ -4,7 +4,9 @@ import uz.dev.hmsproject.dto.request.AppointmentFilterRequest;
 import uz.dev.hmsproject.dto.request.CreateAppointmentDTO;
 import uz.dev.hmsproject.dto.response.AppointmentDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
+import uz.dev.hmsproject.entity.Appointment;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -28,4 +30,5 @@ public interface AppointmentService {
 
     PageableDTO getTodayAppointments(Integer page);
 
+    List<Appointment> getAppointmentsByDate(LocalDate date);
 }

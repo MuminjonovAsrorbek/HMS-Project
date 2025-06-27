@@ -30,6 +30,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
                                                           LocalDateTime localDateTime1,
                                                           Pageable pageable);
 
+    List<Appointment> findAllByAppointmentDateTimeBetween(LocalDateTime localDateTime,
+                                                          LocalDateTime localDateTime1);
+
     Page<Appointment> findAllByPatientId(Long patientId, Pageable pageable);
 
     @Query("""
@@ -71,4 +74,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate
     );
+
+
 }
