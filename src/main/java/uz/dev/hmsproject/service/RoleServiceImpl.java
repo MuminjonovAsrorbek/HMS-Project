@@ -29,6 +29,7 @@ import java.util.Optional;
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
+
     private final RoleMapper roleMapper;
 
     @Override
