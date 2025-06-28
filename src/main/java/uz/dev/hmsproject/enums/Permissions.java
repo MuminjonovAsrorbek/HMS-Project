@@ -68,4 +68,5 @@ public enum Permissions {
     APPOINTMENTS_DELETE,
     APPOINTMENTS_CHANGE_STATUS,
 
+    VIEW_STATISTICS
 }

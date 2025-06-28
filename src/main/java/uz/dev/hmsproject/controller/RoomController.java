@@ -45,14 +45,18 @@ public class RoomController {
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id,
                                     @RequestBody @Valid RoomDTO roomDTO) {
+
         roomService.update(id, roomDTO);
+
         return ResponseEntity.ok("Room updated successfully");
     }
 
     @PreAuthorize(value = "hasAuthority('DELETE_ROOMS')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+
         roomService.delete(id);
+
         return ResponseEntity.ok("Room deleted successfully");
     }
 }

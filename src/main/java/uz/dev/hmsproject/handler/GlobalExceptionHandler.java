@@ -2,6 +2,7 @@ package uz.dev.hmsproject.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -114,4 +115,17 @@ public class GlobalExceptionHandler {
                 .body(error);
     }
 
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorDTO> handle(ObjectOptimisticLockingFailureException e) {
+
+        ErrorDTO error = new ErrorDTO(
+                HttpStatus.CONFLICT.value(),
+                "This slot has already been booked. Please select another one."
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(error);
+
+    }
 }

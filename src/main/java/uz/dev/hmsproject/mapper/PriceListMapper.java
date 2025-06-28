@@ -1,32 +1,23 @@
 package uz.dev.hmsproject.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 import uz.dev.hmsproject.dto.PriceListDTO;
 import uz.dev.hmsproject.entity.PriceList;
-import uz.dev.hmsproject.mapper.template.BaseMapper;
 
 import java.util.List;
 
-@Component
-public class PriceListMapper implements BaseMapper<PriceList, PriceListDTO> {
+/**
+ * Created by: asrorbek
+ * DateTime: 6/27/25 14:44
+ **/
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface PriceListMapper {
 
-    @Override
-    public PriceListDTO toDTO(PriceList priceList) {
-        PriceListDTO dto = new PriceListDTO();
-        dto.setId(priceList.getId());
-        dto.setSpecialityId(priceList.getSpeciality().getId());
-        dto.setPrice(priceList.getPrice());
-        dto.setUpdateAt(priceList.getUpdateAt());
-        return dto;
-    }
+    @Mapping(target = "specialityId", source = "speciality.id")
+    PriceListDTO toDTO(PriceList priceList);
 
-    @Override
-    public List<PriceListDTO> toDTO(List<PriceList> dtos) {
-        return List.of();
-    }
+    List<PriceListDTO> toDTO(List<PriceList> priceLists);
 
-    @Override
-    public PriceList toEntity(PriceListDTO priceListDto) {
-        return null;
-    }
 }

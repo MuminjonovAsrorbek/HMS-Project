@@ -2,8 +2,6 @@ package uz.dev.hmsproject.service.template;
 
 import uz.dev.hmsproject.dto.DoctorDTO;
 import uz.dev.hmsproject.dto.DoctorFilterDTO;
-import uz.dev.hmsproject.dto.UserDTO;
-import uz.dev.hmsproject.dto.UserFilterDTO;
 import uz.dev.hmsproject.dto.response.DoctorResponseDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 

@@ -1,16 +1,24 @@
 package uz.dev.hmsproject.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.request.AppointmentFilterRequest;
 import uz.dev.hmsproject.dto.request.CreateAppointmentDTO;
 import uz.dev.hmsproject.dto.response.AppointmentDTO;
+import uz.dev.hmsproject.dto.response.PageableDTO;
+import uz.dev.hmsproject.entity.Appointment;
 import uz.dev.hmsproject.service.template.AppointmentService;
+import uz.dev.hmsproject.service.template.FileService;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by: asrorbek
@@ -23,6 +31,8 @@ import java.util.List;
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
+
+    private final FileService fileService;
 
     @PreAuthorize("hasAuthority('APPOINTMENTS_CREATE')")
     @PostMapping
@@ -51,7 +61,8 @@ public class AppointmentController {
 
     @PreAuthorize("hasAuthority('APPOINTMENTS_UPDATE')")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateAppointment(@PathVariable Long id, @RequestBody @Valid CreateAppointmentDTO appointmentDTO) {
+    public ResponseEntity<?> updateAppointment(@PathVariable Long id,
+                                               @RequestBody @Valid CreateAppointmentDTO appointmentDTO) {
 
         appointmentService.updateAppointment(id, appointmentDTO);
 
@@ -71,11 +82,42 @@ public class AppointmentController {
 
     @PreAuthorize("hasAuthority('APPOINTMENTS_CHANGE_STATUS')")
     @PatchMapping("/{id}/status")
-    public ResponseEntity<?> changeAppointmentStatus(@PathVariable Long id, String status) {
+    public ResponseEntity<?> changeAppointmentStatus(@PathVariable Long id,
+                                                     @RequestParam String status) {
 
         appointmentService.changeAppointmentStatus(id, status);
 
         return ResponseEntity.ok("Appointment status updated successfully");
 
+    }
+
+    @PreAuthorize("hasAuthority('APPOINTMENTS_READ')")
+    @GetMapping("/today-appointments")
+    public PageableDTO getTodayAppointments(@RequestParam(value = "page", defaultValue = "0") Integer page) {
+
+        return appointmentService.getTodayAppointments(page);
+
+    }
+
+    @PreAuthorize("hasAuthority('APPOINTMENTS_READ')")
+    @GetMapping("/daily-appointments/export")
+    public void exportDailyAppointmentsToExcel(@RequestParam(required = false) LocalDate date,
+                                               HttpServletResponse response) throws IOException {
+
+        if (Objects.isNull(date)) date = LocalDate.now();
+
+        List<Appointment> appointments = appointmentService.getAppointmentsByDate(date);
+
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+        String fileName = "appointments_" + date + ".xlsx";
+
+        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+
+        Workbook workbook = fileService.generateExcelReport(appointments, date);
+
+        workbook.write(response.getOutputStream());
+
+        workbook.close();
     }
 }
