@@ -39,16 +39,20 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     @Query("""
                  SELECT\s
-                     COUNT(a) AS totalAppointments,
-                     (SELECT COUNT(p) FROM Patient p WHERE p.deleted = false) AS totalPatients,
-                     SUM(CASE WHEN a.status = uz.dev.hmsproject.enums.AppointmentStatus.CANCELED THEN 1 ELSE 0 END) AS totalCanceledAppointments
+                   COUNT(a)                                                    AS totalAppointments,
+                   (SELECT COUNT(p) FROM Patient p WHERE p.deleted = false)   AS totalPatients,
+                   SUM(CASE WHEN a.status = uz.dev.hmsproject.enums.AppointmentStatus.CANCELED THEN 1 ELSE 0 END)
+                                                                              AS totalCanceledAppointments
                  FROM Appointment a
                  WHERE a.deleted = false
-                 AND (:startDate IS NULL OR a.appointmentDateTime >= :startDate)
-                 AND (:endDate IS NULL OR a.appointmentDateTime <= :endDate)
+                   AND a.appointmentDateTime >= COALESCE(:startDate, a.appointmentDateTime)
+                   AND a.appointmentDateTime <= COALESCE(:endDate,   a.appointmentDateTime)
             \s""")
-    StatisticsProjection getStatistics(@Param("startDate") LocalDateTime startDate,
-                                       @Param("endDate") LocalDateTime endDate);
+    StatisticsProjection getStatistics(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
+
 
     @Query("""
             SELECT FUNCTION('DATE', a.appointmentDateTime) AS date, COUNT(a) AS count\s
@@ -60,18 +64,18 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<DailyAppointment> getDailyAppointments(LocalDateTime startDateTime, LocalDateTime endDateTime);
 
     @Query("""
-                 SELECT d.id AS doctorId,\s
-                        u.fullName AS doctorFullName,\s
+                 SELECT d.id AS doctorId,
+                        u.fullName AS doctorFullName,
                         COUNT(a.id) AS appointmentCount
                  FROM Appointment a
                  JOIN a.doctor d
                  JOIN d.user u
                  WHERE a.deleted = false
-                   AND (:startDate IS NULL OR a.appointmentDateTime >= :startDate)
-                   AND (:endDate IS NULL OR a.appointmentDateTime <= :endDate)
+                   AND (a.appointmentDateTime >= COALESCE(:startDate, a.appointmentDateTime))
+                   AND (a.appointmentDateTime <= COALESCE(:endDate, a.appointmentDateTime))
                  GROUP BY d.id, u.fullName
                  ORDER BY u.fullName
-            \s""")
+            """)
     List<DoctorActivity> getDoctorActivities(
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate
