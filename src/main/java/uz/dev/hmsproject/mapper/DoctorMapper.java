@@ -16,14 +16,14 @@ public class DoctorMapper {
 
 
     public DoctorDTO toDTO(Doctor doctor) {
-
         return new DoctorDTO(
                 doctor.getId(),
-                doctor.getUser().getId(),
-                doctor.getSpeciality().getId(),
-                doctor.getRoom().getId()
+                doctor.getUser().getUsername(),
+                doctor.getSpeciality().getName(),
+                doctor.getRoom().getNumber()
         );
     }
+
 
     public List<DoctorResponseDTO> toDTO(List<Doctor> doctors) {
 
@@ -39,5 +39,7 @@ public class DoctorMapper {
         ).toList();
 
     }
+
+
 
 }

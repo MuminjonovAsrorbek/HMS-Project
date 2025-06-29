@@ -27,7 +27,6 @@ import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.mapper.AppointmentMapper;
 import uz.dev.hmsproject.repository.*;
 import uz.dev.hmsproject.service.template.AppointmentService;
-import uz.dev.hmsproject.service.template.NotificationService;
 import uz.dev.hmsproject.utils.SecurityUtils;
 
 import java.math.BigDecimal;

@@ -128,40 +128,37 @@ public class DoctorServiceImpl implements DoctorService {
     @Transactional
     @Override
     public void create(DoctorDTO doctorDTO) {
+        User user = userRepository.findByUsername(doctorDTO.getUsername())
+                .orElseThrow(() -> new EntityNotFoundException("User not found with username: " +
+                        doctorDTO.getUsername(), HttpStatus.NOT_FOUND));
 
-        User user = userRepository.findById(doctorDTO.getUserId()).orElseThrow(() ->
-                new EntityNotFoundException("User not found by id: " +
-                        doctorDTO.getUserId(), HttpStatus.NOT_FOUND));
+        Speciality speciality = specialityRepository.findByName(doctorDTO.getSpeciality())
+                .orElseThrow(() -> new EntityNotFoundException("Speciality not found with name: " +
+                        doctorDTO.getSpeciality(), HttpStatus.NOT_FOUND));
 
-        Speciality speciality = specialityRepository.findById(doctorDTO.getSpecialityId()).orElseThrow(() ->
-                new EntityNotFoundException("Speciality not found by id: " +
-                        doctorDTO.getSpecialityId(), HttpStatus.NOT_FOUND));
+        Room room = roomRepository.findByNumber(doctorDTO.getRoom())
+                .orElseThrow(() -> new EntityNotFoundException("Room not found with number: " +
+                        doctorDTO.getRoom(), HttpStatus.NOT_FOUND));
 
-        Room room = roomRepository.findById(doctorDTO.getRoomId()).orElseThrow(() ->
-                new EntityNotFoundException("Room not found by id: " +
-                        doctorDTO.getRoomId(), HttpStatus.NOT_FOUND));
-
-
-        doctorRepository.findByUser(user).ifPresent(doctor -> {
-            throw new EntityUniqueException("Doctor already exists for user id: " +
-                    doctorDTO.getUserId(), HttpStatus.CONFLICT);
+        doctorRepository.findByUser(user).ifPresent(d -> {
+            throw new EntityUniqueException("Doctor already exists for username: " +
+                    doctorDTO.getUsername(), HttpStatus.CONFLICT);
         });
 
-        doctorRepository.findBySpeciality(speciality).ifPresent(doctor -> {
-            throw new EntityUniqueException("Doctor already exists for speciality id: " +
-                    doctorDTO.getSpecialityId(), HttpStatus.CONFLICT);
+        doctorRepository.findBySpeciality(speciality).ifPresent(d -> {
+            throw new EntityUniqueException("Doctor already exists for speciality: " +
+                    doctorDTO.getSpeciality(), HttpStatus.CONFLICT);
         });
 
-        doctorRepository.findByRoom(room).ifPresent(doctor -> {
-            throw new EntityUniqueException("Doctor already exists for room id: " +
-                    doctorDTO.getRoomId(), HttpStatus.CONFLICT);
+        doctorRepository.findByRoom(room).ifPresent(d -> {
+            throw new EntityUniqueException("Doctor already exists for room: " +
+                    doctorDTO.getRoom(), HttpStatus.CONFLICT);
         });
-
 
         Doctor doctor = new Doctor(user, speciality, room);
-
         doctorRepository.save(doctor);
     }
+
 
     @Transactional
     @Override
@@ -185,21 +182,23 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     private void updateDoctor(DoctorDTO doctorDTO, Doctor doctor, UserRepository userRepository, SpecialityRepository specialityRepository, RoomRepository roomRepository, DoctorRepository doctorRepository) {
-        User user = userRepository.findById(doctorDTO.getUserId()).orElseThrow(() ->
-                new EntityNotFoundException("user not found by id: " + doctorDTO.getUserId(), HttpStatus.NOT_FOUND));
 
-        Speciality speciality = specialityRepository.findById(doctorDTO.getSpecialityId()).orElseThrow(() ->
-                new EntityNotFoundException("speciality not found by id: " + doctorDTO.getSpecialityId(), HttpStatus.NOT_FOUND));
 
-        Room room = roomRepository.findById(doctorDTO.getRoomId()).orElseThrow(() ->
-                new EntityNotFoundException("room not found by id: " + doctorDTO.getRoomId(), HttpStatus.NOT_FOUND));
+        User user = userRepository.findByUsername(doctorDTO.getUsername()).orElseThrow(() ->
+                new EntityNotFoundException("User not found by username: " + doctorDTO.getUsername(), HttpStatus.NOT_FOUND));
+
+        Speciality speciality = specialityRepository.findByName(doctorDTO.getSpeciality()).orElseThrow(() ->
+                new EntityNotFoundException("Speciality not found by name: " + doctorDTO.getSpeciality(), HttpStatus.NOT_FOUND));
+
+        Room room = roomRepository.findByNumber(doctorDTO.getRoom()).orElseThrow(() ->
+                new EntityNotFoundException("Room not found by number: " + doctorDTO.getRoom(), HttpStatus.NOT_FOUND));
 
 
         doctorRepository.findByUser(user)
                 .filter(existing -> !existing.getId().equals(doctor.getId()))
                 .ifPresent(d -> {
                     throw new EntityUniqueException("Another doctor already exists for user id: " +
-                            doctorDTO.getUserId(), HttpStatus.CONFLICT);
+                            doctorDTO.getUsername(), HttpStatus.CONFLICT);
                 });
 
 
@@ -207,7 +206,7 @@ public class DoctorServiceImpl implements DoctorService {
                 .filter(existing -> !existing.getId().equals(doctor.getId()))
                 .ifPresent(d -> {
                     throw new EntityUniqueException("Another doctor already exists for speciality id: " +
-                            doctorDTO.getSpecialityId(), HttpStatus.CONFLICT);
+                            doctorDTO.getSpeciality(), HttpStatus.CONFLICT);
                 });
 
 
@@ -215,7 +214,7 @@ public class DoctorServiceImpl implements DoctorService {
                 .filter(existing -> !existing.getId().equals(doctor.getId()))
                 .ifPresent(d -> {
                     throw new EntityUniqueException("Another doctor already exists for room id: " +
-                            doctorDTO.getRoomId(), HttpStatus.CONFLICT);
+                            doctorDTO.getRoom(), HttpStatus.CONFLICT);
                 });
 
 

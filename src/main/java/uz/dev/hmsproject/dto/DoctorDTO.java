@@ -8,6 +8,8 @@ import java.io.Serializable;
 /**
  * DTO for {@link uz.dev.hmsproject.entity.Doctor}
  */
+
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,9 +17,9 @@ public class DoctorDTO implements Serializable {
 
     private Long id;
 
-    private Long userId;
+    private String username;
 
-    private Long specialityId;
+    private String speciality;
 
-    private Long roomId;
+    private String room;
 }

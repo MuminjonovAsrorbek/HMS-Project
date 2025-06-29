@@ -6,11 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.response.AppointmentRespDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.entity.Appointment;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
+import uz.dev.hmsproject.exception.PatientNotFoundException;
 import uz.dev.hmsproject.mapper.AppointmentMapper;
 import uz.dev.hmsproject.repository.AppointmentRepository;
 import uz.dev.hmsproject.specification.PatientSpecification;
@@ -48,7 +50,9 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public PatientDTO getById(Long id) {
 
-        Patient patient = patientRepository.findByIdOrThrow(id);
+        Patient patient = patientRepository.findById(id).orElseThrow(() ->
+                new PatientNotFoundException("Patient not found with ID: " + id, HttpStatus.NOT_FOUND)
+        );
 
         return patientMapper.toDTO(patient);
 
