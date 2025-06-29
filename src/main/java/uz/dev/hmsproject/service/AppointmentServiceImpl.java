@@ -27,6 +27,7 @@ import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.mapper.AppointmentMapper;
 import uz.dev.hmsproject.repository.*;
 import uz.dev.hmsproject.service.template.AppointmentService;
+import uz.dev.hmsproject.service.template.NotificationService;
 import uz.dev.hmsproject.utils.SecurityUtils;
 
 import java.math.BigDecimal;
@@ -62,17 +63,15 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final EntityManager entityManager;
 
+    private final NotificationService notificationService;
+
     @Override
     @Transactional
     public void createAppointment(CreateAppointmentDTO dto) {
 
-
-
         LocalDate today = LocalDate.now();
 
         if (dto.getAppointmentDateTime().toLocalDate().isBefore(today)) {
-            throw new IllegalArgumentException("Appointments can only be scheduled for today or future dates.");
-        }
 
             throw new AppointmentDateExpiredException("Appointments can only be scheduled for today or future dates.", HttpStatus.BAD_REQUEST);
 
@@ -240,7 +239,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
             if (appointmentStatus == AppointmentStatus.CANCELED) {
 
-            if (appointmentStatus == AppointmentStatus.CANCELED){
                 if (appointment.getAppointmentDateTime().minusHours(1).isBefore(LocalDateTime.now())) {
 
                     throw new AppointmentDateExpiredException("Appointment cannot be canceled less than 1 hour before it starts.", HttpStatus.BAD_REQUEST);
