@@ -7,11 +7,6 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +25,7 @@ import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.mapper.AppointmentMapper;
 import uz.dev.hmsproject.repository.*;
 import uz.dev.hmsproject.service.template.AppointmentService;
+import uz.dev.hmsproject.service.template.NotificationService;
 import uz.dev.hmsproject.utils.SecurityUtils;
 
 import java.math.BigDecimal;
@@ -37,6 +33,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by: asrorbek
@@ -62,6 +59,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentMapper appointmentMapper;
 
     private final EntityManager entityManager;
+
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -105,6 +104,15 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setCreatedBy(currentUser);
 
         appointmentRepository.save(appointment);
+
+        if (Objects.nonNull(patient.getEmail()) && !patient.getEmail().isBlank()) {
+
+            String subject = "Yangi qabul ro'yxatdan o'tkazildi";
+            String patientEmail = appointment.getPatient().getEmail();
+
+            notificationService.sendEmail(patientEmail, subject, appointmentMapper.toDTO(appointment));
+
+        }
     }
 
     @Override
@@ -261,6 +269,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional
     public void changeStatus() {
         List<Appointment> appointments = appointmentRepository.findAllByStatus(AppointmentStatus.SCHEDULED);
 
