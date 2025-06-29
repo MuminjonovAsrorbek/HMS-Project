@@ -25,11 +25,10 @@ public class UserController {
     private final UserService userService;
 
 
-
     @Operation(summary = "Foydalanuvchilarni filtrlash", description = "Foydalanuvchilarni filtrlash")
     @PreAuthorize(value = "hasAuthority('FILTER_USERS')")
     @GetMapping("/filter")
-    public List<UserDTO> filter(UserFilterDTO filterDTO) {
+    public List<UserDTO> filter(@Valid UserFilterDTO filterDTO) {
 
         return userService.filter(filterDTO);
 
@@ -67,7 +66,7 @@ public class UserController {
     @PreAuthorize(value = "hasAuthority('VIEW_USER')")
 
     @GetMapping("/{id}")
-    public UserDTO getById(@PathVariable("id") Long id) {
+    public UserDTO getById(@Valid @PathVariable("id") Long id) {
 
         return userService.getById(id);
 
@@ -152,11 +151,11 @@ public class UserController {
                     """))
         })
 })
-    @PreAuthorize(value = "hasAuthority('CHANGE_USERS_ACTIV')")
+    @PreAuthorize(value = "hasAuthority('UPDATE_USERS')")
     @PatchMapping("/{id}/active")
     public ResponseEntity<?> changeActive(
             @PathVariable("id") Long id,
-            @RequestParam(value = "active", required = false, defaultValue = "true") boolean active
+            @RequestParam(value = "active") boolean active
     ) {
         userService.changeActive(id, active);
         return ResponseEntity.ok("User active status changed successfully");

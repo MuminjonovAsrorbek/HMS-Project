@@ -11,7 +11,6 @@ public enum Permissions {
     DELETE_USERS,
     VIEW_USER,
     FILTER_USERS,
-    CHANGE_USERS_ACTIV,
 
     // ROLES
     VIEW_ROLES,
