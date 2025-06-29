@@ -11,4 +11,6 @@ public interface NotificationService {
 
     void sendEmail(String to, String subject, AppointmentDTO appointmentDTO);
 
+    void sendEmail(String to, String subject, String html);
+
 }

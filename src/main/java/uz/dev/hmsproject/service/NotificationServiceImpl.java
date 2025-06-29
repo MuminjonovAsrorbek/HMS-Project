@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.response.AppointmentDTO;
 import uz.dev.hmsproject.exception.SendEmailErrorException;
@@ -23,6 +24,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final JavaMailSender mailSender;
 
     @Override
+    @Async
     public void sendEmail(String to, String subject, AppointmentDTO appointmentDTO) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
@@ -36,6 +38,25 @@ public class NotificationServiceImpl implements NotificationService {
         } catch (MessagingException e) {
             throw new SendEmailErrorException("Email error occurred: " + to, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Override
+    @Async
+    public void sendEmail(String to, String subject, String html) {
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(html, true);
+
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            throw new SendEmailErrorException("Email error occurred: " + to, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     public String generateAppointmentHtml(AppointmentDTO appointment) {
