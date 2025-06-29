@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.WorkSchedulerDTO;
 import uz.dev.hmsproject.dto.WorkSchedulerUpdateDto;
+import uz.dev.hmsproject.dto.response.RespWorkSchedulerDTO;
 import uz.dev.hmsproject.entity.User;
 import uz.dev.hmsproject.entity.WorkScheduler;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
@@ -14,8 +15,8 @@ import uz.dev.hmsproject.mapper.WorkSchedulerMapper;
 import uz.dev.hmsproject.repository.UserRepository;
 import uz.dev.hmsproject.repository.WorkSchedulerRepository;
 import uz.dev.hmsproject.service.template.WorkSchedulerService;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -85,17 +86,21 @@ public class WorkSchedulerServiceImpl implements WorkSchedulerService {
 
 
     @Override
-    public List<WorkSchedulerDTO> getByUserId(Long userId) {
-        return workSchedulerRepository.findAllByUserId(userId).stream()
-                .map(mapper::toDTO)
-                .collect(Collectors.toList());
+    public List<RespWorkSchedulerDTO> getByUserId(Long userId) {
+        List<WorkScheduler> workSchedulers = workSchedulerRepository.findAllByUserId(userId);
+        if (workSchedulers.isEmpty()) {
+            throw new EntityNotFoundException("No schedules found for user with ID: " + userId, HttpStatus.NOT_FOUND);
+        }
+        return mapper.toRespDTO(workSchedulers);
     }
 
     @Override
-    public WorkSchedulerDTO getByUserIdAndDayOfWeek(Long userId, int dayOfWeek) {
+    public RespWorkSchedulerDTO getByUserIdAndDayOfWeek(Long userId, Integer dayOfWeek) {
         WorkScheduler ws = workSchedulerRepository
                 .findByUserIdAndDayOfWeek(userId, dayOfWeek)
                 .orElseThrow(() -> new EntityNotFoundException("No schedule found", HttpStatus.NOT_FOUND));
-        return mapper.toDTO(ws);
+        return mapper.toRespDTO(ws);
     }
+
+
 }
