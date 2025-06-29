@@ -5,10 +5,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import uz.dev.hmsproject.entity.Appointment;
 import uz.dev.hmsproject.entity.Doctor;
 import uz.dev.hmsproject.enums.AppointmentStatus;
+import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.projection.DailyAppointment;
 import uz.dev.hmsproject.projection.DoctorActivity;
 import uz.dev.hmsproject.projection.StatisticsProjection;
@@ -81,5 +83,11 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findAllByAppointmentDateTimeBetweenAndStatus(LocalDateTime from,
                                                                    LocalDateTime to,
                                                                    AppointmentStatus appointmentStatus);
+
+    default Appointment findByIdOrThrow(Long id) {
+
+        return findById(id).orElseThrow(() -> new EntityNotFoundException("Appointment not found with ID : " + id, HttpStatus.NOT_FOUND));
+
+    }
 
 }
