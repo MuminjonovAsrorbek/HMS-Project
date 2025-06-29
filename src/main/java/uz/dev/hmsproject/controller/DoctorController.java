@@ -40,7 +40,7 @@ public class DoctorController {
 
     @PreAuthorize(value = "hasAuthority('VIEW_DOCTOR')")
     @GetMapping("/{id}")
-    public DoctorDTO getById(@PathVariable("id") Long id) {
+    public DoctorResponseDTO getById(@PathVariable("id") Long id) {
         return doctorService.getById(id);
     }
 

@@ -17,7 +17,7 @@ public interface DoctorService  {
 
     List<DoctorResponseDTO> filter(DoctorFilterDTO filterDTO);
 
-    DoctorDTO getById(Long id);
+    DoctorResponseDTO getById(Long id);
 
     void create(DoctorDTO doctorDTO);
 

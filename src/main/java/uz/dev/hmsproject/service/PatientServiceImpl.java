@@ -46,6 +46,23 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    public PageableDTO getAllPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Patient> patientPage = patientRepository.findAll(pageable);
+
+        List<PatientDTO> patientDTOs = patientMapper.toDTO(patientPage.getContent());
+
+        return new PageableDTO(
+                patientPage.getSize(),
+                patientPage.getTotalElements(),
+                patientPage.getTotalPages(),
+                patientPage.hasNext(),
+                patientPage.hasPrevious(),
+                patientDTOs
+        );
+    }
+
+    @Override
     public PatientDTO getById(Long id) {
 
         Patient patient = patientRepository.findByIdOrThrow(id);
