@@ -76,4 +76,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     );
 
 
+    List<Appointment> findAllByStatus(AppointmentStatus appointmentStatus);
+
+    List<Appointment> findAllByAppointmentDateTimeBetweenAndStatus(LocalDateTime from,
+                                                                   LocalDateTime to,
+                                                                   AppointmentStatus appointmentStatus);
+
 }

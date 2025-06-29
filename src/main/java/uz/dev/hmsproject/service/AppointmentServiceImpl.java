@@ -7,11 +7,6 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,10 +21,12 @@ import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.entity.*;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.enums.AppointmentStatus;
+import uz.dev.hmsproject.exception.AppointmentDateExpiredException;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.mapper.AppointmentMapper;
 import uz.dev.hmsproject.repository.*;
 import uz.dev.hmsproject.service.template.AppointmentService;
+import uz.dev.hmsproject.service.template.NotificationService;
 import uz.dev.hmsproject.utils.SecurityUtils;
 
 import java.math.BigDecimal;
@@ -38,6 +35,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by: asrorbek
@@ -76,7 +74,9 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new IllegalArgumentException("Appointments can only be scheduled for today or future dates.");
         }
 
+            throw new AppointmentDateExpiredException("Appointments can only be scheduled for today or future dates.", HttpStatus.BAD_REQUEST);
 
+        }
 
         Doctor doctor = doctorRepository.findById(dto.getDoctorId())
                 .orElseThrow(() -> new EntityNotFoundException("Doctor not found with ID: " + dto.getDoctorId(), HttpStatus.NOT_FOUND));
@@ -116,6 +116,15 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setCreatedBy(currentUser);
 
         appointmentRepository.save(appointment);
+
+        if (Objects.nonNull(patient.getEmail()) && !patient.getEmail().isBlank()) {
+
+            String subject = "Yangi qabul ro'yxatdan o'tkazildi";
+            String patientEmail = appointment.getPatient().getEmail();
+
+            notificationService.sendEmail(patientEmail, subject, appointmentMapper.toDTO(appointment));
+
+        }
     }
 
     @Override
@@ -225,23 +234,17 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Appointment not found with ID: " + id, HttpStatus.NOT_FOUND));
 
-
-//        try {
-//            AppointmentStatus appointmentStatus = AppointmentStatus.valueOf(status.toUpperCase());
-//            appointment.setStatus(appointmentStatus);
-//            appointmentRepository.save(appointment);
-//        } catch (IllegalArgumentException e) {
-//            throw new RuntimeException("Invalid status: " + status, e);
-//        }
-
-
         try {
             AppointmentStatus appointmentStatus = AppointmentStatus.valueOf(status.toUpperCase());
 
+            if (appointmentStatus == AppointmentStatus.CANCELED) {
+
             if (appointmentStatus == AppointmentStatus.CANCELED){
                 if (appointment.getAppointmentDateTime().minusHours(1).isBefore(LocalDateTime.now())) {
-                    throw new IllegalStateException("Appointment cannot be canceled less than 1 hour before it starts.");
+
+                    throw new AppointmentDateExpiredException("Appointment cannot be canceled less than 1 hour before it starts.", HttpStatus.BAD_REQUEST);
                 }
+
             }
 
             appointment.setStatus(appointmentStatus);
@@ -287,6 +290,27 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return appointmentRepository.findAllByAppointmentDateTimeBetween(date.atStartOfDay(),
                 date.plusDays(1).atStartOfDay());
+
+    }
+
+    @Override
+    @Transactional
+    public void changeStatus() {
+        List<Appointment> appointments = appointmentRepository.findAllByStatus(AppointmentStatus.SCHEDULED);
+
+        if (appointments.isEmpty()) {
+            return;
+        }
+
+        for (Appointment appointment : appointments) {
+
+            if (appointment.getAppointmentDateTime().isBefore(LocalDate.now().atStartOfDay())) {
+
+                appointment.setStatus(AppointmentStatus.EXPIRED);
+
+                appointmentRepository.save(appointment);
+            }
+        }
 
     }
 }
