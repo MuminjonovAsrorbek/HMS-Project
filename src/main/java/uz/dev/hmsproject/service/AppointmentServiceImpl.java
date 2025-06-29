@@ -238,7 +238,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         try {
             AppointmentStatus appointmentStatus = AppointmentStatus.valueOf(status.toUpperCase());
 
-            if (appointmentStatus == AppointmentStatus.CANCELED) {
+            if (appointmentStatus == AppointmentStatus.CANCELED){
                 if (appointment.getAppointmentDateTime().minusHours(1).isBefore(LocalDateTime.now())) {
                     throw new IllegalStateException("Appointment cannot be canceled less than 1 hour before it starts.");
                 }
