@@ -9,7 +9,6 @@ import uz.dev.hmsproject.dto.RoleDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.service.template.RoleService;
 
-
 @RestController
 @RequestMapping("/api/v1/role")
 @RequiredArgsConstructor

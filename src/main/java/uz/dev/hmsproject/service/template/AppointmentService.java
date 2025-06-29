@@ -1,6 +1,7 @@
 package uz.dev.hmsproject.service.template;
 
 import uz.dev.hmsproject.dto.request.AppointmentFilterRequest;
+import uz.dev.hmsproject.dto.request.AppointmentRescheduleRequest;
 import uz.dev.hmsproject.dto.request.CreateAppointmentDTO;
 import uz.dev.hmsproject.dto.response.AppointmentDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
@@ -33,4 +34,6 @@ public interface AppointmentService {
     List<Appointment> getAppointmentsByDate(LocalDate date);
 
     void changeStatus();
+
+    void reschedule(AppointmentRescheduleRequest dto);
 }

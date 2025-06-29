@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.request.AppointmentFilterRequest;
+import uz.dev.hmsproject.dto.request.AppointmentRescheduleRequest;
 import uz.dev.hmsproject.dto.request.CreateAppointmentDTO;
 import uz.dev.hmsproject.dto.response.AppointmentDTO;
 import uz.dev.hmsproject.dto.response.AppointmentRespDTO;
@@ -310,6 +311,86 @@ public class AppointmentServiceImpl implements AppointmentService {
 
                 appointmentRepository.save(appointment);
             }
+        }
+
+    }
+
+    @Override
+    @Transactional
+    public void reschedule(AppointmentRescheduleRequest dto) {
+
+        Appointment appointment = appointmentRepository.findByIdOrThrow(dto.getAppointmentId());
+
+        if (appointment.getStatus().equals(AppointmentStatus.SCHEDULED)) {
+
+            throw new IllegalStateException("Can change Appointment only in Scheduled mode");
+
+        }
+
+        LocalDate today = LocalDate.now();
+
+        if (dto.getNewDateTime().toLocalDate().isBefore(today)) {
+
+            throw new AppointmentDateExpiredException("Appointments can only be scheduled for today or future dates.", HttpStatus.BAD_REQUEST);
+
+        }
+
+        Doctor doctor = appointment.getDoctor();
+
+        if (Objects.nonNull(dto.getNewDoctorId())) {
+
+            doctor = doctorRepository.findById(dto.getNewDoctorId())
+                    .orElseThrow(() -> new EntityNotFoundException("Doctor not found with ID: " + dto.getNewDoctorId(), HttpStatus.NOT_FOUND));
+
+        }
+
+        LocalDate date = dto.getNewDateTime().toLocalDate();
+        LocalTime time = dto.getNewDateTime().toLocalTime();
+
+        WorkScheduler schedule = schedulerRepository.findByUserIdAndDayOfWeek(
+                        doctor.getUser().getId(), date.getDayOfWeek().getValue())
+                .orElseThrow(() -> new RuntimeException("Doctor doesn't work that day"));
+
+        if (time.isBefore(schedule.getStartTime()) ||
+                time.plusMinutes(20).isAfter(schedule.getEndTime())) {
+            throw new RuntimeException("Time is outside doctor's schedule");
+        }
+
+        boolean exists = appointmentRepository.existsByDoctorAndAppointmentDateTime(doctor, dto.getNewDateTime());
+
+        if (exists) throw new RuntimeException("This time slot is already booked");
+
+        appointment.setAppointmentDateTime(dto.getNewDateTime());
+        appointment.setDoctor(doctor);
+
+        appointmentRepository.save(appointment);
+
+        sendEmail(appointment);
+    }
+
+    @Transactional
+    public void sendEmail(Appointment appointment) {
+
+        String email = appointment.getPatient().getEmail();
+        if (email != null && !email.isBlank()) {
+
+            String subject = "Qabul vaqti o'zgartirildi";
+            String message = String.format("""
+                            Hurmatli %s,
+                            
+                            Sizning qabulingiz yangi vaqtga ko'chirildi:
+                            Sana-vaqt: %s
+                            Shifokor: %s
+                            Xona: %s
+                            Narx: %s so'm
+                            
+                            E'tiboringiz uchun rahmat.""",
+                    appointment.getPatient().getFullName(),
+                    appointment.getAppointmentDateTime(),
+                    appointment.getDoctor().getUser().getFullName(),
+                    appointment.getDoctor().getRoom().getNumber(),
+                    appointment.getPrice());
+            notificationService.sendEmail(email, subject, message);
         }
 
     }
