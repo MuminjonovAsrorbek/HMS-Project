@@ -31,4 +31,6 @@ public interface AppointmentService {
     PageableDTO getTodayAppointments(Integer page);
 
     List<Appointment> getAppointmentsByDate(LocalDate date);
+
+    void changeStatus();
 }
