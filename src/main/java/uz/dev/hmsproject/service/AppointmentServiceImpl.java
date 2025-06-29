@@ -261,6 +261,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional
     public void changeStatus() {
         List<Appointment> appointments = appointmentRepository.findAllByStatus(AppointmentStatus.SCHEDULED);
 

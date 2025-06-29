@@ -4,13 +4,16 @@ package uz.dev.hmsproject.enums;
 
 public enum Permissions {
 
+    //USER MANAGEMENT
     VIEW_USERS,
     CREATE_USERS,
     UPDATE_USERS,
     DELETE_USERS,
     VIEW_USER,
     FILTER_USERS,
+    CHANGE_USERS_ACTIV,
 
+    // ROLES
     VIEW_ROLES,
     VIEW_ROLE,
     CREATE_ROLES,

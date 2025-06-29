@@ -112,6 +112,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
+    public void changeActive(Long id, boolean active) {
+        userRepository.findById(id).ifPresentOrElse(
+                user -> {
+                    user.setActive(active);
+                    userRepository.save(user);
+                },
+                () -> {
+                    throw new EntityNotFoundException("User not found with ID : " + id, HttpStatus.NOT_FOUND);
+                }
+        );
+    }
+
+    @Override
     public List<UserDTO> getAll() {
 
         List<User> users = userRepository.findAll();
@@ -157,18 +171,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("User not found with ID : " + id, HttpStatus.NOT_FOUND)
         );
-
         if (userRepository.existsByUsername(userDTO.getUsername()) && !user.getUsername().equals(userDTO.getUsername())) {
 
             throw new UserAlreadyExistsWithUsernameException(userDTO.getUsername(), HttpStatus.CONFLICT);
 
         }
-
         Role role = roleRepository.findById(userDTO.getRoleId())
                 .orElseThrow(
                         () -> new EntityNotFoundException("User not found with ID : " + userDTO.getRoleId(), HttpStatus.NOT_FOUND)
                 );
-
         user.setUsername(userDTO.getUsername());
         user.setFullName(userDTO.getFullName());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
