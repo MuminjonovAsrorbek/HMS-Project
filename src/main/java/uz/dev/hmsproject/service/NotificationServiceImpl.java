@@ -2,6 +2,7 @@ package uz.dev.hmsproject.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -25,6 +26,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Async
+    @Transactional
     public void sendEmail(String to, String subject, AppointmentDTO appointmentDTO) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
@@ -42,6 +44,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Async
+    @Transactional
     public void sendEmail(String to, String subject, String html) {
 
         try {

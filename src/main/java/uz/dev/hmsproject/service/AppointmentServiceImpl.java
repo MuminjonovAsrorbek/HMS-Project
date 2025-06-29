@@ -365,6 +365,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         sendEmail(appointment);
     }
 
+    @Transactional
     public void sendEmail(Appointment appointment) {
 
         String email = appointment.getPatient().getEmail();
