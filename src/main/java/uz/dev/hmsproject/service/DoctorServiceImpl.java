@@ -117,12 +117,13 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     @Override
-    public DoctorDTO getById(Long id) {
+    public DoctorResponseDTO getById(Long id) {
 
         Doctor doctor = doctorRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Doctor not found by id: " + id, HttpStatus.NOT_FOUND));
 
-        return doctorMapper.toDTO(doctor);
+        return doctorMapper.toResponseDTO(doctor);
+
     }
 
     @Transactional

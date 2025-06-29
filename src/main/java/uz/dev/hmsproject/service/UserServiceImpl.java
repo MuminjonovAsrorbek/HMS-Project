@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.UserDTO;
 import uz.dev.hmsproject.dto.UserFilterDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
+import uz.dev.hmsproject.dto.response.RespUserDTO;
 import uz.dev.hmsproject.entity.Role;
 import uz.dev.hmsproject.entity.User;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
         List<User> users = usersPage.getContent();
 
-        List<UserDTO> userDTOS = userMapper.toDTO(users);
+        List<RespUserDTO> userDTOS = userMapper.toRespDTO(users);
 
         return new PageableDTO(
                 usersPage.getSize(),
@@ -69,9 +70,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> filter(UserFilterDTO filterDTO) {
+    public List<RespUserDTO> filter(UserFilterDTO filterDTO) {
         if (filterDTO == null) {
-            return getAll();
+            throw new IllegalArgumentException("Filter criteria cannot be null");
         }
         CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
@@ -108,7 +109,7 @@ public class UserServiceImpl implements UserService {
         criteriaQuery.where(predicates.toArray(new Predicate[0]));
         List<User> users = manager.createQuery(criteriaQuery).getResultList();
 
-        return userMapper.toDTO(users);
+        return userMapper.toRespDTO(users);
     }
 
     @Override
@@ -124,19 +125,9 @@ public class UserServiceImpl implements UserService {
                 }
         );
     }
-
     @Override
-    public List<UserDTO> getAll() {
-
-        List<User> users = userRepository.findAll();
-
-        return userMapper.toDTO(users);
-    }
-
-    @Override
-    public UserDTO getById(Long id) {
-
-        return userMapper.toDTO(userRepository.findById(id)
+    public RespUserDTO getById(Long id) {
+        return userMapper.toRespDTO(userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID : " + id, HttpStatus.NOT_FOUND)));
     }
 

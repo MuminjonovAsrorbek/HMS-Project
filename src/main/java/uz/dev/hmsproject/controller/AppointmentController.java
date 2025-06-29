@@ -21,10 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Created by: asrorbek
- * DateTime: 6/22/25 15:27
- **/
+
 
 @RestController
 @RequestMapping("/api/v1/appointment")

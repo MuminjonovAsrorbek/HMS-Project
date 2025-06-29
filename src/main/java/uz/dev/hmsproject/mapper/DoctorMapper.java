@@ -24,6 +24,16 @@ public class DoctorMapper {
                 doctor.getRoom().getId()
         );
     }
+    public DoctorResponseDTO toResponseDTO(Doctor doctor) {
+        return new DoctorResponseDTO(
+                doctor.getId(),
+                doctor.getUser().getFullName(),
+                doctor.getUser().getUsername(),
+                doctor.getSpeciality().getName(),
+                priceListMapper.toDTO(doctor.getSpeciality().getPriceList()),
+                doctor.getRoom().getNumber()
+        );
+    }
 
     public List<DoctorResponseDTO> toDTO(List<Doctor> doctors) {
 

@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.WorkSchedulerDTO;
 import uz.dev.hmsproject.dto.WorkSchedulerUpdateDto;
+import uz.dev.hmsproject.dto.response.RespWorkSchedulerDTO;
 import uz.dev.hmsproject.service.template.WorkSchedulerService;
 import java.util.List;
 
@@ -19,14 +20,14 @@ public class WorkSchedulerController {
 
     @PreAuthorize("hasAuthority('VIEW_WORK_SCHEDULE')")
     @GetMapping("/user/{userId}")
-    public List<WorkSchedulerDTO> getAllByUser(@PathVariable Long userId) {
+    public List<RespWorkSchedulerDTO> getAllByUser(@PathVariable Long userId) {
 
         return workSchedulerService.getByUserId(userId);
     }
 
     @PreAuthorize("hasAuthority('VIEW_WORK_SCHEDULE')")
     @GetMapping("/user/{userId}/day/{dayOfWeek}")
-    public WorkSchedulerDTO getByUserIdAndDay(@PathVariable Long userId,
+    public RespWorkSchedulerDTO getByUserIdAndDay(@PathVariable Long userId,
                                               @PathVariable int dayOfWeek) {
 
         return workSchedulerService.getByUserIdAndDayOfWeek(userId, dayOfWeek);

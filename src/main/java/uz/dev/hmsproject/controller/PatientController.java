@@ -24,9 +24,10 @@ public class PatientController {
 
     @PreAuthorize(value = "hasAuthority('VIEW_PATIENTS')")
     @GetMapping
-    public List<PatientDTO> getAllPatients() {
+    public PageableDTO getAllPatients(@RequestParam(value = "page", defaultValue = "0") int page,
+                                      @RequestParam(value = "size", defaultValue = "10") int size) {
 
-        return patientService.getAll();
+        return patientService.getAllPaginated(page, size);
 
     }
 
