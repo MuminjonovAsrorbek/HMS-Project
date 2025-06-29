@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.request.AppointmentFilterRequest;
+import uz.dev.hmsproject.dto.request.AppointmentRescheduleRequest;
 import uz.dev.hmsproject.dto.request.CreateAppointmentDTO;
 import uz.dev.hmsproject.dto.response.AppointmentDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
@@ -41,6 +42,7 @@ public class AppointmentController {
         appointmentService.createAppointment(createAppointmentDTO);
 
         return ResponseEntity.ok("Appointment created successfully");
+
     }
 
     @PreAuthorize("hasAuthority('APPOINTMENTS_READ')")
@@ -119,5 +121,15 @@ public class AppointmentController {
         workbook.write(response.getOutputStream());
 
         workbook.close();
+    }
+
+    @PreAuthorize("hasAuthority('APPOINTMENTS_UPDATE')")
+    @PutMapping("/reschedule")
+    public ResponseEntity<?> reschedule(@RequestBody @Valid AppointmentRescheduleRequest dto) {
+
+        appointmentService.reschedule(dto);
+
+        return ResponseEntity.ok("Appointment rescheduled successfully");
+
     }
 }

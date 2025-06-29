@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/hms_project
+    url: jdbc:postgresql://localhost:5432/doctor_db
     username: postgres
-    password: postgres
+    password: suhrob2008
   jpa:
     hibernate:
       ddl-auto: update
@@ -13,6 +13,17 @@ spring:
         format_sql: true
   banner:
     location: classpath:product-banner.txt
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: muminjonovasrorbek2004@gmail.com
+    password: 'thav mxox tqfb xjge'
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 myapp:
   secret-key: 'c0388696-55b0-479c-a142-a2ae7cbe269a'
 
