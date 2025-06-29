@@ -9,7 +9,6 @@ import uz.dev.hmsproject.dto.RoomDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.service.template.RoomService;
 
-
 @RestController
 @RequestMapping("/api/v1/room")
 @RequiredArgsConstructor

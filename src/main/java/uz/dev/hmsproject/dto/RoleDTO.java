@@ -7,9 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uz.dev.hmsproject.enums.Permissions;
-
 import java.util.List;
-
 
 @Data
 @AllArgsConstructor

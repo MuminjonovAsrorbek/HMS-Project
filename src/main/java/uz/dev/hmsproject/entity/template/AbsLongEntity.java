@@ -1,11 +1,9 @@
 package uz.dev.hmsproject.entity.template;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
+import uz.dev.hmsproject.listener.EntityAuditListener;
 
 
 @AllArgsConstructor
@@ -15,6 +13,7 @@ import lombok.experimental.FieldNameConstants;
 @ToString
 @MappedSuperclass
 @FieldNameConstants
+@EntityListeners(EntityAuditListener.class)
 public abstract class AbsLongEntity {
 
     @Id
