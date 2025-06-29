@@ -26,6 +26,7 @@ import java.util.List;
 @SQLDelete(sql = "update users set deleted=true where id=?")
 @SQLRestriction(value = "deleted=false")
 @FieldNameConstants
+@Builder
 public class User extends AbsDeleteEntity implements UserDetails {
 
     @Column(nullable = false)

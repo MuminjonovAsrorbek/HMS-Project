@@ -80,6 +80,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         Doctor doctor = doctorRepository.findById(dto.getDoctorId())
                 .orElseThrow(() -> new EntityNotFoundException("Doctor not found with ID: " + dto.getDoctorId(), HttpStatus.NOT_FOUND));
 
+        if (!doctor.getUser().isActive())
+            throw new EntityNotFoundException("The doctor isn't active now", HttpStatus.BAD_REQUEST);
+
         Patient patient = patientRepository.findById(dto.getPatientId())
                 .orElseThrow(() -> new EntityNotFoundException("Patient not found with ID: " + dto.getPatientId(), HttpStatus.NOT_FOUND));
 
@@ -180,6 +183,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Doctor doctor = doctorRepository.findById(dto.getDoctorId())
                 .orElseThrow(() -> new EntityNotFoundException("Doctor not found with ID: " + dto.getDoctorId(), HttpStatus.NOT_FOUND));
+
+        if (!doctor.getUser().isActive())
+            throw new EntityNotFoundException("The doctor isn't active now", HttpStatus.BAD_REQUEST);
 
         Patient patient = patientRepository.findById(dto.getPatientId())
                 .orElseThrow(() -> new EntityNotFoundException("Patient not found with ID: " + dto.getPatientId(), HttpStatus.NOT_FOUND));
@@ -295,6 +301,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void changeStatus() {
+
         List<Appointment> appointments = appointmentRepository.findAllByStatus(AppointmentStatus.SCHEDULED);
 
         if (appointments.isEmpty()) {
@@ -303,7 +310,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         for (Appointment appointment : appointments) {
 
-            if (appointment.getAppointmentDateTime().isBefore(LocalDate.now().atStartOfDay())) {
+            if (appointment.getAppointmentDateTime().isBefore(LocalDateTime.now())) {
 
                 appointment.setStatus(AppointmentStatus.EXPIRED);
 
@@ -336,6 +343,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         Doctor doctor = appointment.getDoctor();
 
         if (Objects.nonNull(dto.getNewDoctorId())) {
+
+            if (!doctor.getUser().isActive())
+                throw new EntityNotFoundException("The doctor isn't active now", HttpStatus.BAD_REQUEST);
 
             doctor = doctorRepository.findById(dto.getNewDoctorId())
                     .orElseThrow(() -> new EntityNotFoundException("Doctor not found with ID: " + dto.getNewDoctorId(), HttpStatus.NOT_FOUND));
