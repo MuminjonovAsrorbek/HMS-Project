@@ -137,4 +137,13 @@ public class GlobalExceptionHandler {
                 .body(error);
 
     }
+
+    @ExceptionHandler(value = SendEmailErrorException.class)
+    public ResponseEntity<ErrorDTO> handle(SendEmailErrorException e) {
+        ErrorDTO errorDTO = new ErrorDTO(
+                e.getStatus().value(),
+                e.getMessage()
+        );
+        return new ResponseEntity<>(errorDTO, e.getStatus());
+    }
 }
