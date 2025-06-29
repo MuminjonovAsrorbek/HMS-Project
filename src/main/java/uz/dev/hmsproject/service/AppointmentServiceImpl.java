@@ -21,6 +21,7 @@ import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.entity.*;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.enums.AppointmentStatus;
+import uz.dev.hmsproject.exception.AppointmentDateExpiredException;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.mapper.AppointmentMapper;
 import uz.dev.hmsproject.repository.*;
@@ -67,15 +68,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     public void createAppointment(CreateAppointmentDTO dto) {
 
-
-
         LocalDate today = LocalDate.now();
 
         if (dto.getAppointmentDateTime().toLocalDate().isBefore(today)) {
-            throw new IllegalArgumentException("Appointments can only be scheduled for today or future dates.");
+
+            throw new AppointmentDateExpiredException("Appointments can only be scheduled for today or future dates.", HttpStatus.BAD_REQUEST);
+
         }
-
-
 
         Doctor doctor = doctorRepository.findById(dto.getDoctorId())
                 .orElseThrow(() -> new EntityNotFoundException("Doctor not found with ID: " + dto.getDoctorId(), HttpStatus.NOT_FOUND));
@@ -233,23 +232,16 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Appointment not found with ID: " + id, HttpStatus.NOT_FOUND));
 
-
-//        try {
-//            AppointmentStatus appointmentStatus = AppointmentStatus.valueOf(status.toUpperCase());
-//            appointment.setStatus(appointmentStatus);
-//            appointmentRepository.save(appointment);
-//        } catch (IllegalArgumentException e) {
-//            throw new RuntimeException("Invalid status: " + status, e);
-//        }
-
-
         try {
             AppointmentStatus appointmentStatus = AppointmentStatus.valueOf(status.toUpperCase());
 
             if (appointmentStatus == AppointmentStatus.CANCELED) {
+
                 if (appointment.getAppointmentDateTime().minusHours(1).isBefore(LocalDateTime.now())) {
-                    throw new IllegalStateException("Appointment cannot be canceled less than 1 hour before it starts.");
+
+                    throw new AppointmentDateExpiredException("Appointment cannot be canceled less than 1 hour before it starts.", HttpStatus.BAD_REQUEST);
                 }
+
             }
 
             appointment.setStatus(appointmentStatus);
