@@ -15,3 +15,4 @@ public interface PatientService extends BaseService<PatientDTO, Long>{
 
     PageableDTO getPatientHistory(Long patientId, Integer page);
 }
+

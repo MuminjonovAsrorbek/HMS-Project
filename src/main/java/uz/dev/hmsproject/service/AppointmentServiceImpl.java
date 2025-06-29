@@ -34,6 +34,7 @@ import uz.dev.hmsproject.utils.SecurityUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public void createAppointment(CreateAppointmentDTO dto) {
+
+
+
+        LocalDate today = LocalDate.now();
+
+        if (dto.getAppointmentDateTime().toLocalDate().isBefore(today)) {
+            throw new IllegalArgumentException("Appointments can only be scheduled for today or future dates.");
+        }
+
+
 
         Doctor doctor = doctorRepository.findById(dto.getDoctorId())
                 .orElseThrow(() -> new EntityNotFoundException("Doctor not found with ID: " + dto.getDoctorId(), HttpStatus.NOT_FOUND));
@@ -214,13 +225,32 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Appointment not found with ID: " + id, HttpStatus.NOT_FOUND));
 
+
+//        try {
+//            AppointmentStatus appointmentStatus = AppointmentStatus.valueOf(status.toUpperCase());
+//            appointment.setStatus(appointmentStatus);
+//            appointmentRepository.save(appointment);
+//        } catch (IllegalArgumentException e) {
+//            throw new RuntimeException("Invalid status: " + status, e);
+//        }
+
+
         try {
             AppointmentStatus appointmentStatus = AppointmentStatus.valueOf(status.toUpperCase());
+
+            if (appointmentStatus == AppointmentStatus.CANCELED) {
+                if (appointment.getAppointmentDateTime().minusHours(1).isBefore(LocalDateTime.now())) {
+                    throw new IllegalStateException("Appointment cannot be canceled less than 1 hour before it starts.");
+                }
+            }
+
             appointment.setStatus(appointmentStatus);
             appointmentRepository.save(appointment);
+
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Invalid status: " + status, e);
         }
+
 
     }
 

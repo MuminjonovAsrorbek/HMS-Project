@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +21,6 @@ import java.util.Objects;
  * Created by: asrorbek
  * DateTime: 6/20/25 16:00
  **/
-
 @Component
 public class JWTFilter extends OncePerRequestFilter {
 
@@ -32,7 +32,6 @@ public class JWTFilter extends OncePerRequestFilter {
         this.jwtService = jwtService;
         this.authService = authService;
     }
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

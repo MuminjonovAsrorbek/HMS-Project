@@ -41,6 +41,7 @@ public class AppointmentController {
         appointmentService.createAppointment(createAppointmentDTO);
 
         return ResponseEntity.ok("Appointment created successfully");
+
     }
 
     @PreAuthorize("hasAuthority('APPOINTMENTS_READ')")
