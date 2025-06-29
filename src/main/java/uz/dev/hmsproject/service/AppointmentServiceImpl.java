@@ -164,7 +164,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
 
         cq.where(cb.and(predicates.toArray(new Predicate[0])));
-        cq.orderBy(cb.asc(root.get("appointmentDatetime")));
+
+        cq.orderBy(cb.asc(root.get("appointmentDateTime")));
 
         List<Appointment> results = entityManager.createQuery(cq).getResultList();
 
@@ -321,7 +322,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = appointmentRepository.findByIdOrThrow(dto.getAppointmentId());
 
-        if (appointment.getStatus().equals(AppointmentStatus.SCHEDULED)) {
+        if (!appointment.getStatus().equals(AppointmentStatus.SCHEDULED)) {
 
             throw new IllegalStateException("Can change Appointment only in Scheduled mode");
 

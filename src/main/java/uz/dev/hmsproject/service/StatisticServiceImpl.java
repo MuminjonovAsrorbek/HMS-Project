@@ -11,6 +11,7 @@ import uz.dev.hmsproject.service.template.StatisticService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -28,9 +29,9 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public StatisticsResponseDTO getDailyStatistics(LocalDate startDate, LocalDate endDate) {
 
-        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime startDateTime = startDate.atTime(LocalTime.MIN);
 
-        LocalDateTime endDateTime = endDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
 
         StatisticsProjection statistics = appointmentRepository.getStatistics(startDateTime, endDateTime);
 

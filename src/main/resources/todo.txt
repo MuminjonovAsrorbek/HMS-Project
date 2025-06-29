@@ -1,0 +1,2 @@
+1. doctor haiqda ma'lumot olayotganda to'liq bo'lishi kerak
+2. Doctorni bo'sh vaqtlarini ko'rsatayotgan paytda tizimni hozirgi vaqtigadan keyingi qismini olib o'tgan qismini kesib tashlash kerak

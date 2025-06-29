@@ -15,6 +15,7 @@ import java.io.IOException;
 public class SecurityAccessExceptionHandler implements AuthenticationEntryPoint {
 
     private final ObjectMapper mapper = new ObjectMapper();
+
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
@@ -23,7 +24,7 @@ public class SecurityAccessExceptionHandler implements AuthenticationEntryPoint 
         ErrorDTO errorDTO = new ErrorDTO(
                 403,
                 authException.getMessage()
-                );
+        );
 
         String json = mapper.writeValueAsString(errorDTO);
 
