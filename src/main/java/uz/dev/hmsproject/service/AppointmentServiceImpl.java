@@ -259,4 +259,24 @@ public class AppointmentServiceImpl implements AppointmentService {
                 date.plusDays(1).atStartOfDay());
 
     }
+
+    @Override
+    public void changeStatus() {
+        List<Appointment> appointments = appointmentRepository.findAllByStatus(AppointmentStatus.SCHEDULED);
+
+        if (appointments.isEmpty()) {
+            return;
+        }
+
+        for (Appointment appointment : appointments) {
+
+            if (appointment.getAppointmentDateTime().isBefore(LocalDate.now().atStartOfDay())) {
+
+                appointment.setStatus(AppointmentStatus.EXPIRED);
+
+                appointmentRepository.save(appointment);
+            }
+        }
+
+    }
 }
