@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.UserDTO;
 import uz.dev.hmsproject.dto.UserFilterDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
+import uz.dev.hmsproject.dto.response.RespUserDTO;
 import uz.dev.hmsproject.service.template.UserService;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class UserController {
     @Operation(summary = "Foydalanuvchilarni filtrlash", description = "Foydalanuvchilarni filtrlash")
     @PreAuthorize(value = "hasAuthority('FILTER_USERS')")
     @GetMapping("/filter")
-    public List<UserDTO> filter(@Valid UserFilterDTO filterDTO) {
+    public List<RespUserDTO> filter(@Valid UserFilterDTO filterDTO) {
 
         return userService.filter(filterDTO);
 
@@ -65,8 +66,7 @@ public class UserController {
     @PreAuthorize(value = "hasAuthority('VIEW_USER')")
 
     @GetMapping("/{id}")
-    public UserDTO getById(@PathVariable("id") Long id) {
-
+    public RespUserDTO getById(@PathVariable("id") Long id) {
         return userService.getById(id);
 
     }
