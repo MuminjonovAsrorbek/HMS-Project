@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <script src="https://www.google.com/recaptcha/api.js?render=6Le1rHErAAAAAH9f_A3JPoNt7Tbv8ejBFK9XlfcL"></script>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+<div class="wrapper">
+    <form id="loginForm">
+        <h1>Login</h1>
+        <div class="input-box">
+            <input id="username" type="text" placeholder="Username" required>
+            <i class='bx bxs-user'></i>
+        </div>
+        <div class="input-box">
+            <input id="password" type="password" placeholder="Password" required>
+            <i class='bx bxs-lock-alt'></i>
+        </div>
+        <button id="btnLogin" type="submit" class="btn">Login</button>
+    </form>
+</div>
+
+<script>
+    const siteKey = '6Le1rHErAAAAAH9f_A3JPoNt7Tbv8ejBFK9XlfcL'; // Google reCAPTCHA site key
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // 1) reCAPTCHA token olish
+        const recaptchaToken = await grecaptcha.execute(siteKey, {action: 'login'});
+
+        // 2) JSON tayyorlash
+        const payload = {username, password, recaptchaToken};
+
+        try {
+            // 3) So‘rov yuborish
+            const res = await fetch('/api/v1/auth/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error('Login failed');
+
+            const data = await res.json(); // { token: "eyJhbGci...", ... }
+            // 4) JWT ni localStorage ga saqlash
+            localStorage.setItem('jwtToken', data.token);
+            // 5) Kerakli sahifaga yo‘naltirish
+            window.location.href = '/dashboard';
+        } catch (err) {
+            alert(err.message);
+        }
+    });
+
+    // reCAPTCHA ni render qilish
+    grecaptcha.ready(() => {
+        console.log('reCAPTCHA tayyor');
+    });
+</script>
+</body>
+</html>
