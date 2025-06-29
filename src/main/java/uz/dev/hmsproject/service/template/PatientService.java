@@ -14,5 +14,10 @@ public interface PatientService extends BaseService<PatientDTO, Long>{
     List<PatientDTO> search(PatientSearchDTO searchDTO);
 
     PageableDTO getPatientHistory(Long patientId, Integer page);
+
+
+    PageableDTO getAllPaginated(int page, int size);
+
+
 }
 

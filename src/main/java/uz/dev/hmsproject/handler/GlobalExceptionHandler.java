@@ -20,6 +20,14 @@ import java.util.List;
 @RestControllerAdvice(basePackages = "uz.dev.hmsproject")
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(value = InvalidRecaptchaTokenException.class)
+    public ResponseEntity<ErrorDTO> invalidRecaptchaTokenException(InvalidRecaptchaTokenException ex) {
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMessage(ex.getMessage());
+        errorDTO.setCode(HttpStatus.UNAUTHORIZED.value());
+        return new ResponseEntity<>(errorDTO, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(value = EntityUniqueException.class)
     public ResponseEntity<ErrorDTO> handleEntityUniqueException(EntityUniqueException e) {
         ErrorDTO errorDTO = new ErrorDTO();

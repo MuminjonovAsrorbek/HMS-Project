@@ -3,7 +3,7 @@ package uz.dev.hmsproject.listener;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import uz.dev.hmsproject.entity.AuditLog;
@@ -47,7 +47,7 @@ public class EntityAuditListener {
         log.setAction(action);
         log.setTimestamp(LocalDateTime.now());
 
-        // Entity ID olish
+
         if (entity instanceof AbsLongEntity baseEntity) {
             log.setEntityId(baseEntity.getId());
         }
