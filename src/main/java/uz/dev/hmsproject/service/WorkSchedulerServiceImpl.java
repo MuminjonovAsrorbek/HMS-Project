@@ -36,6 +36,9 @@ public class WorkSchedulerServiceImpl implements WorkSchedulerService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "User not found by id: " + dto.getUserId(), HttpStatus.NOT_FOUND));
 
+        if (!user.isActive())
+            throw new EntityNotFoundException("The user isn't active now", HttpStatus.BAD_REQUEST);
+
         workSchedulerRepository.findByUserIdAndDayOfWeek(user.getId(), dto.getDayOfWeek())
                 .ifPresent(ws -> {
                     throw new EntityUniqueException(

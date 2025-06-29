@@ -1,6 +1,7 @@
 package uz.dev.hmsproject.service;
 
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,8 @@ public class ScheduledService {
     private AppointmentMapper appointmentMapper;
 
     @Scheduled(cron = "0 0 21 * * *")
+//    @Scheduled(cron = "0 36 18 * * *")
+    @Transactional
     public void changeStatus() {
         appointmentService.changeStatus();
     }
