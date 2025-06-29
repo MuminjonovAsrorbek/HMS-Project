@@ -80,6 +80,7 @@ public class FileServiceImpl implements FileService {
                 case SCHEDULED -> scheduledStyle;
                 case COMPLETED -> completedStyle;
                 case CANCELED -> canceledStyle;
+                default -> throw new IllegalStateException("Unexpected value: " + appointment.getStatus());
             };
 
             createCell(row, 6, status, statusStyle);

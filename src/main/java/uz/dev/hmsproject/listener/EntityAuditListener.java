@@ -4,6 +4,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import uz.dev.hmsproject.entity.AuditLog;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
@@ -13,12 +14,16 @@ import uz.dev.hmsproject.utils.SecurityUtils;
 import java.time.LocalDateTime;
 
 @Component
-@RequiredArgsConstructor
 public class EntityAuditListener {
 
     private final AuditLogRepository auditLogRepository;
 
     private final SecurityUtils securityUtils;
+
+    public EntityAuditListener(@Lazy AuditLogRepository auditLogRepository, SecurityUtils securityUtils) {
+        this.auditLogRepository = auditLogRepository;
+        this.securityUtils = securityUtils;
+    }
 
     @PrePersist
     public void prePersist(Object entity) {
