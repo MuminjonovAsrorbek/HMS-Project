@@ -1,13 +1,10 @@
 package uz.dev.hmsproject.dto;
 
-
-
 import lombok.*;
 
 /**
  * Created by: suhrob
  */
-
 
 @Getter
 @Setter

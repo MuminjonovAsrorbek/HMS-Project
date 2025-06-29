@@ -14,7 +14,6 @@ import uz.dev.hmsproject.dto.UserDTO;
 import uz.dev.hmsproject.dto.UserFilterDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.service.template.UserService;
-
 import java.util.List;
 
 @RestController

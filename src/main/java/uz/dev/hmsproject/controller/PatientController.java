@@ -1,6 +1,5 @@
 package uz.dev.hmsproject.controller;
 
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,14 +9,11 @@ import uz.dev.hmsproject.dto.PatientDTO;
 import uz.dev.hmsproject.dto.PatientSearchDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.service.template.PatientService;
-
 import java.util.List;
-
 
 /**
  * Created by: suhrob
  */
-
 
 @RestController
 @RequestMapping("/api/patients")

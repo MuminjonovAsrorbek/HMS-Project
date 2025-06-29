@@ -10,7 +10,6 @@ import uz.dev.hmsproject.dto.SpecialityDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.service.template.SpecialityService;
 
-
 @RestController
 @RequestMapping("/api/speciality")
 @RequiredArgsConstructor
@@ -26,7 +25,6 @@ public class SpecialityController {
         return specialityService.getAllByPage(page, size);
 
     }
-
 
     @PreAuthorize(value = "hasAuthority('VIEW_SPECIALTY')")
     @GetMapping("/{id}")

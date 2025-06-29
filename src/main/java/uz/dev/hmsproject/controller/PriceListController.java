@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.PriceListDTO;
 import uz.dev.hmsproject.dto.UpdatePriceDTO;
 import uz.dev.hmsproject.service.template.PriceListService;
-
 import java.util.List;
 
 @RestController

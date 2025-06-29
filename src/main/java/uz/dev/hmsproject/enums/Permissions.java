@@ -1,7 +1,5 @@
 package uz.dev.hmsproject.enums;
 
-
-
 public enum Permissions {
 
     //USER MANAGEMENT
@@ -70,5 +68,7 @@ public enum Permissions {
     APPOINTMENTS_DELETE,
     APPOINTMENTS_CHANGE_STATUS,
 
-    VIEW_STATISTICS
+    VIEW_STATISTICS,
+
+    VIEW_LOG
 }

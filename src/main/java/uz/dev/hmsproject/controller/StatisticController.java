@@ -9,14 +9,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uz.dev.hmsproject.dto.response.StatisticsResponseDTO;
 import uz.dev.hmsproject.service.template.StatisticService;
-
 import java.time.LocalDate;
 
 /**
  * Created by: asrorbek
  * DateTime: 6/27/25 16:52
  **/
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/statistics")
@@ -33,5 +31,4 @@ public class StatisticController {
         return statisticService.getDailyStatistics(startDate, endDate);
 
     }
-
 }
