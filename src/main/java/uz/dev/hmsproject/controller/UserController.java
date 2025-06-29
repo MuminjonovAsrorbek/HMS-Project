@@ -66,7 +66,7 @@ public class UserController {
     @PreAuthorize(value = "hasAuthority('VIEW_USER')")
 
     @GetMapping("/{id}")
-    public UserDTO getById(@Valid @PathVariable("id") Long id) {
+    public UserDTO getById(@PathVariable("id") Long id) {
 
         return userService.getById(id);
 
