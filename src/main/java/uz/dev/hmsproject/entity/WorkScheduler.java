@@ -27,7 +27,7 @@ public class WorkScheduler extends AbsDeleteEntity {
     @ManyToOne
     private User user;
 
-    private int dayOfWeek;
+    private Integer dayOfWeek;
 
     private LocalTime startTime;
 
