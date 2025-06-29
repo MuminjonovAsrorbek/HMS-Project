@@ -254,11 +254,14 @@ public class DoctorServiceImpl implements DoctorService {
                 .collect(Collectors.toSet());
 
         List<LocalTime> availableSlots = new ArrayList<>();
+
         for (LocalTime time = startTime; !time.plusMinutes(slotDurationMinutes).isAfter(endTime); time = time.plusMinutes(slotDurationMinutes)) {
             if (!bookedTimes.contains(time)) {
                 availableSlots.add(time);
             }
         }
+
+
 
         return availableSlots;
     }
