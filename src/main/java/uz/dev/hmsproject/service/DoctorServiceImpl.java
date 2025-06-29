@@ -254,7 +254,19 @@ public class DoctorServiceImpl implements DoctorService {
                 .collect(Collectors.toSet());
 
         List<LocalTime> availableSlots = new ArrayList<>();
+
+        LocalTime now = null;
+        if (date.equals(LocalDate.now())) {
+            now = LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
+        }
+
         for (LocalTime time = startTime; !time.plusMinutes(slotDurationMinutes).isAfter(endTime); time = time.plusMinutes(slotDurationMinutes)) {
+
+            if (now != null && !time.isAfter(now)) {
+                continue;
+            }
+
+
             if (!bookedTimes.contains(time)) {
                 availableSlots.add(time);
             }
