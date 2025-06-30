@@ -13,7 +13,8 @@ public class RoomMapper implements BaseMapper<Room, RoomDTO> {
     @Override
     public Room toEntity(RoomDTO roomDTO) {
         return new Room(
-                roomDTO.getNumber()
+                roomDTO.getNumber(),
+                null
         );
     }
 

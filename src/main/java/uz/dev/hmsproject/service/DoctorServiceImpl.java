@@ -185,6 +185,26 @@ public class DoctorServiceImpl implements DoctorService {
         doctorRepository.delete(doctor);
     }
 
+    @Override
+    public void changeRoom(Long id, String roomNumber) {
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Doctor not found with id: " + id, HttpStatus.NOT_FOUND));
+
+        Room room = roomRepository.findByNumber(roomNumber).orElseThrow(() -> new EntityNotFoundException("Room not found with number: " + roomNumber, HttpStatus.NOT_FOUND));
+
+        if (doctor.getRoom() != null && doctor.getRoom().getId().equals(room.getId())) {
+            throw new EntityUniqueException("Doctor already has room with number: " + roomNumber, HttpStatus.CONFLICT);
+        }
+
+        if (room.getDoctor() != null && !room.getDoctor().getId().equals(doctor.getId())) {
+            throw new EntityUniqueException("Room already has doctor with id: " + doctor.getId(), HttpStatus.CONFLICT);
+        }
+
+        doctor.setRoom(room);
+        doctorRepository.save(doctor);
+
+
+    }
+
     private void updateDoctor(DoctorDTO doctorDTO, Doctor doctor, UserRepository userRepository, SpecialityRepository specialityRepository, RoomRepository roomRepository, DoctorRepository doctorRepository) {
         User user = userRepository.findById(doctorDTO.getUserId()).orElseThrow(() ->
                 new EntityNotFoundException("user not found by id: " + doctorDTO.getUserId(), HttpStatus.NOT_FOUND));

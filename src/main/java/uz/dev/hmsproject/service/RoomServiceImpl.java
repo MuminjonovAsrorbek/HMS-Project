@@ -69,7 +69,8 @@ public class RoomServiceImpl implements RoomService {
         });
 
         Room room = new Room(
-                roomDTO.getNumber()
+                roomDTO.getNumber(),
+                null
         );
         roomRepository.save(room);
 
