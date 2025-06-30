@@ -24,4 +24,6 @@ public interface DoctorService  {
     void update(Long id, DoctorDTO doctorDTO);
 
     void delete(Long id);
+
+    void changeRoom(Long id, String roomNumber);
 }
