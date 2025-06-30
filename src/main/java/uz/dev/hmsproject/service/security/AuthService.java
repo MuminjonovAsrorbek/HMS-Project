@@ -47,6 +47,9 @@ public class AuthService implements UserDetailsService {
 
         User user = loadUserByUsername(loginDTO.getUsername());
 
+        if (!user.isActive())
+            throw new PasswordIncorrectException("Username or password incorrect", HttpStatus.BAD_REQUEST);
+
         String encodedPassword = user.getPassword();
 
         boolean matches = passwordEncoder.matches(loginDTO.getPassword(), encodedPassword);

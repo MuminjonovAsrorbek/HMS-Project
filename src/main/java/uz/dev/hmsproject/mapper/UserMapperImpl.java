@@ -2,6 +2,7 @@ package uz.dev.hmsproject.mapper;
 
 import org.springframework.stereotype.Component;
 import uz.dev.hmsproject.dto.UserDTO;
+import uz.dev.hmsproject.dto.response.RespUserDTO;
 import uz.dev.hmsproject.entity.Role;
 import uz.dev.hmsproject.entity.User;
 import uz.dev.hmsproject.mapper.template.UserMapper;
@@ -54,4 +55,26 @@ public class UserMapperImpl implements UserMapper {
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public RespUserDTO toRespDTO(User user) {
+        if (user == null) {
+            return null;
+        }
+        RespUserDTO userDTO = new RespUserDTO();
+        userDTO.setId(getOrDef(user.getId(), null));
+        userDTO.setFullName(getOrDef(user.getFullName(), null));
+        userDTO.setUsername(getOrDef(user.getUsername(), null));
+        userDTO.setRoleName(user.getRole().getName());
+        return userDTO;
+    }
+
+    @Override
+    public List<RespUserDTO> toRespDTO(List<User> dtos) {
+        return dtos.stream()
+                .map(this::toRespDTO)
+                .collect(Collectors.toList());
+    }
+
+
 }

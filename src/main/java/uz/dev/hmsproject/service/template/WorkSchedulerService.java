@@ -2,6 +2,8 @@ package uz.dev.hmsproject.service.template;
 
 import uz.dev.hmsproject.dto.WorkSchedulerDTO;
 import uz.dev.hmsproject.dto.WorkSchedulerUpdateDto;
+import uz.dev.hmsproject.dto.response.RespWorkSchedulerDTO;
+
 import java.util.List;
 
 public interface WorkSchedulerService {
@@ -12,7 +14,8 @@ public interface WorkSchedulerService {
 
     void delete(Long id);
 
-    List<WorkSchedulerDTO> getByUserId(Long userId);
+    List<RespWorkSchedulerDTO> getByUserId(Long userId);
 
-    WorkSchedulerDTO getByUserIdAndDayOfWeek(Long userId, int dayOfWeek);
+    RespWorkSchedulerDTO getByUserIdAndDayOfWeek(Long userId, Integer dayOfWeek);
+
 }

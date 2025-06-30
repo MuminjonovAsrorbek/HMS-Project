@@ -31,13 +31,13 @@ public class AuthController {
     @PostMapping("/login")
     public TokenDTO login(@RequestBody @Valid LoginDTO loginDTO) {
 
-        boolean isValid = recaptchaService.verify(loginDTO.getRecaptchaToken());
-
-        if (!isValid) {
-
-            throw new InvalidRecaptchaTokenException("Invalid recaptcha token", HttpStatus.UNAUTHORIZED);
-
-        }
+//        boolean isValid = recaptchaService.verify(loginDTO.getRecaptchaToken());
+//
+//        if (!isValid) {
+//
+//            throw new InvalidRecaptchaTokenException("Invalid recaptcha token", HttpStatus.UNAUTHORIZED);
+//
+//        }
 
 
         return authService.getToken(loginDTO);
