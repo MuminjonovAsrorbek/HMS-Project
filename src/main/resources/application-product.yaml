@@ -27,6 +27,9 @@ spring:
 myapp:
   secret-key: 'c0388696-55b0-479c-a142-a2ae7cbe269a'
 
+api:
+  version: 1.0.0
+
 springdoc:
   api-docs:
     enabled: true
