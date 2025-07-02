@@ -177,4 +177,43 @@ public class GlobalExceptionHandler {
                 .body(error);
 
     }
+
+    @ExceptionHandler(value = EntityNotWorkException.class)
+    public ResponseEntity<ErrorDTO> handle(EntityNotWorkException e) {
+
+        ErrorDTO error = new ErrorDTO(
+                HttpStatus.BAD_REQUEST.value(),
+                e.getMessage()
+        );
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);
+
+    }
+
+    @ExceptionHandler(value = EntityAlreadyExistsException.class)
+    public ResponseEntity<ErrorDTO> handle(EntityAlreadyExistsException e) {
+
+        ErrorDTO error = new ErrorDTO(
+                HttpStatus.CONFLICT.value(),
+                e.getMessage()
+        );
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(error);
+
+    }
+
+    @ExceptionHandler(value = EntityNotNullException.class)
+    public ResponseEntity<ErrorDTO> handle(EntityNotNullException e) {
+
+        ErrorDTO error = new ErrorDTO(
+                HttpStatus.BAD_REQUEST.value(),
+                e.getMessage()
+        );
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);
+
+    }
 }
