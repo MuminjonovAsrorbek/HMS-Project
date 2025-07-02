@@ -1,5 +1,12 @@
 package uz.dev.hmsproject.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uz.dev.hmsproject.dto.request.LoginDTO;
+import uz.dev.hmsproject.dto.response.AppointmentDTO;
 import uz.dev.hmsproject.dto.response.TokenDTO;
 import uz.dev.hmsproject.service.security.AuthService;
 import uz.dev.hmsproject.service.template.RecaptchaService;
@@ -21,6 +29,7 @@ import uz.dev.hmsproject.service.template.RecaptchaService;
 @RequestMapping("/api/v1/auth")
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Authentication API", description = "Authentication API")
 public class AuthController {
 
     private final AuthService authService;
@@ -28,7 +37,32 @@ public class AuthController {
     private final RecaptchaService recaptchaService;
 
     @PostMapping("/login")
-    public TokenDTO login(@RequestBody @Valid LoginDTO loginDTO) {
+    @Operation(
+            summary = "Login section",
+            description = "There is also a section for logging into the system and a Recaptcha section for the front end here."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = AppointmentDTO.class),
+                            examples = @ExampleObject(
+                                    value = "{ \"token\": eyNKEJNkjsjk45vscafvsrssd\" }"
+                            ))
+            }),
+            @ApiResponse(responseCode = "400", content = {
+                    @Content(mediaType = "application/json", examples = @ExampleObject(
+                            value = "Username or password incorrect"
+                    ))
+            }),
+            @ApiResponse(responseCode = "401", content = {
+                    @Content(mediaType = "application/json", examples = @ExampleObject(
+                            value = "Invalid recaptcha token"
+                    ))
+            })
+    })
+    public TokenDTO login(@io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Login information",
+            content = @Content(schema = @Schema(implementation = LoginDTO.class), mediaType = "application/json"))
+                          @RequestBody @Valid LoginDTO loginDTO) {
 
 //        boolean isValid = recaptchaService.verify(loginDTO.getRecaptchaToken());
 //

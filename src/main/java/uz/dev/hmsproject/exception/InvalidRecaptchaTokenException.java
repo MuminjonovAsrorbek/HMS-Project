@@ -11,8 +11,4 @@ public class InvalidRecaptchaTokenException extends RuntimeException {
         super(message);
         this.status = status;
     }
-
-
-
-
 }
