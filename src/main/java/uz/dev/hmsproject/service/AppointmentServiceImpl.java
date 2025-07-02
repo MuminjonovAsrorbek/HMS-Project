@@ -22,8 +22,7 @@ import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.entity.*;
 import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.enums.AppointmentStatus;
-import uz.dev.hmsproject.exception.AppointmentDateExpiredException;
-import uz.dev.hmsproject.exception.EntityNotFoundException;
+import uz.dev.hmsproject.exception.*;
 import uz.dev.hmsproject.mapper.AppointmentMapper;
 import uz.dev.hmsproject.repository.*;
 import uz.dev.hmsproject.service.template.AppointmentService;
@@ -93,19 +92,21 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         WorkScheduler schedule = schedulerRepository.findByUserIdAndDayOfWeek(
                         doctor.getUser().getId(), date.getDayOfWeek().getValue())
-                .orElseThrow(() -> new RuntimeException("Doctor doesn't work that day"));
+                .orElseThrow(() -> new EntityNotWorkException("Doctor doesn't work that day", HttpStatus.BAD_REQUEST));
 
         if (time.isBefore(schedule.getStartTime()) ||
                 time.plusMinutes(20).isAfter(schedule.getEndTime())) {
-            throw new RuntimeException("Time is outside doctor's schedule");
+
+            throw new EntityNotWorkException("Time is outside doctor's schedule", HttpStatus.BAD_REQUEST);
+
         }
 
         boolean exists = appointmentRepository.existsByDoctorAndAppointmentDateTime(doctor, dto.getAppointmentDateTime());
 
-        if (exists) throw new RuntimeException("This time slot is already booked");
+        if (exists) throw new EntityNotWorkException("This time slot is already booked", HttpStatus.BAD_REQUEST);
 
         BigDecimal price = priceListRepository.findBySpecialityId(doctor.getSpeciality().getId())
-                .orElseThrow(() -> new RuntimeException("Price not found")).getPrice();
+                .orElseThrow(() -> new EntityNotFoundException("Price not found", HttpStatus.NOT_FOUND)).getPrice();
 
         Appointment appointment = new Appointment();
 
@@ -221,7 +222,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> new EntityNotFoundException("Appointment not found with ID: " + id, HttpStatus.NOT_FOUND));
 
         if (appointment.getStatus() == AppointmentStatus.CANCELED) {
-            throw new RuntimeException("Appointment is already canceled");
+            throw new EntityAlreadyExistsException("Appointment is already canceled", HttpStatus.CONFLICT);
         }
 
         appointment.setStatus(AppointmentStatus.CANCELED);
@@ -234,7 +235,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void changeAppointmentStatus(Long id, String status) {
 
         if (status == null || status.isBlank()) {
-            throw new IllegalArgumentException("Status cannot be null or empty");
+            throw new EntityNotNullException("Status cannot be null or empty", HttpStatus.BAD_REQUEST);
         }
 
         Appointment appointment = appointmentRepository.findById(id)
@@ -328,7 +329,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         if (!appointment.getStatus().equals(AppointmentStatus.SCHEDULED)) {
 
-            throw new IllegalStateException("Can change Appointment only in Scheduled mode");
+            throw new EntityNotNullException("Can change Appointment only in Scheduled mode", HttpStatus.BAD_REQUEST);
 
         }
 
@@ -357,16 +358,16 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         WorkScheduler schedule = schedulerRepository.findByUserIdAndDayOfWeek(
                         doctor.getUser().getId(), date.getDayOfWeek().getValue())
-                .orElseThrow(() -> new RuntimeException("Doctor doesn't work that day"));
+                .orElseThrow(() -> new EntityNotWorkException("Doctor doesn't work that day", HttpStatus.BAD_REQUEST));
 
         if (time.isBefore(schedule.getStartTime()) ||
                 time.plusMinutes(20).isAfter(schedule.getEndTime())) {
-            throw new RuntimeException("Time is outside doctor's schedule");
+            throw new EntityNotWorkException("Time is outside doctor's schedule", HttpStatus.BAD_REQUEST);
         }
 
         boolean exists = appointmentRepository.existsByDoctorAndAppointmentDateTime(doctor, dto.getNewDateTime());
 
-        if (exists) throw new RuntimeException("This time slot is already booked");
+        if (exists) throw new EntityAlreadyExistsException("This time slot is already booked", HttpStatus.CONFLICT);
 
         appointment.setAppointmentDateTime(dto.getNewDateTime());
         appointment.setDoctor(doctor);
