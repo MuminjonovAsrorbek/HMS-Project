@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uz.dev.hmsproject.dto.request.LoginDTO;
-import uz.dev.hmsproject.dto.response.AppointmentDTO;
 import uz.dev.hmsproject.dto.response.TokenDTO;
 import uz.dev.hmsproject.service.security.AuthService;
 import uz.dev.hmsproject.service.template.RecaptchaService;
@@ -43,9 +42,12 @@ public class AuthController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = AppointmentDTO.class),
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = TokenDTO.class),
                             examples = @ExampleObject(
-                                    value = "{ \"token\": eyNKEJNkjsjk45vscafvsrssd\" }"
+                                    value = """
+                                            {
+                                              "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJVU0VSIiwicmFuZG9tSWQiOiI0ODE5MmM4My00ZDgxLTQ1ZjAtYWZjNS03MDRmNWMzYjgzZTgiLCJleHAiOjE3NTE0ODE5MTR9.gJ9x7LdOz_uBrKVdZ2LC5xPSLZcroGtlh7tbc2vs1lQ"
+                                            }"""
                             ))
             }),
             @ApiResponse(responseCode = "400", content = {
