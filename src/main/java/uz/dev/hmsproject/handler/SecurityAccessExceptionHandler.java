@@ -21,17 +21,16 @@ public class SecurityAccessExceptionHandler implements AuthenticationEntryPoint 
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
 
-        String accept = request.getHeader("Accept");
+        ErrorDTO errorDTO = new ErrorDTO(
+                403,
+                authException.getMessage()
+        );
 
-        if (accept != null && accept.contains("application/json")) {
-            ErrorDTO errorDTO = new ErrorDTO(403, authException.getMessage());
-            String json = mapper.writeValueAsString(errorDTO);
+        String json = mapper.writeValueAsString(errorDTO);
 
-            response.setContentType("application/json");
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().write(json);
-        } else {
-            response.sendRedirect("/login");
-        }
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.getWriter().write(json);
+
     }
 }
