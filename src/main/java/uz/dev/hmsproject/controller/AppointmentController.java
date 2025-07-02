@@ -3,6 +3,7 @@ package uz.dev.hmsproject.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -63,7 +64,10 @@ public class AppointmentController {
                     ))
             })
     })
-    public ResponseEntity<?> createAppointment(@RequestBody @Valid CreateAppointmentDTO createAppointmentDTO) {
+    public ResponseEntity<?> createAppointment(@io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "New appointment creation information", required = true,
+            content = @Content(schema = @Schema(implementation = CreateAppointmentDTO.class), mediaType = "application/json")
+    ) @RequestBody @Valid CreateAppointmentDTO createAppointmentDTO) {
 
         appointmentService.createAppointment(createAppointmentDTO);
 
