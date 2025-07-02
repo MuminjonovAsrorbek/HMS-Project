@@ -1,5 +1,12 @@
 package uz.dev.hmsproject.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,6 +18,7 @@ import uz.dev.hmsproject.dto.DoctorFilterDTO;
 import uz.dev.hmsproject.dto.response.DoctorResponseDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.service.template.DoctorService;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/doctor")
 @RequiredArgsConstructor
+@Tag(name = "Doctor API", description = "A Doctor of full control of appointments")
 public class DoctorController {
 
     private final DoctorService doctorService;
@@ -67,19 +76,41 @@ public class DoctorController {
     }
 
     @GetMapping("/{doctorId}/available-slots")
-    public ResponseEntity<List<String>> getAvailableSlots(
-            @PathVariable Long doctorId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+    @PreAuthorize(value = "hasAuthority('VIEW_DOCTOR')")
+    @Operation(
+            summary = "Get Doctor daily slots",
+            description = "Doctor's daily free time"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                              [
+                                              "09:00",
+                                              "09:20",
+                                              "09:40",
+                                              "....."
+                                            ]"""
+                            ))
+            }),
+            @ApiResponse(responseCode = "404", content = {
+                    @Content(mediaType = "application/json", examples = @ExampleObject(
+                            value = "Entity not found with ID:."
+                    ))
+            })
+    })
+    public List<String> getAvailableSlots(
+            @Parameter(description = "Doctor ID", example = "1") @PathVariable Long doctorId,
+            @Parameter(description = "Date", example = "2025-07-05") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
 
         List<LocalTime> slots = doctorService.getAvailable20MinuteSlots(doctorId, date);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
-        List<String> formatted = slots.stream()
+        return slots.stream()
                 .map(time -> time.format(formatter))
                 .toList();
-
-        return ResponseEntity.ok(formatted);
     }
 
 
@@ -87,7 +118,7 @@ public class DoctorController {
     @PatchMapping("/{doctorId}/room")
     public ResponseEntity<?> changeRoom(@PathVariable("doctorId") Long id,
                                         @RequestParam(value = "room") String room) {
-        doctorService.changeRoom(id,room);
+        doctorService.changeRoom(id, room);
         return ResponseEntity.ok("Room changed successfully");
 
     }
