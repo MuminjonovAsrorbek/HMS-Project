@@ -182,7 +182,33 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDTO> handle(EntityNotWorkException e) {
 
         ErrorDTO error = new ErrorDTO(
-                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.BAD_REQUEST.value(),
+                e.getMessage()
+        );
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(error);
+
+    }
+
+    @ExceptionHandler(value = EntityAlreadyExistsException.class)
+    public ResponseEntity<ErrorDTO> handle(EntityAlreadyExistsException e) {
+
+        ErrorDTO error = new ErrorDTO(
+                HttpStatus.CONFLICT.value(),
+                e.getMessage()
+        );
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(error);
+
+    }
+
+    @ExceptionHandler(value = EntityNotNullException.class)
+    public ResponseEntity<ErrorDTO> handle(EntityNotNullException e) {
+
+        ErrorDTO error = new ErrorDTO(
+                HttpStatus.CONFLICT.value(),
                 e.getMessage()
         );
         return ResponseEntity
