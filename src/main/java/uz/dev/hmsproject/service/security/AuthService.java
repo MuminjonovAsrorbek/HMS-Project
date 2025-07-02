@@ -12,6 +12,7 @@ import uz.dev.hmsproject.entity.User;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.exception.PasswordIncorrectException;
 import uz.dev.hmsproject.repository.UserRepository;
+import uz.dev.hmsproject.utils.SecurityUtils;
 
 import java.util.Optional;
 
@@ -29,6 +30,8 @@ public class AuthService implements UserDetailsService {
     private final JWTService jwtService;
 
     private final UserRepository userRepository;
+
+    private final SecurityUtils securityUtils;
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -64,4 +67,17 @@ public class AuthService implements UserDetailsService {
 
         return new TokenDTO(token);
     }
+
+//    public UserPermissionDTO getUserPagesAndPermissions() {
+//
+//        User currentUser = securityUtils.getCurrentUser();
+//
+//        Role role = currentUser.getRole();
+//
+//        List<Permissions> permissions = role.getPermissions();
+//
+//        List<PageEnum> pages = permissions.stream().map(Permissions::getPage).toList();
+//
+//        return new UserPermissionDTO(permissions, pages);
+//    }
 }

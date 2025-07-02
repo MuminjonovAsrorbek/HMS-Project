@@ -20,7 +20,9 @@ import io.swagger.v3.oas.annotations.servers.Server;
                 title = "Spring 6 Swagger With Annotation Config",
                 version = "${api.version}",
                 contact = @Contact(
-                        name = "Mavlonov Mehroj", email = "john.lgd65@gmail.com", url = "https://github.com/mehrojbek"
+                        name = "Hospital Management System",
+                        email = "hms-uz@gmail.com",
+                        url = "https://github.com/MuminjonovAsrorbek/HMS-Project.git"
                 ),
                 license = @License(
                         name = "Apache 2.0",
@@ -39,7 +41,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
                 ),
                 @Server(
                         url = "http://localhost:8080",
-                        description = "Production-Localhost"
+                        description = "Development-Server"
                 )
         },
         security = {
@@ -48,11 +50,11 @@ import io.swagger.v3.oas.annotations.servers.Server;
 )
 
 @SecurityScheme(
-        name = "bearerAuth", // Xavfsizlik sxemasiga berilgan nom (yuqoridagi bilan bir xil bo'lishi kerak)
-        type = SecuritySchemeType.HTTP, // Sxema turi
-        scheme = "bearer", // Sxema nomi (JWT uchun "bearer")
-        bearerFormat = "JWT", // Token formati haqida ma'lumot (ixtiyoriy, lekin tavsiya etiladi)
-        description = "Autentifikatsiya uchun JWT tokenni 'Bearer ' prefiksi bilan kiriting. Masalan: Bearer eyJhbGciOiJI..."
+        name = "bearerAuth",
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer",
+        bearerFormat = "JWT",
+        description = "Enter jwt token for authentication. For example: eyJhbGciOiJI..."
 )
 public class OpenApiConfig {
 }

@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .permitAll()
                         .anyRequest()
                         .authenticated()
+        ).formLogin(form -> form.loginPage("/login").permitAll()
         );
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
