@@ -81,4 +81,14 @@ public class DoctorController {
 
         return ResponseEntity.ok(formatted);
     }
+
+
+    @PreAuthorize(value = "hasAuthority('UPDATE_DOCTORS')")
+    @PatchMapping("/{doctorId}/room")
+    public ResponseEntity<?> changeRoom(@PathVariable("doctorId") Long id,
+                                        @RequestParam(value = "room") String room) {
+        doctorService.changeRoom(id,room);
+        return ResponseEntity.ok("Room changed successfully");
+
+    }
 }

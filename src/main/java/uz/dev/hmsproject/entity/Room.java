@@ -2,10 +2,13 @@ package uz.dev.hmsproject.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import uz.dev.hmsproject.entity.template.AbsDeleteEntity;
+
+import javax.print.Doc;
 
 /**
  * Created by: asrorbek
@@ -24,6 +27,9 @@ public class Room extends AbsDeleteEntity {
 
     @Column(nullable = false, unique = true)
     private String number;
+
+    @OneToOne(mappedBy = "room")
+    private Doctor doctor;
 
 
 }
