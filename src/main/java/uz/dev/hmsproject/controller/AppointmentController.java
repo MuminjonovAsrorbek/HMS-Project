@@ -51,6 +51,16 @@ public class AppointmentController {
                     @Content(mediaType = "application/json", examples = @ExampleObject(
                             value = "Appointment created successfully"
                     ))
+            }),
+            @ApiResponse(responseCode = "400", content = {
+                    @Content(mediaType = "application/json", examples = @ExampleObject(
+                            value = "Appointments can only be scheduled for today or future dates."
+                    ))
+            }),
+            @ApiResponse(responseCode = "404", content = {
+                    @Content(mediaType = "application/json", examples = @ExampleObject(
+                            value = "Entity not found with ID:."
+                    ))
             })
     })
     public ResponseEntity<?> createAppointment(@RequestBody @Valid CreateAppointmentDTO createAppointmentDTO) {
