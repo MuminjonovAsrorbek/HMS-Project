@@ -177,4 +177,17 @@ public class GlobalExceptionHandler {
                 .body(error);
 
     }
+
+    @ExceptionHandler(value = EntityNotWorkException.class)
+    public ResponseEntity<ErrorDTO> handle(EntityNotWorkException e) {
+
+        ErrorDTO error = new ErrorDTO(
+                HttpStatus.FORBIDDEN.value(),
+                e.getMessage()
+        );
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(error);
+
+    }
 }
