@@ -14,14 +14,9 @@ public class RoleMapper implements BaseMapper<Role, RoleDTO> {
 
     @Override
     public Role toEntity(RoleDTO roleDTO) {
-        if (roleDTO == null) {
-            return null;
-        }
-        Role role = new Role();
-        role.setId(roleDTO.getId());
-        role.setName(roleDTO.getName());
-        role.setPermissions(roleDTO.getPermissions());
-        return role;
+
+        return null;
+
     }
 
     @Override

@@ -24,7 +24,6 @@ public class UserController {
 
     private final UserService userService;
 
-
     @Operation(summary = "Foydalanuvchilarni filtrlash", description = "Foydalanuvchilarni filtrlash")
     @PreAuthorize(value = "hasAuthority('FILTER_USERS')")
     @GetMapping("/filter")
