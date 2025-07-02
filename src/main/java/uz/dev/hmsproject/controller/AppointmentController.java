@@ -1,5 +1,12 @@
 package uz.dev.hmsproject.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +29,11 @@ import java.util.List;
 import java.util.Objects;
 
 
-
 @RestController
 @RequestMapping("/api/v1/appointment")
 @RequiredArgsConstructor
+@Tag(name = "Appointment API", description = "A collection of full control of appointments")
+@SecurityRequirement(name = "bearerAuth")
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
@@ -34,6 +42,17 @@ public class AppointmentController {
 
     @PreAuthorize("hasAuthority('APPOINTMENTS_CREATE')")
     @PostMapping
+    @Operation(
+            summary = "Create the Appointment",
+            description = "Create new Appointment"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(mediaType = "application/json", examples = @ExampleObject(
+                            value = "Appointment created successfully"
+                    ))
+            })
+    })
     public ResponseEntity<?> createAppointment(@RequestBody @Valid CreateAppointmentDTO createAppointmentDTO) {
 
         appointmentService.createAppointment(createAppointmentDTO);

@@ -186,6 +186,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    @Transactional
     public void changeRoom(Long id, String roomNumber) {
         Doctor doctor = doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Doctor not found with id: " + id, HttpStatus.NOT_FOUND));
 
@@ -200,11 +201,13 @@ public class DoctorServiceImpl implements DoctorService {
         }
 
         doctor.setRoom(room);
+
         doctorRepository.save(doctor);
 
 
     }
 
+    @Transactional
     private void updateDoctor(DoctorDTO doctorDTO, Doctor doctor, UserRepository userRepository, SpecialityRepository specialityRepository, RoomRepository roomRepository, DoctorRepository doctorRepository) {
         User user = userRepository.findById(doctorDTO.getUserId()).orElseThrow(() ->
                 new EntityNotFoundException("user not found by id: " + doctorDTO.getUserId(), HttpStatus.NOT_FOUND));
