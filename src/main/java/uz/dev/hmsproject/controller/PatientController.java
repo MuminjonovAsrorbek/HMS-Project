@@ -1,5 +1,13 @@
 package uz.dev.hmsproject.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +17,7 @@ import uz.dev.hmsproject.dto.PatientDTO;
 import uz.dev.hmsproject.dto.PatientSearchDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.service.template.PatientService;
+
 import java.util.List;
 
 /**
@@ -18,77 +27,149 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/patients")
 @RequiredArgsConstructor
+@Tag(name = "Patients", description = "Endpoints for managing patients")
 public class PatientController {
 
     private final PatientService patientService;
 
-    @PreAuthorize(value = "hasAuthority('VIEW_PATIENTS')")
+    @Operation(summary = "Get all patients (paginated)")
+    @ApiResponse(responseCode = "200", description = "List of patients returned")
+    @PreAuthorize("hasAuthority('VIEW_PATIENTS')")
     @GetMapping
-    public PageableDTO getAllPatients(@RequestParam(value = "page", defaultValue = "0") int page,
-                                      @RequestParam(value = "size", defaultValue = "10") int size) {
+    public PageableDTO getAllPatients(
+            @Parameter(description = "Page number", example = "0")
+            @RequestParam(value = "page", defaultValue = "0") int page,
 
+            @Parameter(description = "Page size", example = "10")
+            @RequestParam(value = "size", defaultValue = "10") int size) {
         return patientService.getAllPaginated(page, size);
-
     }
 
-    @PreAuthorize(value = "hasAuthority('VIEW_PATIENT')")
+    @Operation(summary = "Get patient by ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Patient found"),
+            @ApiResponse(responseCode = "404", description = "Patient not found")
+    })
+    @PreAuthorize("hasAuthority('VIEW_PATIENT')")
     @GetMapping("/{id}")
-    public PatientDTO getPatientById(@PathVariable Long id) {
-
+    public PatientDTO getPatientById(
+            @Parameter(description = "Patient ID", example = "1")
+            @PathVariable Long id) {
         return patientService.getById(id);
-
     }
 
-
-    @PreAuthorize(value = "hasAuthority('CREATE_PATIENTS')")
+    @Operation(summary = "Create new patient")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Patient successfully created"),
+            @ApiResponse(responseCode = "400", description = "Invalid input")
+    })
+    @PreAuthorize("hasAuthority('CREATE_PATIENTS')")
     @PostMapping
-    public ResponseEntity<?> createPatient(@RequestBody @Valid PatientDTO patientDTO) {
-
+    @RequestBody(
+            description = "Patient information to create",
+            required = true,
+            content = @Content(
+                    examples = @ExampleObject(
+                            name = "New patient",
+                            value = """
+                                    {
+                                      "fullName": "Suhrob Qurbonmurodov",
+                                      "birthDate": "1995-08-10",
+                                      "phoneNumber": "+998901234567",
+                                      "email": "suhrob@example.com",
+                                      "address": "Tashkent, Uzbekistan"
+                                    }
+                                    """
+                    )
+            )
+    )
+    public ResponseEntity<?> createPatient(
+            @Valid @org.springframework.web.bind.annotation.RequestBody PatientDTO patientDTO) {
         patientService.create(patientDTO);
-
-        return ResponseEntity
-                .ok("Patient created successfully");
+        return ResponseEntity.ok("Patient created successfully");
     }
 
-
-    @PreAuthorize(value = "hasAuthority('UPDATE_PATIENTS')")
+    @Operation(summary = "Update existing patient")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Patient successfully updated"),
+            @ApiResponse(responseCode = "404", description = "Patient not found")
+    })
+    @PreAuthorize("hasAuthority('UPDATE_PATIENTS')")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updatePatient(@PathVariable Long id, @RequestBody PatientDTO patientDTO) {
-
+    @RequestBody(
+            description = "Updated patient data",
+            required = true,
+            content = @Content(
+                    examples = @ExampleObject(
+                            name = "Updated patient",
+                            value = """
+                                    {
+                                      "fullName": "Ali Valiyev",
+                                      "birthDate": "1985-05-05",
+                                      "phoneNumber": "+998909876543",
+                                      "email": "ali@example.com",
+                                      "address": "Andijon, Uzbekistan"
+                                    }
+                                    """
+                    )
+            )
+    )
+    public ResponseEntity<?> updatePatient(
+            @Parameter(description = "Patient ID", example = "1")
+            @PathVariable Long id,
+            @org.springframework.web.bind.annotation.RequestBody PatientDTO patientDTO) {
         patientService.update(id, patientDTO);
-
-        return ResponseEntity
-                .ok("Patient updated successfully");
+        return ResponseEntity.ok("Patient updated successfully");
     }
 
-
-    @PreAuthorize(value = "hasAuthority('DELETE_PATIENTS')")
+    @Operation(summary = "Delete a patient by ID (soft delete)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Patient deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Patient not found")
+    })
+    @PreAuthorize("hasAuthority('DELETE_PATIENTS')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePatient(@PathVariable Long id) {
-
+    public ResponseEntity<?> deletePatient(
+            @Parameter(description = "Patient ID", example = "1")
+            @PathVariable Long id) {
         patientService.delete(id);
-
-        return ResponseEntity
-                .ok("Patient deleted successfully");
-
+        return ResponseEntity.ok("Patient deleted successfully");
     }
 
-
-    @PreAuthorize(value = "hasAuthority('PATIENTS_SEARCH')")
+    @Operation(summary = "Search patients by filters")
+    @ApiResponse(responseCode = "200", description = "List of matching patients")
+    @PreAuthorize("hasAuthority('PATIENTS_SEARCH')")
     @PostMapping("/search")
-    public List<PatientDTO> searchPatients(@RequestBody PatientSearchDTO searchDTO) {
-
+    @RequestBody(
+            description = "Search filters",
+            required = true,
+            content = @Content(
+                    examples = @ExampleObject(
+                            name = "Search Example",
+                            value = """
+                                    {
+                                      "fullName": "Ali",
+                                      "phoneNumber": "+99890"
+                                    }
+                                    """
+                    )
+            )
+    )
+    public List<PatientDTO> searchPatients(
+            @org.springframework.web.bind.annotation.RequestBody PatientSearchDTO searchDTO) {
         return patientService.search(searchDTO);
-
     }
 
-    @PreAuthorize(value = "hasAuthority('APPOINTMENTS_READ')")
+    @Operation(summary = "Get patient's appointment history (paginated)")
+    @ApiResponse(responseCode = "200", description = "Patient appointment history returned")
+    @PreAuthorize("hasAuthority('APPOINTMENTS_READ')")
     @GetMapping("/{patientId}/appointments")
-    public PageableDTO getPatientHistory(@PathVariable Long patientId,
-                                         @RequestParam(value = "page", defaultValue = "0") Integer page) {
+    public PageableDTO getPatientHistory(
+            @Parameter(description = "Patient ID", example = "1")
+            @PathVariable Long patientId,
 
+            @Parameter(description = "Page number", example = "0")
+            @RequestParam(value = "page", defaultValue = "0") Integer page) {
         return patientService.getPatientHistory(patientId, page);
-
     }
-
 }
