@@ -186,7 +186,7 @@ public class GlobalExceptionHandler {
                 e.getMessage()
         );
         return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
+                .status(HttpStatus.BAD_REQUEST)
                 .body(error);
 
     }
@@ -199,7 +199,7 @@ public class GlobalExceptionHandler {
                 e.getMessage()
         );
         return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
+                .status(HttpStatus.CONFLICT)
                 .body(error);
 
     }
@@ -208,11 +208,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDTO> handle(EntityNotNullException e) {
 
         ErrorDTO error = new ErrorDTO(
-                HttpStatus.CONFLICT.value(),
+                HttpStatus.BAD_REQUEST.value(),
                 e.getMessage()
         );
         return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
+                .status(HttpStatus.BAD_REQUEST)
                 .body(error);
 
     }
