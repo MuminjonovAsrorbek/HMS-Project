@@ -127,7 +127,6 @@ public class RoleServiceImpl implements RoleService {
 
         if (exist)
             throw new EntityNotDeleteException("Role not deleted , You first remove role in user", HttpStatus.BAD_REQUEST);
-
         roleRepository.delete(role);
     }
 }
