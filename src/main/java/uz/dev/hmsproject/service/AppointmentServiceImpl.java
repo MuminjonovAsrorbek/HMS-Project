@@ -24,6 +24,7 @@ import uz.dev.hmsproject.entity.template.AbsLongEntity;
 import uz.dev.hmsproject.enums.AppointmentStatus;
 import uz.dev.hmsproject.exception.AppointmentDateExpiredException;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
+import uz.dev.hmsproject.exception.EntityNotWorkException;
 import uz.dev.hmsproject.mapper.AppointmentMapper;
 import uz.dev.hmsproject.repository.*;
 import uz.dev.hmsproject.service.template.AppointmentService;
@@ -93,19 +94,21 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         WorkScheduler schedule = schedulerRepository.findByUserIdAndDayOfWeek(
                         doctor.getUser().getId(), date.getDayOfWeek().getValue())
-                .orElseThrow(() -> new RuntimeException("Doctor doesn't work that day"));
+                .orElseThrow(() -> new EntityNotWorkException("Doctor doesn't work that day", HttpStatus.BAD_REQUEST));
 
         if (time.isBefore(schedule.getStartTime()) ||
                 time.plusMinutes(20).isAfter(schedule.getEndTime())) {
-            throw new RuntimeException("Time is outside doctor's schedule");
+
+            throw new EntityNotWorkException("Time is outside doctor's schedule", HttpStatus.BAD_REQUEST);
+
         }
 
         boolean exists = appointmentRepository.existsByDoctorAndAppointmentDateTime(doctor, dto.getAppointmentDateTime());
 
-        if (exists) throw new RuntimeException("This time slot is already booked");
+        if (exists) throw new EntityNotWorkException("This time slot is already booked", HttpStatus.BAD_REQUEST);
 
         BigDecimal price = priceListRepository.findBySpecialityId(doctor.getSpeciality().getId())
-                .orElseThrow(() -> new RuntimeException("Price not found")).getPrice();
+                .orElseThrow(() -> new EntityNotFoundException("Price not found", HttpStatus.NOT_FOUND)).getPrice();
 
         Appointment appointment = new Appointment();
 
