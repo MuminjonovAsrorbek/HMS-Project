@@ -2,6 +2,7 @@ package uz.dev.hmsproject.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.BindingResult;
@@ -210,6 +211,19 @@ public class GlobalExceptionHandler {
         ErrorDTO error = new ErrorDTO(
                 HttpStatus.BAD_REQUEST.value(),
                 e.getMessage()
+        );
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);
+
+    }
+
+    @ExceptionHandler(value = HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorDTO> handle(HttpMessageNotReadableException e) {
+
+        ErrorDTO error = new ErrorDTO(
+                HttpStatus.BAD_REQUEST.value(),
+                "This format not supported . Example 2025-07-01T10:00"
         );
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
