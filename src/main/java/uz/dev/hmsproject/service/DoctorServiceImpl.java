@@ -208,7 +208,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Transactional
-    private void updateDoctor(DoctorDTO doctorDTO, Doctor doctor, UserRepository userRepository, SpecialityRepository specialityRepository, RoomRepository roomRepository, DoctorRepository doctorRepository) {
+    public void updateDoctor(DoctorDTO doctorDTO, Doctor doctor, UserRepository userRepository, SpecialityRepository specialityRepository,
+                             RoomRepository roomRepository, DoctorRepository doctorRepository) {
         User user = userRepository.findById(doctorDTO.getUserId()).orElseThrow(() ->
                 new EntityNotFoundException("user not found by id: " + doctorDTO.getUserId(), HttpStatus.NOT_FOUND));
 
