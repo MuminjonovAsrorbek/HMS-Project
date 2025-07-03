@@ -34,43 +34,44 @@ public class DoctorController {
 
     private final DoctorService doctorService;
 
+    @PreAuthorize(value = "hasAuthority('VIEW_DOCTORS')")
     @Operation(summary = "Getting the Doctors list to Filter",
-    description = "Get a list of doctors to filter by speciality, fullName or username.")
+            description = "Get a list of doctors to filter by speciality, fullName or username.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", content = {
-                    @Content(mediaType = "application/json",schema =
+                    @Content(mediaType = "application/json", schema =
                     @Schema(implementation = DoctorResponseDTO.class),
-                    examples = @ExampleObject(value =
-                            "[\n" +
-                                    "  {\n" +
-                                    "    \"id\": 1,\n" +
-                                    "    \"fullName\": \"Steve Big\",\n" +
-                                    "    \"username\": \"BigBoy\",\n" +
-                                    "    \"speciality\": \"Kardiolog\",\n" +
-                                    "    \"priceList\": {\n" +
-                                    "      \"id\": 1,\n" +
-                                    "      \"specialityId\": 2,\n" +
-                                    "      \"price\": 500_000,\n" +
-                                    "      \"updateAt\": \"2025-07-03T09:37:21.804Z\"\n" +
-                                    "    },\n" +
-                                    "    \"room\": \"K25\"\n" +
-                                    "  }\n" +
-                                    "]"
-                    ))
+                            examples = @ExampleObject(value =
+                                    """
+                                            [
+                                              {
+                                                "id": 1,
+                                                "fullName": "Steve Big",
+                                                "username": "BigBoy",
+                                                "speciality": "Kardiolog",
+                                                "priceList": {
+                                                  "id": 1,
+                                                  "specialityId": 2,
+                                                  "price": 500_000,
+                                                  "updateAt": "2025-07-03T09:37:21.804Z"
+                                                },
+                                                "room": "K25"
+                                              }
+                                            ]"""
+                            ))
             }),
             @ApiResponse(responseCode = "404", content = {
                     @Content(mediaType = "application/json", examples = @ExampleObject(value = "Entity not found with id"))
             })
     })
-    @PreAuthorize(value = "hasAuthority('FILTER_DOCTORS')")
     @GetMapping("/filter")
     public List<DoctorResponseDTO> filter(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Get doctors by filter information",
-    content = @Content(schema = @Schema(implementation = DoctorFilterDTO.class),mediaType = "application/json")) DoctorFilterDTO dto) {
+            content = @Content(schema = @Schema(implementation = DoctorFilterDTO.class), mediaType = "application/json")) DoctorFilterDTO dto) {
         return doctorService.filter(dto);
     }
 
     @Operation(summary = "Get all doctors",
-    description = "Retrieve a paginated list of all doctors")
+            description = "Retrieve a paginated list of all doctors")
     @PreAuthorize(value = "hasAuthority('VIEW_DOCTORS')")
     @GetMapping
     public PageableDTO getAll(@RequestParam(value = "page", defaultValue = "0") int page,
@@ -79,27 +80,28 @@ public class DoctorController {
     }
 
     @Operation(summary = "Get Doctor by Id",
-    description = "Retrieve a specific doctor by its ID")
+            description = "Retrieve a specific doctor by its ID")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Doctor retrieved successfully", content = {
                     @Content(mediaType = "application/json", schema =
                     @Schema(implementation = DoctorResponseDTO.class),
-                    examples = @ExampleObject(value =
-                            "[\n" +
-                                    "  {\n" +
-                                    "    \"id\": 1,\n" +
-                                    "    \"fullName\": \"Steve Big\",\n" +
-                                    "    \"username\": \"BigBoy\",\n" +
-                                    "    \"speciality\": \"Kardiolog\",\n" +
-                                    "    \"priceList\": {\n" +
-                                    "      \"id\": 1,\n" +
-                                    "      \"specialityId\": 2,\n" +
-                                    "      \"price\": 500_000,\n" +
-                                    "      \"updateAt\": \"2025-07-03T09:37:21.804Z\"\n" +
-                                    "    },\n" +
-                                    "    \"room\": \"K25\"\n" +
-                                    "  }\n" +
-                                    "]"))
+                            examples = @ExampleObject(value =
+                                    """
+                                            [
+                                              {
+                                                "id": 1,
+                                                "fullName": "Steve Big",
+                                                "username": "BigBoy",
+                                                "speciality": "Kardiolog",
+                                                "priceList": {
+                                                  "id": 1,
+                                                  "specialityId": 2,
+                                                  "price": 500_000,
+                                                  "updateAt": "2025-07-03T09:37:21.804Z"
+                                                },
+                                                "room": "K25"
+                                              }
+                                            ]"""))
             }),
             @ApiResponse(responseCode = "404", description = "Doctor not found", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = "Entity not found with id")))
     })
@@ -109,8 +111,9 @@ public class DoctorController {
         return doctorService.getById(id);
     }
 
+    @PreAuthorize(value = "hasAuthority('CREATE_DOCTOR')")
     @Operation(summary = "Create doctor",
-    description = "Create and save a new doctor in the system.")
+            description = "Create and save a new doctor in the system.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
                     @Content(mediaType = "application/json",
@@ -120,24 +123,24 @@ public class DoctorController {
             }),
             @ApiResponse(responseCode = "209", content = {
                     @Content(mediaType = "application/json",
-                    examples = @ExampleObject(
-                            value = "The doctor already exist with user,speciality or room"
-                    ))
+                            examples = @ExampleObject(
+                                    value = "The doctor already exist with user,speciality or room"
+                            ))
             }),
             @ApiResponse(responseCode = "404", content = {
                     @Content(mediaType = "application/json", examples = @ExampleObject(value = "Entity not found with id"))
             })
     })
-    @PreAuthorize(value = "hasAuthority('CREATE_DOCTORS')")
     @PostMapping
-    public ResponseEntity<?> create( @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Create doctor",required = true, content = @Content(schema = @Schema(implementation = DoctorDTO.class), mediaType = "application/json"))
-            @RequestBody @Valid DoctorDTO doctorDTO) {
+    public ResponseEntity<?> create(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Create doctor", required = true, content = @Content(schema = @Schema(implementation = DoctorDTO.class), mediaType = "application/json"))
+                                    @RequestBody @Valid DoctorDTO doctorDTO) {
         doctorService.create(doctorDTO);
         return ResponseEntity.ok("Doctor created successfully");
     }
 
+    @PreAuthorize(value = "hasAuthority('UPDATE_DOCTOR')")
     @Operation(summary = "Update doctor",
-    description = "Update an existing doctor in the system.")
+            description = "Update an existing doctor in the system.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
                     @Content(mediaType = "application/json",
@@ -147,26 +150,26 @@ public class DoctorController {
             }),
             @ApiResponse(responseCode = "209", content = {
                     @Content(mediaType = "application/json",
-                    examples = @ExampleObject(
-                            value = "The doctor already exist with user,speciality or room"
-                    ))
+                            examples = @ExampleObject(
+                                    value = "The doctor already exist with user,speciality or room"
+                            ))
             }),
             @ApiResponse(responseCode = "404", content = {
                     @Content(mediaType = "application/json", examples = @ExampleObject(value = "Entity not found with id:"))
             })
     })
-    @PreAuthorize(value = "hasAuthority('UPDATE_DOCTORS')")
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id,
-                                    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Update doctor",required = true,
-                                    content = @Content(schema = @Schema(implementation = DoctorDTO.class), mediaType = "application/json"))
+                                    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Update doctor", required = true,
+                                            content = @Content(schema = @Schema(implementation = DoctorDTO.class), mediaType = "application/json"))
                                     @RequestBody @Valid DoctorDTO doctorDTO) {
         doctorService.update(id, doctorDTO);
         return ResponseEntity.ok("Doctor updated successfully");
     }
 
+    @PreAuthorize(value = "hasAuthority('DELETE_DOCTOR')")
     @Operation(summary = "Delete doctor",
-    description = "Delete an existing doctor in the system.")
+            description = "Delete an existing doctor in the system.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
                     @Content(mediaType = "application/json", examples =
@@ -176,7 +179,6 @@ public class DoctorController {
                     @Content(mediaType = "application/json", examples = @ExampleObject(value = "Entity not found with id:"))
             })
     })
-    @PreAuthorize(value = "hasAuthority('DELETE_DOCTORS')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         doctorService.delete(id);
@@ -222,14 +224,15 @@ public class DoctorController {
     }
 
 
+    @PreAuthorize(value = "hasAuthority('UPDATE_DOCTOR')")
     @Operation(summary = "Change doctor's room",
-    description = "Change doctor's room in the system.")
+            description = "Change doctor's room in the system.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
                     @Content(mediaType = "application/json",
-                    examples = @ExampleObject(
-                            value = "Room changed successfully"
-                    ))
+                            examples = @ExampleObject(
+                                    value = "Room changed successfully"
+                            ))
             }),
             @ApiResponse(responseCode = "404", content = {
                     @Content(mediaType = "application/json", examples = @ExampleObject(value = "Entity not found with id:"))
@@ -238,12 +241,12 @@ public class DoctorController {
                     @Content(mediaType = "application/json", examples = @ExampleObject(value = "Room already exist with this doctor"))
             })
     })
-    @PreAuthorize(value = "hasAuthority('UPDATE_DOCTORS')")
     @PatchMapping("/{doctorId}/room")
     public ResponseEntity<?> changeRoom(@PathVariable("doctorId") Long id,
                                         @RequestParam(value = "room") String room) {
-        doctorService.changeRoom(id, room);
-        return ResponseEntity.ok("Room changed successfully");
 
+        doctorService.changeRoom(id, room);
+
+        return ResponseEntity.ok("Room changed successfully");
     }
 }

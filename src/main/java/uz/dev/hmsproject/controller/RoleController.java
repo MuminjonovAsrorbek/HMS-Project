@@ -137,7 +137,7 @@ public class RoleController {
             )
 
     })
-    @PreAuthorize("hasAuthority('CREATE_ROLES')")
+    @PreAuthorize("hasAuthority('CREATE_ROLE')")
     @PostMapping
     public ResponseEntity<?> create(
             @Parameter(description = "Role data (JSON). Example: { \"name\": \"MANAGER\", \"permissions\": [\"VIEW_USERS\"] }")
@@ -204,7 +204,7 @@ public class RoleController {
                     )
             )
     })
-    @PreAuthorize("hasAuthority('UPDATE_ROLES')")
+    @PreAuthorize("hasAuthority('UPDATE_ROLE')")
     @PutMapping("/{id}")
     public ResponseEntity<?> update(
             @Parameter(description = "Role ID", example = "1") @PathVariable("id") Long id,
@@ -235,7 +235,7 @@ public class RoleController {
                     examples = @ExampleObject(value = "{ \"code\": 404, \"message\": \"Role with id:5 not found.\" }")
             ))
     })
-    @PreAuthorize("hasAuthority('DELETE_ROLES')")
+    @PreAuthorize("hasAuthority('DELETE_ROLE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(
             @Parameter(description = "Role ID", example = "1") @PathVariable("id") Long id) {
@@ -259,7 +259,7 @@ public class RoleController {
                     examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
             ))
     })
-    @PreAuthorize("hasAuthority('CREATE_ROLES')")
+    @PreAuthorize("hasAuthority('CREATE_ROLE')")
     @GetMapping("/permissions")
     public ResponseEntity<List<Permissions>> getAllPermissions() {
         return ResponseEntity.ok(roleService.getAllPermissions());
@@ -287,7 +287,7 @@ public class RoleController {
                     examples = @ExampleObject(value = "{ \"code\": 404, \"message\": \"Role with id:5 not found.\" }")
             ))
     })
-    @PreAuthorize("hasAuthority('VIEW_ROLES')")
+    @PreAuthorize("hasAuthority('VIEW_ROLE')")
     @GetMapping("/permissions/{id}")
     public ResponseEntity<List<Permissions>> getAllPermissionsById(
             @Parameter(description = "Role ID", example = "1") @PathVariable("id") Long id) {
