@@ -385,15 +385,30 @@ public class AppointmentServiceImpl implements AppointmentService {
 
             String subject = "Qabul vaqti o'zgartirildi";
             String message = String.format("""
-                            Hurmatli %s,
-                            
-                            Sizning qabulingiz yangi vaqtga ko'chirildi:
-                            Sana-vaqt: %s
-                            Shifokor: %s
-                            Xona: %s
-                            Narx: %s so'm
-                            
-                            E'tiboringiz uchun rahmat.""",
+                            <html>
+                              <head>
+                                <style>
+                                  body { font-family: Arial, sans-serif; background: #f9f9f9; color: #222; }
+                                  .container { background: #fff; border-radius: 8px; padding: 24px; max-width: 480px; margin: 0 auto; box-shadow: 0 2px 8px #eee; }
+                                  .header { font-size: 20px; font-weight: bold; margin-bottom: 16px; color: #2a7ae2; }
+                                  .info { margin: 12px 0; }
+                                  .label { font-weight: bold; color: #555; }
+                                  .footer { margin-top: 24px; color: #888; font-size: 14px; }
+                                </style>
+                              </head>
+                              <body>
+                                <div class="container">
+                                  <div class="header">Hurmatli %s,</div>
+                                  <div class="info">Sizning qabulingiz yangi vaqtga ko&#39;chirildi:</div>
+                                  <div class="info"><span class="label">Sana-vaqt:</span> %s</div>
+                                  <div class="info"><span class="label">Shifokor:</span> %s</div>
+                                  <div class="info"><span class="label">Xona:</span> %s</div>
+                                  <div class="info"><span class="label">Narx:</span> %s so&#39;m</div>
+                                  <div class="footer">E&#39;tiboringiz uchun rahmat.</div>
+                                </div>
+                              </body>
+                            </html>
+                            """,
                     appointment.getPatient().getFullName(),
                     appointment.getAppointmentDateTime(),
                     appointment.getDoctor().getUser().getFullName(),
