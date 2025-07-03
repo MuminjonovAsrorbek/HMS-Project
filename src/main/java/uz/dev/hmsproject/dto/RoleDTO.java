@@ -25,7 +25,7 @@ public class RoleDTO {
     @Size(min = 3, max = 1000000000)
     private String name;
 
-    @Schema(description = "Description of the role", example = "[ VIEW_ROLE,CREATE_ROLES,UPDATE_ROLES,DELETE_ROLES,VIEW_SPECIALTIES,VIEW_SPECIALTY,CREATE_SPECIALTIES ]")
+    @Schema(description = "Description of the role", example = "[\"VIEW_ROLE\",\"CREATE_ROLES\",\"UPDATE_ROLES\"]")
     @NotNull
     private List<Permissions> permissions;
 }
