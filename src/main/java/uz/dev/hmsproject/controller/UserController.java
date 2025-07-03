@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -15,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.UserDTO;
 import uz.dev.hmsproject.dto.UserFilterDTO;
+import uz.dev.hmsproject.dto.response.ErrorDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.dto.response.RespUserDTO;
 import uz.dev.hmsproject.service.template.UserService;
@@ -36,6 +38,11 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = "{ \"errorMs\": \"Forbidden\", \"statusCode\": \"403\" }")
+            )),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
             ))
     })
     @PreAuthorize("hasAuthority('FILTER_USERS')")
@@ -51,6 +58,11 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = "{ \"errorMs\": \"Forbidden\", \"statusCode\": \"403\" }")
+            )),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
             ))
     })
     @PreAuthorize("hasAuthority('VIEW_USERS')")
@@ -70,6 +82,11 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = "{ \"errorMs\": \"Forbidden\", \"statusCode\": \"403\" }")
+            )),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
             ))
     })
     @PreAuthorize("hasAuthority('VIEW_USER')")
@@ -88,6 +105,11 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = "{ \"errorMs\": \"Forbidden\", \"statusCode\": \"403\" }")
+            )),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
             ))
     })
     @PreAuthorize("hasAuthority('CREATE_USERS')")
@@ -107,6 +129,11 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = "{ \"errorMs\": \"Forbidden\", \"statusCode\": \"403\" }")
+            )),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
             ))
     })
     @PreAuthorize("hasAuthority('UPDATE_USERS')")
@@ -127,6 +154,11 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = "{ \"errorMs\": \"Forbidden\", \"statusCode\": \"403\" }")
+            )),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
             ))
     })
     @PreAuthorize("hasAuthority('DELETE_USERS')")
@@ -146,6 +178,11 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = "{ \"errorMs\": \"Forbidden\", \"statusCode\": \"403\" }")
+            )),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
             ))
     })
     @PreAuthorize("hasAuthority('UPDATE_USERS')")

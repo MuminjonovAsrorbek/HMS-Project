@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.RoleDTO;
+import uz.dev.hmsproject.dto.response.ErrorDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.service.template.RoleService;
 
@@ -26,12 +28,20 @@ public class RoleController {
 
     private final RoleService roleService;
 
-    @Operation(summary = "Get all roles", description = "Retrieve a paginated list of all roles.")
+    @Operation(
+            summary = "Get all roles",
+            description = "Retrieve a paginated list of all roles."
+    )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Paginated role list returned successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = "{ \"errorMs\": \"Forbidden\", \"statusCode\": \"403\" }")
+            )),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
             ))
     })
     @PreAuthorize("hasAuthority('VIEW_ROLES')")
@@ -51,6 +61,16 @@ public class RoleController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = "{ \"errorMs\": \"Forbidden\", \"statusCode\": \"403\" }")
+            )),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
+            )),
+            @ApiResponse(responseCode = "404", description = "Entity not found exception", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 404, \"message\": \"Role with id:5 not found.\" }")
             ))
     })
     @PreAuthorize("hasAuthority('VIEW_ROLE')")
@@ -69,7 +89,50 @@ public class RoleController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = "{ \"errorMs\": \"Forbidden\", \"statusCode\": \"403\" }")
-            ))
+            )),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
+            )),
+            @ApiResponse(responseCode = "400", description = "Role Invalid Permissions Exception", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 400, \"message\": \"Permissions cannot be null or empty.\" }")
+            )),
+            @ApiResponse(responseCode = "409", description = "Entity Unique Exception", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 409, \"message\": \"Role already exists with name: ADMIN\" }")
+            )),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Validation failed for request fields",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class),
+                            examples = @ExampleObject(
+                                    value = """
+    {
+      "code": 400,
+      "message": "Field not valid",
+      "fieldErrors": [
+        {
+          "field": "permissions",
+          "message": "can not be null"
+        },
+        {
+          "field": "name",
+          "message": "size should be between 3 and 1000000000"
+        }
+      ]
+    }
+    """
+                            )
+
+                    )
+            )
+
     })
     @PreAuthorize("hasAuthority('CREATE_ROLES')")
     @PostMapping
@@ -89,7 +152,54 @@ public class RoleController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = "{ \"errorMs\": \"Forbidden\", \"statusCode\": \"403\" }")
-            ))
+            )),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
+            )),
+            @ApiResponse(responseCode = "404", description = "Entity not found exception", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 404, \"message\": \"Role with id:5 not found.\" }")
+            )),
+            @ApiResponse(responseCode = "400", description = "Role Invalid Permissions Exception", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 400, \"message\": \"Permissions cannot be null or empty.\" }")
+            )),
+            @ApiResponse(responseCode = "409", description = "Entity Unique Exception", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 409, \"message\": \"Role already exists with name: ADMIN\" }")
+            )),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Validation failed for request fields",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class),
+                            examples = @ExampleObject(
+                                    value = """
+    {
+      "code": 400,
+      "message": "Field not valid",
+      "fieldErrors": [
+        {
+          "field": "permissions",
+          "message": "can not be null"
+        },
+        {
+          "field": "name",
+          "message": "size should be between 3 and 1000000000"
+        }
+      ]
+    }
+    """
+                            )
+
+                    )
+            )
     })
     @PreAuthorize("hasAuthority('UPDATE_ROLES')")
     @PutMapping("/{id}")
@@ -110,6 +220,16 @@ public class RoleController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(
                     mediaType = "application/json",
                     examples = @ExampleObject(value = "{ \"errorMs\": \"Forbidden\", \"statusCode\": \"403\" }")
+            )),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
+            )),
+            @ApiResponse(responseCode = "404", description = "Entity not found exception", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 404, \"message\": \"Role with id:5 not found.\" }")
             ))
     })
     @PreAuthorize("hasAuthority('DELETE_ROLES')")
