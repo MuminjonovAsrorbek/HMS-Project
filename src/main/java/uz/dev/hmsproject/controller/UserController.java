@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import uz.dev.hmsproject.dto.RoleDTO;
 import uz.dev.hmsproject.dto.UserDTO;
 import uz.dev.hmsproject.dto.UserFilterDTO;
 import uz.dev.hmsproject.dto.response.ErrorDTO;
@@ -158,7 +159,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('CREATE_USER')")
     @PostMapping
     public ResponseEntity<?> create(
-            @Parameter(description = "User data (JSON)") @RequestBody @Valid UserDTO userDTO) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description ="User data (JSON)" , content = @Content(schema = @Schema(implementation = UserDTO.class))) @RequestBody @Valid UserDTO userDTO) {
         userService.create(userDTO);
         return ResponseEntity.ok("User created successfully");
     }
@@ -220,7 +221,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<?> update(
             @Parameter(description = "User ID", example = "2") @PathVariable("id") Long id,
-            @Parameter(description = "Updated user data (JSON)") @RequestBody @Valid UserDTO userDTO) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description ="User data (JSON)" , content = @Content(schema = @Schema(implementation = UserDTO.class))) @RequestBody @Valid UserDTO userDTO) {
         userService.update(id, userDTO);
         return ResponseEntity.ok("User updated successfully");
     }
