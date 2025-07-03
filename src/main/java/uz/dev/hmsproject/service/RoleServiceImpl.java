@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.RoleDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.entity.Role;
+import uz.dev.hmsproject.enums.Permissions;
 import uz.dev.hmsproject.exception.EntityNotDeleteException;
 import uz.dev.hmsproject.exception.EntityNotFoundException;
 import uz.dev.hmsproject.exception.EntityUniqueException;
@@ -54,6 +55,23 @@ public class RoleServiceImpl implements RoleService {
                 roleDTOS
         );
     }
+
+    @Override
+    public List<Permissions> getAllPermissions() {
+    if (Permissions.values().length > 0) {
+            return List.of(Permissions.values());
+        }
+        return List.of();
+    }
+
+    @Override
+    public List<Permissions> getPermissionsById(Long id) {
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + id, HttpStatus.NOT_FOUND));
+
+        return role.getPermissions() == null ? List.of() : role.getPermissions();
+    }
+
 
     @Override
     public List<RoleDTO> getAll() {

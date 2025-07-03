@@ -17,7 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import uz.dev.hmsproject.dto.RoleDTO;
 import uz.dev.hmsproject.dto.response.ErrorDTO;
 import uz.dev.hmsproject.dto.response.PageableDTO;
+import uz.dev.hmsproject.enums.Permissions;
 import uz.dev.hmsproject.service.template.RoleService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/role")
@@ -113,21 +116,21 @@ public class RoleController {
                             schema = @Schema(implementation = ErrorDTO.class),
                             examples = @ExampleObject(
                                     value = """
-    {
-      "code": 400,
-      "message": "Field not valid",
-      "fieldErrors": [
-        {
-          "field": "permissions",
-          "message": "can not be null"
-        },
-        {
-          "field": "name",
-          "message": "size should be between 3 and 1000000000"
-        }
-      ]
-    }
-    """
+                                            {
+                                              "code": 400,
+                                              "message": "Field not valid",
+                                              "fieldErrors": [
+                                                {
+                                                  "field": "permissions",
+                                                  "message": "can not be null"
+                                                },
+                                                {
+                                                  "field": "name",
+                                                  "message": "size should be between 3 and 1000000000"
+                                                }
+                                              ]
+                                            }
+                                            """
                             )
 
                     )
@@ -181,21 +184,21 @@ public class RoleController {
                             schema = @Schema(implementation = ErrorDTO.class),
                             examples = @ExampleObject(
                                     value = """
-    {
-      "code": 400,
-      "message": "Field not valid",
-      "fieldErrors": [
-        {
-          "field": "permissions",
-          "message": "can not be null"
-        },
-        {
-          "field": "name",
-          "message": "size should be between 3 and 1000000000"
-        }
-      ]
-    }
-    """
+                                            {
+                                              "code": 400,
+                                              "message": "Field not valid",
+                                              "fieldErrors": [
+                                                {
+                                                  "field": "permissions",
+                                                  "message": "can not be null"
+                                                },
+                                                {
+                                                  "field": "name",
+                                                  "message": "size should be between 3 and 1000000000"
+                                                }
+                                              ]
+                                            }
+                                            """
                             )
 
                     )
@@ -238,5 +241,60 @@ public class RoleController {
             @Parameter(description = "Role ID", example = "1") @PathVariable("id") Long id) {
         roleService.delete(id);
         return ResponseEntity.ok("Role deleted successfully");
+    }
+
+    @Operation(summary = "Get permissions", description = "Get All Role permissions.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Role permissions returned successfully", content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = "{ \"message\": \" Permissions retrieved successfully\" }")
+            )),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = "{ \"errorMs\": \"Forbidden\", \"statusCode\": \"403\" }")
+            )),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
+            ))
+    })
+    @PreAuthorize("hasAuthority('CREATE_ROLES')")
+    @GetMapping("/permissions")
+    public ResponseEntity<List<Permissions>> getAllPermissions() {
+        return ResponseEntity.ok(roleService.getAllPermissions());
+    }
+
+
+    @Operation(summary = "Get permissions", description = "Get All Role permissions.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Role permissions returned successfully", content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = "{ \"message\": \" Permissions retrieved successfully\" }")
+            )),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(value = "{ \"errorMs\": \"Forbidden\", \"statusCode\": \"403\" }")
+            )),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
+            )),
+            @ApiResponse(responseCode = "404", description = "Entity not found exception", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 404, \"message\": \"Role with id:5 not found.\" }")
+            ))
+    })
+    @PreAuthorize("hasAuthority('VIEW_ROLES')")
+    @GetMapping("/permissions/{id}")
+    public ResponseEntity<List<Permissions>> getAllPermissionsById(
+            @Parameter(description = "Role ID", example = "1") @PathVariable("id") Long id) {
+        {
+            return ResponseEntity.ok(roleService.getPermissionsById(id));
+        }
+
+
     }
 }
