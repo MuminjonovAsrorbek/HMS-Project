@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -53,8 +52,7 @@ public class UserController {
     })
     @PreAuthorize("hasAuthority('VIEW_USERS')")
     @GetMapping("/filter")
-    public List<RespUserDTO> filter(
-            @Parameter(description = "Filter criteria object") @Valid UserFilterDTO filterDTO) {
+    public List<RespUserDTO> filter(UserFilterDTO filterDTO) {
         return userService.filter(filterDTO);
     }
 
@@ -136,21 +134,21 @@ public class UserController {
                             schema = @Schema(implementation = ErrorDTO.class),
                             examples = @ExampleObject(
                                     value = """
-    {
-      "code": 400,
-      "message": "Field not valid",
-      "fieldErrors": [
-        {
-          "field": "password",
-          "message": "can not be null"
-        },
-        {
-          "field": "fullName",
-          "message": "size should be between 3 and 1000000000"
-        }
-      ]
-    }
-    """
+                                            {
+                                              "code": 400,
+                                              "message": "Field not valid",
+                                              "fieldErrors": [
+                                                {
+                                                  "field": "password",
+                                                  "message": "can not be null"
+                                                },
+                                                {
+                                                  "field": "fullName",
+                                                  "message": "size should be between 3 and 1000000000"
+                                                }
+                                              ]
+                                            }
+                                            """
                             )
 
                     )
@@ -159,7 +157,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('CREATE_USER')")
     @PostMapping
     public ResponseEntity<?> create(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description ="User data (JSON)" , content = @Content(schema = @Schema(implementation = UserDTO.class))) @RequestBody @Valid UserDTO userDTO) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "User data (JSON)", content = @Content(schema = @Schema(implementation = UserDTO.class))) @RequestBody @Valid UserDTO userDTO) {
         userService.create(userDTO);
         return ResponseEntity.ok("User created successfully");
     }
@@ -197,21 +195,21 @@ public class UserController {
                             schema = @Schema(implementation = ErrorDTO.class),
                             examples = @ExampleObject(
                                     value = """
-    {
-      "code": 400,
-      "message": "Field not valid",
-      "fieldErrors": [
-        {
-          "field": "password",
-          "message": "can not be null"
-        },
-        {
-          "field": "fullName",
-          "message": "size should be between 3 and 1000000000"
-        }
-      ]
-    }
-    """
+                                            {
+                                              "code": 400,
+                                              "message": "Field not valid",
+                                              "fieldErrors": [
+                                                {
+                                                  "field": "password",
+                                                  "message": "can not be null"
+                                                },
+                                                {
+                                                  "field": "fullName",
+                                                  "message": "size should be between 3 and 1000000000"
+                                                }
+                                              ]
+                                            }
+                                            """
                             )
 
                     )
@@ -221,7 +219,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<?> update(
             @Parameter(description = "User ID", example = "2") @PathVariable("id") Long id,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description ="User data (JSON)" , content = @Content(schema = @Schema(implementation = UserDTO.class))) @RequestBody @Valid UserDTO userDTO) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "User data (JSON)", content = @Content(schema = @Schema(implementation = UserDTO.class))) @RequestBody @Valid UserDTO userDTO) {
         userService.update(id, userDTO);
         return ResponseEntity.ok("User updated successfully");
     }
