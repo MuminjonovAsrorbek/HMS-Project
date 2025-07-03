@@ -140,7 +140,7 @@ public class RoleController {
     @PreAuthorize("hasAuthority('CREATE_ROLE')")
     @PostMapping
     public ResponseEntity<?> create(
-            @Parameter(description = "Role data (JSON). Example: { \"name\": \"MANAGER\", \"permissions\": [\"VIEW_USERS\"] }")
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = RoleDTO.class)))
             @RequestBody @Valid RoleDTO roleDTO) {
         roleService.create(roleDTO);
         return ResponseEntity.ok("Role created successfully");
