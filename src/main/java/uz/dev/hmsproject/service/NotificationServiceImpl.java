@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.dto.response.AppointmentDTO;
 import uz.dev.hmsproject.exception.SendEmailErrorException;
 import uz.dev.hmsproject.service.template.NotificationService;
+import uz.dev.hmsproject.utils.CommonUtils;
 
 /**
  * Created by: asrorbek
@@ -101,7 +102,7 @@ public class NotificationServiceImpl implements NotificationService {
                 </html>
                 """.formatted(
                 appointment.getPatient(),
-                appointment.getDateTime(),
+                CommonUtils.formattedDate(appointment.getDateTime()),
                 appointment.getDoctor(),
                 appointment.getRoom(),
                 appointment.getPrice()
