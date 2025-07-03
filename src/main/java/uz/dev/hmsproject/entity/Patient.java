@@ -45,6 +45,4 @@ public class Patient extends AbsDeleteEntity {
 
     @CreationTimestamp
     private Timestamp createdAt;
-
-
 }
