@@ -160,10 +160,10 @@ public class AppointmentServiceImpl implements AppointmentService {
             predicates.add(cb.equal(root.get("status"), request.getStatus()));
         }
         if (request.getDateFrom() != null) {
-            predicates.add(cb.greaterThanOrEqualTo(root.get("appointmentDatetime"), request.getDateFrom().atStartOfDay()));
+            predicates.add(cb.greaterThanOrEqualTo(root.get("appointmentDateTime"), request.getDateFrom().atStartOfDay()));
         }
         if (request.getDateTo() != null) {
-            predicates.add(cb.lessThanOrEqualTo(root.get("appointmentDatetime"), request.getDateTo().atTime(LocalTime.MAX)));
+            predicates.add(cb.lessThanOrEqualTo(root.get("appointmentDateTime"), request.getDateTo().atTime(LocalTime.MAX)));
         }
 
         cq.where(cb.and(predicates.toArray(new Predicate[0])));
@@ -273,9 +273,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Pageable pageable = PageRequest.of(page, 10, sort);
 
+        LocalDateTime startDay = today.atStartOfDay();
+
+        LocalDateTime endDay = today.plusDays(1).atStartOfDay();
+
         Page<Appointment> appointmentPage = appointmentRepository.findAllByAppointmentDateTimeBetween(
-                today.atStartOfDay(),
-                today.plusDays(1).atStartOfDay(),
+                startDay,
+                endDay,
                 pageable);
 
         List<Appointment> appointments = appointmentPage.getContent();
