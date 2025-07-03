@@ -121,12 +121,7 @@ public class AppointmentController {
     })
     @PreAuthorize("hasAuthority('VIEW_APPOINTMENTS')")
     @GetMapping("/filter")
-    public List<AppointmentDTO> filterAppointments(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Get Appointments by filter information",
-            content = @Content(schema = @Schema(implementation = AppointmentFilterRequest.class), mediaType = "application/json")
-    )
-            AppointmentFilterRequest appointmentFilterRequest) {
+    public List<AppointmentDTO> filterAppointments(AppointmentFilterRequest appointmentFilterRequest) {
 
         return appointmentService.filterAppointments(appointmentFilterRequest);
 
