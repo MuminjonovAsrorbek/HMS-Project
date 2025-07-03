@@ -3,7 +3,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/hms_project
     username: postgres
-    password: postgres
+    password: 8585
   jpa:
     hibernate:
       ddl-auto: update
@@ -24,6 +24,7 @@ spring:
           auth: true
           starttls:
             enable: true
+
 myapp:
   secret-key: 'c0388696-55b0-479c-a142-a2ae7cbe269a'
 
@@ -35,12 +36,9 @@ springdoc:
     enabled: true
   swagger-ui:
     path: /swagger-ui.html
-
+    tags-sorter: order   # ✅ This ensures your tag order is preserved in Swagger UI
 
 google:
   recaptcha:
     secret: '6Le1rHErAAAAAPkBT_adGbtDbcjPhdeYGm7VTnZg'
     site: '6Le1rHErAAAAAH9f_A3JPoNt7Tbv8ejBFK9XlfcL'
-
-
-

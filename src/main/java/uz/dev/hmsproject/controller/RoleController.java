@@ -20,13 +20,14 @@ import uz.dev.hmsproject.dto.response.PageableDTO;
 import uz.dev.hmsproject.enums.Permissions;
 import uz.dev.hmsproject.service.template.RoleService;
 
+import javax.swing.border.Border;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/role")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
-@Tag(name = "Roles", description = "Endpoints for managing roles")
+@Tag(name = "Role API", description = "Endpoints for managing roles")
 public class RoleController {
 
     private final RoleService roleService;
