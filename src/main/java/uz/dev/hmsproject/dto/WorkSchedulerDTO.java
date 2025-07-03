@@ -1,10 +1,10 @@
 package uz.dev.hmsproject.dto;
 
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
 import java.io.Serializable;
 import java.time.LocalTime;
 
@@ -28,6 +28,5 @@ public class WorkSchedulerDTO implements Serializable {
     private LocalTime startTime;
 
     @NotNull(message = "End time must not be null")
-    @FutureOrPresent(message = "End time must be in the future")
     private LocalTime endTime;
 }
