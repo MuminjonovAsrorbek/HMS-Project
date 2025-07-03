@@ -29,7 +29,7 @@ import java.util.List;
 @RequestMapping("/api/patients")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
-@Tag(name = "Patients", description = "Endpoints for managing patients")
+@Tag(name = "Patient API", description = "Endpoints for managing patients")
 public class PatientController {
 
     private final PatientService patientService;
