@@ -46,7 +46,7 @@ public class SpecialityController {
             }),
             @ApiResponse(responseCode = "404", description = "Speciality not found", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = "Entity not found with id")))
     })
-    @PreAuthorize(value = "hasAuthority('VIEW_SPECIALTY')")
+    @PreAuthorize(value = "hasAuthority('VIEW_SPECIALITY')")
     @GetMapping("/{id}")
     public SpecialityDTO getById(@PathVariable("id") Long id) {
 
@@ -54,7 +54,6 @@ public class SpecialityController {
 
     }
 
-    @PreAuthorize(value = "hasAuthority('CREATE_SPECIALTY')")
     @Operation(summary = "Create speciality",
             description = "Create and save a new speciality in the system.")
     @ApiResponses({
@@ -71,7 +70,7 @@ public class SpecialityController {
                             ))
             })
     })
-    @PreAuthorize(value = "hasAuthority('CREATE_SPECIALTIES')")
+    @PreAuthorize(value = "hasAuthority('CREATE_SPECIALITY')")
     @PostMapping
     public ResponseEntity<?> create(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Create speciality",
             required = true, content = @Content(schema = @Schema(implementation = SpecialityCreationDTO.class), mediaType = "application/json")) @RequestBody @Valid SpecialityCreationDTO specialityDTO) {
@@ -82,9 +81,8 @@ public class SpecialityController {
 
     }
 
-    @PreAuthorize(value = "hasAuthority('UPDATE_SPECIALTY')")
     @Operation(summary = "Update speciality",
-    description = "Update an existing speciality in the system.")
+            description = "Update an existing speciality in the system.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
                     @Content(mediaType = "application/json",
@@ -94,20 +92,20 @@ public class SpecialityController {
             }),
             @ApiResponse(responseCode = "209", content = {
                     @Content(mediaType = "application/json",
-                    examples = @ExampleObject(
-                            value = "The speciality already exist with name"
-                    ))
+                            examples = @ExampleObject(
+                                    value = "The speciality already exist with name"
+                            ))
             }),
             @ApiResponse(responseCode = "404", content = {
                     @Content(mediaType = "application/json", examples = @ExampleObject(value = "Entity not found with id:"))
             })
 
     })
-    @PreAuthorize(value = "hasAuthority('UPDATE_SPECIALTIES')")
+    @PreAuthorize(value = "hasAuthority('UPDATE_SPECIALITY')")
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id,
-                                    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Update speciality",required = true,
-                                    content = @Content(schema = @Schema(implementation = SpecialityDTO.class), mediaType = "application/json"))
+                                    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Update speciality", required = true,
+                                            content = @Content(schema = @Schema(implementation = SpecialityDTO.class), mediaType = "application/json"))
                                     @RequestBody @Valid SpecialityDTO specialityDTO) {
 
         specialityService.update(id, specialityDTO);
@@ -116,9 +114,8 @@ public class SpecialityController {
 
     }
 
-    @PreAuthorize(value = "hasAuthority('DELETE_SPECIALTY')")
     @Operation(summary = "Delete speciality",
-    description = "Delete an existing speciality in the system.")
+            description = "Delete an existing speciality in the system.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
                     @Content(mediaType = "application/json", examples =
@@ -128,7 +125,7 @@ public class SpecialityController {
                     @Content(mediaType = "application/json", examples = @ExampleObject(value = "Entity not found with id:"))
             })
     })
-    @PreAuthorize(value = "hasAuthority('DELETE_SPECIALTIES')")
+    @PreAuthorize(value = "hasAuthority('DELETE_SPECIALITY')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 
