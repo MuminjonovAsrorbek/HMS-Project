@@ -24,7 +24,6 @@ spring:
           auth: true
           starttls:
             enable: true
-
 myapp:
   secret-key: 'c0388696-55b0-479c-a142-a2ae7cbe269a'
 
@@ -36,7 +35,7 @@ springdoc:
     enabled: true
   swagger-ui:
     path: /swagger-ui.html
-    tags-sorter: order   # ✅ This ensures your tag order is preserved in Swagger UI
+
 
 google:
   recaptcha:

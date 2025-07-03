@@ -65,8 +65,7 @@ public class DoctorController {
             })
     })
     @GetMapping("/filter")
-    public List<DoctorResponseDTO> filter(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Get doctors by filter information",
-            content = @Content(schema = @Schema(implementation = DoctorFilterDTO.class), mediaType = "application/json")) DoctorFilterDTO dto) {
+    public List<DoctorResponseDTO> filter(DoctorFilterDTO dto) {
         return doctorService.filter(dto);
     }
 
