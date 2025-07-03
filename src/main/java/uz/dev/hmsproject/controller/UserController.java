@@ -43,6 +43,11 @@ public class UserController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = ErrorDTO.class),
                     examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
+            )),
+            @ApiResponse(responseCode = "400", description = "Illegal Argument Exception", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 400, \"message\": \"Filter criteria cannot be null.\" }")
             ))
     })
     @PreAuthorize("hasAuthority('FILTER_USERS')")
@@ -87,7 +92,13 @@ public class UserController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = ErrorDTO.class),
                     examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
-            ))
+            )),
+            @ApiResponse(responseCode = "404", description = "Entity not found exception", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 404, \"message\": \"User with id:5 not found.\" }")
+            )),
+
     })
     @PreAuthorize("hasAuthority('VIEW_USER')")
     @GetMapping("/{id}")
@@ -110,7 +121,39 @@ public class UserController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = ErrorDTO.class),
                     examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
-            ))
+            )),
+            @ApiResponse(responseCode = "409", description = "User Already Exists With Username Exception", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 409, \"message\": \"User already exists with username: john\" }")
+            )),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Validation failed for request fields",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class),
+                            examples = @ExampleObject(
+                                    value = """
+    {
+      "code": 400,
+      "message": "Field not valid",
+      "fieldErrors": [
+        {
+          "field": "password",
+          "message": "can not be null"
+        },
+        {
+          "field": "fullName",
+          "message": "size should be between 3 and 1000000000"
+        }
+      ]
+    }
+    """
+                            )
+
+                    )
+            )
     })
     @PreAuthorize("hasAuthority('CREATE_USERS')")
     @PostMapping
@@ -134,7 +177,44 @@ public class UserController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = ErrorDTO.class),
                     examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
-            ))
+            )),
+            @ApiResponse(responseCode = "404", description = "Entity not found exception", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 404, \"message\": \"User with id:5 not found.\" }")
+            )),
+            @ApiResponse(responseCode = "409", description = "User Already Exists With Username Exception", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 409, \"message\": \"User already exists with username: john\" }")
+            )),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Validation failed for request fields",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class),
+                            examples = @ExampleObject(
+                                    value = """
+    {
+      "code": 400,
+      "message": "Field not valid",
+      "fieldErrors": [
+        {
+          "field": "password",
+          "message": "can not be null"
+        },
+        {
+          "field": "fullName",
+          "message": "size should be between 3 and 1000000000"
+        }
+      ]
+    }
+    """
+                            )
+
+                    )
+            )
     })
     @PreAuthorize("hasAuthority('UPDATE_USERS')")
     @PutMapping("/{id}")
@@ -159,6 +239,11 @@ public class UserController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = ErrorDTO.class),
                     examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
+            )),
+            @ApiResponse(responseCode = "404", description = "Entity not found exception", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 404, \"message\": \"User with id:5 not found.\" }")
             ))
     })
     @PreAuthorize("hasAuthority('DELETE_USERS')")
@@ -183,6 +268,11 @@ public class UserController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = ErrorDTO.class),
                     examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"Unexpected server error occurred during processing.\" }")
+            )),
+            @ApiResponse(responseCode = "404", description = "Entity not found exception", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorDTO.class),
+                    examples = @ExampleObject(value = "{ \"code\": 404, \"message\": \"User with id:5 not found.\" }")
             ))
     })
     @PreAuthorize("hasAuthority('UPDATE_USERS')")

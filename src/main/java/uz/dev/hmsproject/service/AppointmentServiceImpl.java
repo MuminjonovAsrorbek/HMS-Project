@@ -27,6 +27,7 @@ import uz.dev.hmsproject.mapper.AppointmentMapper;
 import uz.dev.hmsproject.repository.*;
 import uz.dev.hmsproject.service.template.AppointmentService;
 import uz.dev.hmsproject.service.template.NotificationService;
+import uz.dev.hmsproject.utils.CommonUtils;
 import uz.dev.hmsproject.utils.SecurityUtils;
 
 import java.math.BigDecimal;
@@ -398,7 +399,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                               </head>
                               <body>
                                 <div class="container">
-                                  <div class="header">Hurmatli %s,</div>
+                                  <div class="header">Hurmatli %s</div>
                                   <div class="info">Sizning qabulingiz yangi vaqtga ko&#39;chirildi:</div>
                                   <div class="info"><span class="label">Sana-vaqt:</span> %s</div>
                                   <div class="info"><span class="label">Shifokor:</span> %s</div>
@@ -410,7 +411,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                             </html>
                             """,
                     appointment.getPatient().getFullName(),
-                    appointment.getAppointmentDateTime(),
+                    CommonUtils.formattedDate(appointment.getAppointmentDateTime()),
                     appointment.getDoctor().getUser().getFullName(),
                     appointment.getDoctor().getRoom().getNumber(),
                     appointment.getPrice());
