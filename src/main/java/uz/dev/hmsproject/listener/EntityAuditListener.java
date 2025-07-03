@@ -1,9 +1,7 @@
 package uz.dev.hmsproject.listener;
 
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
-
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import uz.dev.hmsproject.entity.AuditLog;
@@ -25,8 +23,8 @@ public class EntityAuditListener {
         this.securityUtils = securityUtils;
     }
 
-    @PrePersist
-    public void prePersist(Object entity) {
+    @jakarta.persistence.PostPersist
+    public void postPersist(Object entity) {
         saveAuditLog(entity, "CREATED");
     }
 
@@ -49,6 +47,7 @@ public class EntityAuditListener {
 
 
         if (entity instanceof AbsLongEntity baseEntity) {
+
             log.setEntityId(baseEntity.getId());
         }
 

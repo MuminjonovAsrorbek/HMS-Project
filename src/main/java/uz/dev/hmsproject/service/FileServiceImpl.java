@@ -7,6 +7,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import uz.dev.hmsproject.entity.Appointment;
 import uz.dev.hmsproject.service.template.FileService;
+import uz.dev.hmsproject.utils.CommonUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -72,7 +73,7 @@ public class FileServiceImpl implements FileService {
 
             createCell(row, 3, appointment.getDoctor().getUser().getFullName(), rowStyle);
             createCell(row, 4, appointment.getDoctor().getSpeciality().getName(), rowStyle);
-            createCell(row, 5, appointment.getAppointmentDateTime().toString(), rowStyle);
+            createCell(row, 5, CommonUtils.formattedDate(appointment.getAppointmentDateTime()), rowStyle);
 
 
             String status = appointment.getStatus().name();
