@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import uz.dev.hmsproject.service.template.RoomService;
 @RestController
 @RequestMapping("/api/v1/room")
 @RequiredArgsConstructor
+@Tag(name = "Room API", description = "Manage rooms of hospital")
 public class RoomController {
 
     private final RoomService roomService;
@@ -32,7 +34,7 @@ public class RoomController {
 
     }
 
-    @Operation(summary = "Get Room bi id",
+    @Operation(summary = "Get Room by ID",
             description = "Retrieve a specific room by its ID.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Room retrieved successfully", content =

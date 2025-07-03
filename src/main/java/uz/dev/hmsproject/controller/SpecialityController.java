@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import uz.dev.hmsproject.service.template.SpecialityService;
 @RestController
 @RequestMapping("/api/speciality")
 @RequiredArgsConstructor
+@Tag(name = "Speciality API", description = "Manage specialities of hospital")
 public class SpecialityController {
 
     private final SpecialityService specialityService;
@@ -34,7 +36,7 @@ public class SpecialityController {
 
     }
 
-    @Operation(summary = "Get speciality bi Id",
+    @Operation(summary = "Get speciality by ID",
             description = "Retrieve a specific speciality by its ID")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Speciality retrieved successfully", content = {
