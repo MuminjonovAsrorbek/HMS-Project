@@ -9,13 +9,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import uz.dev.hmsproject.dto.PatientSearchDTO;
 import uz.dev.hmsproject.dto.UserDTO;
 import uz.dev.hmsproject.dto.UserFilterDTO;
 import uz.dev.hmsproject.dto.response.ErrorDTO;
@@ -54,23 +52,7 @@ public class UserController {
     })
     @PreAuthorize("hasAuthority('VIEW_USERS')")
     @GetMapping("/filter")
-    public List<RespUserDTO> filter(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Search filters",
-                    required = true,
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = UserFilterDTO.class),
-                            examples = @ExampleObject(value = """
-                                    {
-                                      "fullName": "Ali",
-                                        "username": "ali123",
-                                        "role": "ADMIN"
-                                    }
-                                    """)
-                    )
-            )
-            @Parameter(description = "Filter criteria object") @Valid UserFilterDTO filterDTO) {
+    public List<RespUserDTO> filter(UserFilterDTO filterDTO) {
         return userService.filter(filterDTO);
     }
 
