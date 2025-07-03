@@ -2,6 +2,7 @@ package uz.dev.hmsproject.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,9 +20,11 @@ import java.time.LocalDateTime;
 public class AppointmentRescheduleRequest {
 
     @NotNull
+    @Positive
     @Schema(description = "Unique ID of the Appointment", examples = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long appointmentId;
 
+    @Positive
     @Schema(description = "Unique ID of the Doctor", examples = "1")
     private Long newDoctorId;
 

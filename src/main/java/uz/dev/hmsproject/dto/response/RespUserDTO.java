@@ -26,7 +26,7 @@ public class RespUserDTO {
     @Schema(description = "Role name of the user", example = "ADMIN")
     private String roleName;
 
-    @Schema(description = "Email of the user", example = "true")
+    @Schema(description = "Active of the user", example = "true")
     private boolean isActive = true;
 
 }
