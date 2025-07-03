@@ -399,7 +399,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                               </head>
                               <body>
                                 <div class="container">
-                                  <div class="header">Hurmatli %s,</div>
+                                  <div class="header">Hurmatli %s</div>
                                   <div class="info">Sizning qabulingiz yangi vaqtga ko&#39;chirildi:</div>
                                   <div class="info"><span class="label">Sana-vaqt:</span> %s</div>
                                   <div class="info"><span class="label">Shifokor:</span> %s</div>
