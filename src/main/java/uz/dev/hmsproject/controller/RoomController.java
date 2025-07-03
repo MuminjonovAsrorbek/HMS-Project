@@ -1,5 +1,11 @@
 package uz.dev.hmsproject.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +22,8 @@ public class RoomController {
 
     private final RoomService roomService;
 
+    @Operation(summary = "Get all rooms",
+            description = "Retrieve a paginated list of all rooms.")
     @PreAuthorize(value = "hasAuthority('VIEW_ROOMS')")
     @GetMapping
     public PageableDTO getAll(@RequestParam(value = "page", defaultValue = "0") int page,
@@ -24,6 +32,17 @@ public class RoomController {
 
     }
 
+    @Operation(summary = "Get Room bi id",
+            description = "Retrieve a specific room by its ID.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Room retrieved successfully", content =
+            @Content(mediaType = "application/json", schema = @Schema(implementation = RoomDTO.class),
+                    examples = @ExampleObject(value = "{ \"id\": 1, \"number\": \"Room 1\" }")
+            )),
+            @ApiResponse(responseCode = "404", description = "Room not found", content = @Content(mediaType = "application/json", examples = @ExampleObject(
+                    value = "Entity not found with ID"
+            )))
+    })
     @PreAuthorize(value = "hasAuthority('VIEW_ROOM')")
     @GetMapping("/{id}")
     public RoomDTO getById(@PathVariable("id") Long id) {
@@ -31,18 +50,56 @@ public class RoomController {
 
     }
 
+    @Operation(summary = "Create Room",
+            description = "Create and save a new room in the system.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = "Room create successfully"
+                            ))
+            }),
+            @ApiResponse(responseCode = "209", content = {
+                    @Content(mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = "The room already exist with number"
+                            ))})
+    })
     @PreAuthorize(value = "hasAuthority('CREATE_ROOMS')")
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody @Valid RoomDTO roomDTO) {
+    public ResponseEntity<?> create(@io.swagger.v3.oas.annotations                                      .parameters.RequestBody(description =                                   "Create room", required = true, content =
+                                    @Content(schema = @Schema(implementation = RoomDTO.class), mediaType = "application/json")) @RequestBody @Valid RoomDTO roomDTO
+    ) {
 
         roomService.create(roomDTO);
 
         return ResponseEntity.ok("Room created successfully");
     }
 
+    @Operation(summary = "Update Room",
+            description = "Update an existing room in the system.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = "Room update successfully"
+                            ))
+            }),
+            @ApiResponse(responseCode = "209", content = {
+                    @Content(mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = "The room already exist with number"
+                            ))
+            }),
+            @ApiResponse(responseCode = "404", content = {
+                    @Content(mediaType = "application/json", examples = @ExampleObject(value = "Entity not found with ID:"))
+            })
+    })
     @PreAuthorize(value = "hasAuthority('UPDATE_ROOMS')")
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id,
+                                    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Update room",required = true,
+                                    content = @Content(schema = @Schema(implementation = RoomDTO.class), mediaType = "application/json"))
                                     @RequestBody @Valid RoomDTO roomDTO) {
 
         roomService.update(id, roomDTO);
@@ -50,6 +107,17 @@ public class RoomController {
         return ResponseEntity.ok("Room updated successfully");
     }
 
+    @Operation(summary = "Delete room",
+    description = "Delete an existing room in the system.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(mediaType = "application/json", examples =
+                    @ExampleObject(value = "Room deleted successfully"))
+            }),
+            @ApiResponse(responseCode = "404", content = {
+                    @Content(mediaType = "application/json", examples = @ExampleObject(value = "Entity not found with ID:"))
+            })
+    })
     @PreAuthorize(value = "hasAuthority('DELETE_ROOMS')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
