@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/audit-logs")
 @RequiredArgsConstructor
-@Tag(name = "Audit Logs", description = "APIs for retrieving audit log records")
+@Tag(name = "Audit Logs API", description = "APIs for retrieving audit log records")
 @SecurityRequirement(name = "bearerAuth")
 public class AuditLogController {
 
