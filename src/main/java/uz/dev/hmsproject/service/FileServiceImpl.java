@@ -37,7 +37,7 @@ public class FileServiceImpl implements FileService {
 
         Row titleRow = sheet.createRow(0);
         Cell titleCell = titleRow.createCell(0);
-        titleCell.setCellValue("Bugungi Appointmentlar - " + reportDate.toString());
+        titleCell.setCellValue(reportDate.toString() + " - Sanadagi Appointmentlar");
 
         CellStyle titleStyle = workbook.createCellStyle();
         Font titleFont = workbook.createFont();
