@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
-import io.swagger.v3.oas.annotations.tags.Tag;
+
 
 @OpenAPIDefinition(
         info = @Info(
@@ -22,16 +22,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
                 ),
                 license = @License(
                         name = "Apache 2.0",
-                        url = "https://springdoc.org"
-                ),
+                        url = "https://springdoc.org"),
                 termsOfService = "http://swagger.io/terms/",
                 description = "Spring 6 Swagger Simple Application"
         ),
         externalDocs = @ExternalDocumentation(
-                description = "Spring 6 Wiki Documentation",
-                url = "https://springshop.wiki.github.org/docs"
+                description = "Spring 6 Wiki Documentation", url = "https://springshop.wiki.github.org/docs"
         ),
         servers = {
+
                 @Server(
                         url = "http://10.10.4.0:8080",
                         description = "Production-Server"
