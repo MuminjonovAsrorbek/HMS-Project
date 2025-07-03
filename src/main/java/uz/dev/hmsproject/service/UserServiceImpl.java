@@ -79,12 +79,6 @@ public class UserServiceImpl implements UserService {
         Root<User> rootUser = criteriaQuery.from(User.class);
         List<Predicate> predicates = new ArrayList<>();
 
-        if (filterDTO.getSearch() != null) {
-            predicates.add(criteriaBuilder.or(
-                    criteriaBuilder.like(rootUser.get("fullName"), "%" + filterDTO.getSearch() + "%"),
-                    criteriaBuilder.like(rootUser.get("username"), "%" + filterDTO.getSearch() + "%")
-            ));
-        }
 
         if (filterDTO.getFullName() != null) {
             predicates.add(criteriaBuilder.like(rootUser.get("fullName"), "%" + filterDTO.getFullName() + "%"));
