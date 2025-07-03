@@ -208,7 +208,7 @@ public class RoleController {
     @PutMapping("/{id}")
     public ResponseEntity<?> update(
             @Parameter(description = "Role ID", example = "1") @PathVariable("id") Long id,
-            @Parameter(description = "Updated role data (JSON). Example: { \"name\": \"MODERATOR\", \"permissions\": [\"UPDATE_USERS\"] }")
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(schema = @Schema(implementation = RoleDTO.class)))
             @RequestBody @Valid RoleDTO roleDTO) {
         roleService.update(id, roleDTO);
         return ResponseEntity.ok("Role updated successfully");
