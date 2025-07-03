@@ -27,7 +27,7 @@ public class SpecialityController {
 
     @Operation(summary = "Get all specialities",
             description = "Retrieve a paginated list of all specialities.")
-    @PreAuthorize(value = "hasAuthority('VIEW_SPECIALTIES')")
+    @PreAuthorize(value = "hasAuthority('VIEW_SPECIALITIES')")
     @GetMapping
     public PageableDTO getAll(@RequestParam(value = "page", defaultValue = "0") int page,
                               @RequestParam(value = "size", defaultValue = "10") int size) {
