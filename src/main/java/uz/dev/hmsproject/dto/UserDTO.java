@@ -29,7 +29,7 @@ public class UserDTO {
 
     @Schema(description = "Username of the user", example = "user1")
     @NotBlank
-    @Size(max = 100)
+    @Size(min = 3,max = 1000000000)
     private String username;
 
     @Schema(description = "Email of the user", example = "example123@gmail.com")

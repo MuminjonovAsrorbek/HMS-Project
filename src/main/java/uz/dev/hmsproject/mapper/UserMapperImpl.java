@@ -66,6 +66,7 @@ public class UserMapperImpl implements UserMapper {
         userDTO.setFullName(getOrDef(user.getFullName(), null));
         userDTO.setUsername(getOrDef(user.getUsername(), null));
         userDTO.setRoleName(user.getRole().getName());
+        userDTO.setActive(getOrDef(user.isActive(), null));
         return userDTO;
     }
 
