@@ -33,7 +33,7 @@ public class DoctorController {
 
     private final DoctorService doctorService;
 
-    @PreAuthorize(value = "hasAuthority('FILTER_DOCTORS')")
+    @PreAuthorize(value = "hasAuthority('VIEW_DOCTORS')")
     @GetMapping("/filter")
     public List<DoctorResponseDTO> filter(DoctorFilterDTO dto) {
         return doctorService.filter(dto);
@@ -53,14 +53,14 @@ public class DoctorController {
         return doctorService.getById(id);
     }
 
-    @PreAuthorize(value = "hasAuthority('CREATE_DOCTORS')")
+    @PreAuthorize(value = "hasAuthority('CREATE_DOCTOR')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid DoctorDTO doctorDTO) {
         doctorService.create(doctorDTO);
         return ResponseEntity.ok("Doctor created successfully");
     }
 
-    @PreAuthorize(value = "hasAuthority('UPDATE_DOCTORS')")
+    @PreAuthorize(value = "hasAuthority('UPDATE_DOCTOR')")
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id,
                                     @RequestBody @Valid DoctorDTO doctorDTO) {
@@ -68,7 +68,7 @@ public class DoctorController {
         return ResponseEntity.ok("Doctor updated successfully");
     }
 
-    @PreAuthorize(value = "hasAuthority('DELETE_DOCTORS')")
+    @PreAuthorize(value = "hasAuthority('DELETE_DOCTOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         doctorService.delete(id);
@@ -114,12 +114,13 @@ public class DoctorController {
     }
 
 
-    @PreAuthorize(value = "hasAuthority('UPDATE_DOCTORS')")
+    @PreAuthorize(value = "hasAuthority('UPDATE_DOCTOR')")
     @PatchMapping("/{doctorId}/room")
     public ResponseEntity<?> changeRoom(@PathVariable("doctorId") Long id,
                                         @RequestParam(value = "room") String room) {
-        doctorService.changeRoom(id, room);
-        return ResponseEntity.ok("Room changed successfully");
 
+        doctorService.changeRoom(id, room);
+
+        return ResponseEntity.ok("Room changed successfully");
     }
 }

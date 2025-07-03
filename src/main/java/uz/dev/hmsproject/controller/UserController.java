@@ -50,7 +50,7 @@ public class UserController {
                     examples = @ExampleObject(value = "{ \"code\": 400, \"message\": \"Filter criteria cannot be null.\" }")
             ))
     })
-    @PreAuthorize("hasAuthority('FILTER_USERS')")
+    @PreAuthorize("hasAuthority('VIEW_USERS')")
     @GetMapping("/filter")
     public List<RespUserDTO> filter(
             @Parameter(description = "Filter criteria object") @Valid UserFilterDTO filterDTO) {
@@ -155,7 +155,7 @@ public class UserController {
                     )
             )
     })
-    @PreAuthorize("hasAuthority('CREATE_USERS')")
+    @PreAuthorize("hasAuthority('CREATE_USER')")
     @PostMapping
     public ResponseEntity<?> create(
             @Parameter(description = "User data (JSON)") @RequestBody @Valid UserDTO userDTO) {
@@ -216,7 +216,7 @@ public class UserController {
                     )
             )
     })
-    @PreAuthorize("hasAuthority('UPDATE_USERS')")
+    @PreAuthorize("hasAuthority('UPDATE_USER')")
     @PutMapping("/{id}")
     public ResponseEntity<?> update(
             @Parameter(description = "User ID", example = "2") @PathVariable("id") Long id,
@@ -246,7 +246,7 @@ public class UserController {
                     examples = @ExampleObject(value = "{ \"code\": 404, \"message\": \"User with id:5 not found.\" }")
             ))
     })
-    @PreAuthorize("hasAuthority('DELETE_USERS')")
+    @PreAuthorize("hasAuthority('DELETE_USER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(
             @Parameter(description = "User ID", example = "2") @PathVariable("id") Long id) {
@@ -275,7 +275,7 @@ public class UserController {
                     examples = @ExampleObject(value = "{ \"code\": 404, \"message\": \"User with id:5 not found.\" }")
             ))
     })
-    @PreAuthorize("hasAuthority('UPDATE_USERS')")
+    @PreAuthorize("hasAuthority('UPDATE_USER')")
     @PatchMapping("/{id}/active")
     public ResponseEntity<?> changeActive(
             @Parameter(description = "User ID", example = "2") @PathVariable("id") Long id,

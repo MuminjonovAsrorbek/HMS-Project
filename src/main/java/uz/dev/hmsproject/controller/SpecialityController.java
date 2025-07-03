@@ -34,7 +34,7 @@ public class SpecialityController {
 
     }
 
-    @PreAuthorize(value = "hasAuthority('CREATE_SPECIALTIES')")
+    @PreAuthorize(value = "hasAuthority('CREATE_SPECIALTY')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid SpecialityCreationDTO specialityDTO) {
 
@@ -44,7 +44,7 @@ public class SpecialityController {
 
     }
 
-    @PreAuthorize(value = "hasAuthority('UPDATE_SPECIALTIES')")
+    @PreAuthorize(value = "hasAuthority('UPDATE_SPECIALTY')")
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id,
                                     @RequestBody @Valid SpecialityDTO specialityDTO) {
@@ -55,7 +55,7 @@ public class SpecialityController {
 
     }
 
-    @PreAuthorize(value = "hasAuthority('DELETE_SPECIALTIES')")
+    @PreAuthorize(value = "hasAuthority('DELETE_SPECIALTY')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 

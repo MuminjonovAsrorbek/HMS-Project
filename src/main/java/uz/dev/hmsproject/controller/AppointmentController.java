@@ -63,7 +63,7 @@ public class AppointmentController {
                     ))
             })
     })
-    @PreAuthorize("hasAuthority('APPOINTMENTS_CREATE')")
+    @PreAuthorize("hasAuthority('CREATE_APPOINTMENT')")
     @PostMapping
     public ResponseEntity<?> createAppointment(@io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "New appointment creation information", required = true,
@@ -93,7 +93,7 @@ public class AppointmentController {
                     ))
             })
     })
-    @PreAuthorize("hasAuthority('APPOINTMENTS_READ')")
+    @PreAuthorize("hasAuthority('VIEW_APPOINTMENT')")
     @GetMapping("/{id}")
     public AppointmentDTO getAppointmentById(@PathVariable Long id) {
 
@@ -119,7 +119,7 @@ public class AppointmentController {
                     ))
             })
     })
-    @PreAuthorize("hasAuthority('APPOINTMENTS_READ')")
+    @PreAuthorize("hasAuthority('VIEW_APPOINTMENTS')")
     @GetMapping("/filter")
     public List<AppointmentDTO> filterAppointments(@io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Get Appointments by filter information",
@@ -151,7 +151,7 @@ public class AppointmentController {
                     ))
             })
     })
-    @PreAuthorize("hasAuthority('APPOINTMENTS_UPDATE')")
+    @PreAuthorize("hasAuthority('UPDATE_APPOINTMENT')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAppointment(@Parameter(description = "Appointment ID", example = "1") @PathVariable Long id,
                                                @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -189,7 +189,7 @@ public class AppointmentController {
                     ))
             })
     })
-    @PreAuthorize("hasAuthority('APPOINTMENTS_DELETE')")
+    @PreAuthorize("hasAuthority('DELETE_APPOINTMENT')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAppointment(@Parameter(example = "1") @PathVariable Long id) {
 
@@ -220,7 +220,7 @@ public class AppointmentController {
                     ))
             }),
     })
-    @PreAuthorize("hasAuthority('APPOINTMENTS_CHANGE_STATUS')")
+    @PreAuthorize("hasAuthority('UPDATE_APPOINTMENT')")
     @PatchMapping("/{id}/status")
     public ResponseEntity<?> changeAppointmentStatus(@Parameter(description = "Appointment ID", example = "1") @PathVariable Long id,
                                                      @Parameter(description = "Appointment status", example = "CANCELED") @RequestParam String status) {
@@ -262,7 +262,7 @@ public class AppointmentController {
                             ))
             })
     })
-    @PreAuthorize("hasAuthority('APPOINTMENTS_READ')")
+    @PreAuthorize("hasAuthority('VIEW_APPOINTMENTS')")
     @GetMapping("/today-appointments")
     public PageableDTO getTodayAppointments(@Parameter(description = "Page number", example = "1")
                                             @RequestParam(value = "page", defaultValue = "0") Integer page) {
@@ -275,7 +275,7 @@ public class AppointmentController {
             summary = "Get Daily Appointments to Excel",
             description = "Daily Appointments list can be downloaded in excel format"
     )
-    @PreAuthorize("hasAuthority('APPOINTMENTS_READ')")
+    @PreAuthorize("hasAuthority('VIEW_APPOINTMENTS')")
     @GetMapping("/daily-appointments/export")
     public void exportDailyAppointmentsToExcel(@Parameter(description = "Enter the required date.", example = "2025-07-05")
                                                @RequestParam(required = false) LocalDate date,
@@ -329,7 +329,7 @@ public class AppointmentController {
                     ))
             }),
     })
-    @PreAuthorize("hasAuthority('APPOINTMENTS_UPDATE')")
+    @PreAuthorize("hasAuthority('UPDATE_APPOINTMENT')")
     @PutMapping("/reschedule")
     public ResponseEntity<?> reschedule(@io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Update appointment information", required = true,

@@ -28,7 +28,7 @@ public class PriceListController {
 
     private final PriceListService priceListService;
 
-    @PreAuthorize("hasAuthority('VIEW_PRICE_LIST')")
+    @PreAuthorize("hasAuthority('VIEW_PRICE_LISTS')")
     @GetMapping
     @Operation(summary = "Get All Price List", description = "Retrieve all price list records")
     @ApiResponses(value = {
@@ -52,7 +52,7 @@ public class PriceListController {
         return priceListService.getAll();
     }
 
-    @PreAuthorize("hasAuthority('VIEW_PRICE')")
+    @PreAuthorize("hasAuthority('VIEW_PRICE_LIST')")
     @GetMapping("/{id}")
     @Operation(summary = "Get Price List by ID", description = "Retrieve specific price list by its ID")
     @ApiResponses(value = {
@@ -79,7 +79,7 @@ public class PriceListController {
         return priceListService.getById(id);
     }
 
-    @PreAuthorize("hasAuthority('UPDATE_PRICE_BY_SPECIALITY_ID')")
+    @PreAuthorize("hasAuthority('UPDATE_PRICE_LIST')")
     @PatchMapping("/{specialityId}/price")
     @Operation(summary = "Update Price by Speciality", description = "Update the price of a specific medical speciality")
     @ApiResponses(value = {

@@ -18,6 +18,7 @@ import uz.dev.hmsproject.dto.WorkSchedulerDTO;
 import uz.dev.hmsproject.dto.WorkSchedulerUpdateDto;
 import uz.dev.hmsproject.dto.response.RespWorkSchedulerDTO;
 import uz.dev.hmsproject.service.template.WorkSchedulerService;
+
 import java.util.List;
 
 @RestController
@@ -47,7 +48,7 @@ public class WorkSchedulerController {
     })
     @PreAuthorize("hasAuthority('VIEW_WORK_SCHEDULE')")
     @GetMapping("/user/{userId}")
-    public List<RespWorkSchedulerDTO> getAllByUser(@Parameter(description = "Doctor ID", example = "5") @PathVariable Long userId) {
+    public List<RespWorkSchedulerDTO> getAllByUser(@Parameter(description = "User ID", example = "5") @PathVariable Long userId) {
         return workSchedulerService.getByUserId(userId);
     }
 
@@ -70,7 +71,7 @@ public class WorkSchedulerController {
     })
     @PreAuthorize("hasAuthority('VIEW_WORK_SCHEDULE')")
     @GetMapping("/user/{userId}/day/{dayOfWeek}")
-    public RespWorkSchedulerDTO getByUserIdAndDay(@Parameter(description = "Doctor ID", example = "5") @PathVariable Long userId,
+    public RespWorkSchedulerDTO getByUserIdAndDay(@Parameter(description = "User ID", example = "5") @PathVariable Long userId,
                                                   @Parameter(description = "Day of week (1=Monday, ..., 7=Sunday)", example = "1") @PathVariable int dayOfWeek) {
         return workSchedulerService.getByUserIdAndDayOfWeek(userId, dayOfWeek);
     }
@@ -81,7 +82,7 @@ public class WorkSchedulerController {
                     content = @Content(mediaType = "application/json",
                             examples = @ExampleObject(value = "Work schedule created successfully")))
     })
-    @PreAuthorize("hasAuthority('CREATE_WORK_SCHEDULES')")
+    @PreAuthorize("hasAuthority('CREATE_WORK_SCHEDULE')")
     @PostMapping
     public ResponseEntity<?> create(@io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Schedule create DTO",
@@ -110,7 +111,7 @@ public class WorkSchedulerController {
                     content = @Content(mediaType = "application/json",
                             examples = @ExampleObject(value = "Entity not found with ID")))
     })
-    @PreAuthorize("hasAuthority('UPDATE_WORK_SCHEDULES')")
+    @PreAuthorize("hasAuthority('UPDATE_WORK_SCHEDULE')")
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@Parameter(description = "Work Schedule ID", example = "3") @PathVariable Long id,
                                     @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -139,7 +140,7 @@ public class WorkSchedulerController {
                     content = @Content(mediaType = "application/json",
                             examples = @ExampleObject(value = "Entity not found with ID")))
     })
-    @PreAuthorize("hasAuthority('DELETE_WORK_SCHEDULES')")
+    @PreAuthorize("hasAuthority('DELETE_WORK_SCHEDULE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@Parameter(description = "Work Schedule ID", example = "3") @PathVariable Long id) {
         workSchedulerService.delete(id);

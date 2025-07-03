@@ -31,7 +31,7 @@ public class RoomController {
 
     }
 
-    @PreAuthorize(value = "hasAuthority('CREATE_ROOMS')")
+    @PreAuthorize(value = "hasAuthority('CREATE_ROOM')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid RoomDTO roomDTO) {
 
@@ -40,7 +40,7 @@ public class RoomController {
         return ResponseEntity.ok("Room created successfully");
     }
 
-    @PreAuthorize(value = "hasAuthority('UPDATE_ROOMS')")
+    @PreAuthorize(value = "hasAuthority('UPDATE_ROOM')")
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id,
                                     @RequestBody @Valid RoomDTO roomDTO) {
@@ -50,7 +50,7 @@ public class RoomController {
         return ResponseEntity.ok("Room updated successfully");
     }
 
-    @PreAuthorize(value = "hasAuthority('DELETE_ROOMS')")
+    @PreAuthorize(value = "hasAuthority('DELETE_ROOM')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 

@@ -78,7 +78,7 @@ public class PatientController {
                     ))
             })
     })
-    @PreAuthorize("hasAuthority('CREATE_PATIENTS')")
+    @PreAuthorize("hasAuthority('CREATE_PATIENT')")
     @PostMapping
     public ResponseEntity<?> createPatient(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -109,7 +109,7 @@ public class PatientController {
             @ApiResponse(responseCode = "200", description = "Patient successfully updated"),
             @ApiResponse(responseCode = "404", description = "Patient not found")
     })
-    @PreAuthorize("hasAuthority('UPDATE_PATIENTS')")
+    @PreAuthorize("hasAuthority('UPDATE_PATIENT')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePatient(
             @Parameter(description = "Patient ID", example = "1")
@@ -141,7 +141,7 @@ public class PatientController {
             @ApiResponse(responseCode = "200", description = "Patient deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Patient not found")
     })
-    @PreAuthorize("hasAuthority('DELETE_PATIENTS')")
+    @PreAuthorize("hasAuthority('DELETE_PATIENT')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePatient(
             @Parameter(description = "Patient ID", example = "1")
@@ -152,7 +152,7 @@ public class PatientController {
 
     @Operation(summary = "Search patients by filters", description = "Search patients using name and phone number")
     @ApiResponse(responseCode = "200", description = "List of matching patients")
-    @PreAuthorize("hasAuthority('PATIENTS_SEARCH')")
+    @PreAuthorize("hasAuthority('VIEW_PATIENTS')")
     @PostMapping("/search")
     public List<PatientDTO> searchPatients(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -175,14 +175,16 @@ public class PatientController {
 
     @Operation(summary = "Get patient's appointment history (paginated)", description = "Retrieve a patient’s appointment history with pagination")
     @ApiResponse(responseCode = "200", description = "Patient appointment history returned")
-    @PreAuthorize("hasAuthority('APPOINTMENTS_READ')")
+    @PreAuthorize("hasAuthority('VIEW_APPOINTMENT')")
     @GetMapping("/{patientId}/appointments")
     public PageableDTO getPatientHistory(
             @Parameter(description = "Patient ID", example = "1")
             @PathVariable Long patientId,
             @Parameter(description = "Page number", example = "0")
             @RequestParam(value = "page", defaultValue = "0") Integer page) {
+
         return patientService.getPatientHistory(patientId, page);
+
     }
 
 }
