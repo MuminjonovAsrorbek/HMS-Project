@@ -1,10 +1,7 @@
 package uz.dev.hmsproject.dto;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,19 +22,25 @@ public class PatientDTO implements Serializable {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Full name must not be blank")
+    @Size(min = 3, message = "Full name must be at least 3 characters long")
     private String fullName;
 
-    @NotNull
+    @NotNull(message = "Birth date is required")
     private Date birthDate;
 
-    @NotBlank
+    @NotBlank(message = "Phone number must not be blank")
+    @Pattern(regexp = "^\\+998\\d{9}$", message = "Phone number must start with +998 and contain 13 digits")
     private String phoneNumber;
 
-    @Email
+    @NotBlank(message = "Email must not be blank")
+    @Email(message = "Invalid email format")
+    @Size(min = 5, message = "Email must be at least 5 characters long")
+    @Pattern(regexp = ".*@gmail\\.com$", message = "Only @gmail.com addresses are allowed")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Address must not be blank")
+    @Size(min = 5, message = "Address must be at least 5 characters long")
     private String address;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
