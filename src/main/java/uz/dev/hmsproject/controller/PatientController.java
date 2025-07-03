@@ -91,7 +91,7 @@ public class PatientController {
                                       "fullName": "Suhrob Qurbonmurodov",
                                       "birthDate": "1995-08-10",
                                       "phoneNumber": "+998901234567",
-                                      "email": "suhrob@example.com",
+                                      "email": "suhrob@gmail.com",
                                       "address": "Tashkent, Uzbekistan"
                                     }
                                     """)
