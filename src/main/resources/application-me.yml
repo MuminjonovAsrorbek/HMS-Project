@@ -16,8 +16,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: // your email
-    password: // your app password
+    username: muminjonovasrorbek2004@gmail.com
+    password: 'thav mxox tqfb xjge'
     properties:
       mail:
         smtp:
@@ -39,5 +39,5 @@ springdoc:
 
 google:
   recaptcha:
-    secret: // your recaptcha secret key
-    site: // your recaptcha secret site key
+    secret: '6Le1rHErAAAAAPkBT_adGbtDbcjPhdeYGm7VTnZg'
+    site: '6Le1rHErAAAAAH9f_A3JPoNt7Tbv8ejBFK9XlfcL'
