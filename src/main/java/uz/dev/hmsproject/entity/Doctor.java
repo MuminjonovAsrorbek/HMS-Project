@@ -2,6 +2,7 @@ package uz.dev.hmsproject.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
@@ -30,11 +31,9 @@ public class Doctor extends AbsDeleteEntity {
     private User user;
 
     @OneToOne
-    @JoinColumn(unique = true)
     private Speciality speciality;
 
     @OneToOne
-    @JoinColumn(unique = true)
     private Room room;
 
 }
